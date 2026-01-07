@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>兰州润德艺术学校 | 官方门户</title>
+    <style>
+        :root {
+            --primary-purple: #660874;
+            --apple-dark: #1d1d1f;
+            --apple-gray: #f5f5f7;
+            --glass: rgba(255, 255, 255, 0.85);
+        }
+
+        body, html { margin: 0; padding: 0; font-family: "SF Pro Display", "PingFang SC", sans-serif; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; background: #fff; }
+
+        /* --- 导航栏 --- */
+        nav {
+            position: fixed; top: 0; width: 100%; height: 50px;
+            background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            z-index: 9999; border-bottom: 1px solid rgba(0,0,0,0.1);
+            display: flex; align-items: center; justify-content: center;
+        }
+        nav a { color: var(--apple-dark); text-decoration: none; font-size: 13px; margin: 0 18px; opacity: 0.7; transition: 0.3s; font-weight: 500; cursor: pointer; }
+        nav a:hover { opacity: 1; color: var(--primary-purple); }
+        .nav-active { opacity: 1; color: var(--primary-purple); font-weight: 600; }
+
+        /* --- 动态消息窗 --- */
+        .ticker { margin-top: 50px; background: #000; color: #fff; padding: 8px 0; font-size: 12px; text-align: center; }
+
+        /* --- 视频 Hero --- */
+        .hero {
+            height: 90vh; position: relative; overflow: hidden;
+            display: flex; align-items: center; justify-content: center; color: #fff; text-align: center;
+        }
+        .hero video {
+            position: absolute; top: 50%; left: 50%;
+            min-width: 100%; min-height: 100%; width: auto; height: auto;
+            transform: translate(-50%, -50%); z-index: -1;
+            object-fit: cover;
+        }
+        .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 0; }
+        .hero-content { z-index: 1; }
+        .hero h1 { font-size: 4.5rem; margin: 0; font-weight: 700; letter-spacing: -2px; }
+
+        /* --- 页面逻辑 --- */
+        .page { display: none; padding-top: 40px; min-height: 80vh; }
+        .page-active { display: block; animation: fadeIn 0.6s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* --- 模块化内容 --- */
+        .section { padding: 80px 20px; }
+        .container { max-width: 1060px; margin: 0 auto; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
+        .card { background: var(--apple-gray); padding: 40px; border-radius: 30px; text-align: left; }
+        .card h3 { color: var(--primary-purple); margin-top: 0; }
+
+        footer { background: var(--apple-dark); color: rgba(255,255,255,0.5); padding: 60px 20px; text-align: center; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+    <nav id="nav">
+        <a onclick="showPage('home')" class="nav-active">首页</a>
+        <a onclick="showPage('about')">学校介绍</a>
+        <a onclick="showPage('teachers')">名师力量</a>
+        <a onclick="showPage('admission')">招生简章</a>
+        <a onclick="showPage('contact')">联系我们</a>
+    </nav>
+
+    <div class="ticker">📢 最新消息：2026届寒假提分班预约开启 | 润德学子统考再创佳绩 | 下周举行专业公开测评</div>
+
+    <div id="home" class="page page-active">
+        <section class="hero">
+            <div class="hero-overlay"></div>
+            <video autoplay muted loop playsinline poster="润德1.png">
+                <source src="rundevideo.mov" type="video/quicktime">
+            </video>
+            <div class="hero-content">
+                <h1>逐光踏梦 • 前途生辉</h1>
+                <p style="font-size: 1.5rem; font-weight: 300; margin-top: 15px;">兰州润德艺术学校 2026 官方门户</p>
+            </div>
+        </section>
+
+        <section class="section container">
+            <div class="grid">
+                <div class="card">
+                    <h3>寒假·为梦想加码</h3>
+                    <p>针对统考评分细则，进行高强度 1v1 纠偏，让专业课实现跨越式提升。</p>
+                    <a onclick="showPage('admission')" style="color:var(--primary-purple); font-weight:600; cursor:pointer;">阅读简章内容 ></a>
+                </div>
+                <div class="card">
+                    <h3>名师 1v1 课堂</h3>
+                    <p>汇聚全省音乐舞蹈专家，深谙省考标准，精准把脉学生短板。</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div id="about" class="page">
+        <section class="section container">
+            <h2 style="font-size: 3rem; text-align: center;">在兰州中心，专注梦想。</h2>
+            <div class="grid" style="margin-top: 50px;">
+                <div class="card">
+                    <h3>封闭化管理</h3>
+                    <p>手机统一管理，24小时导师陪同，屏蔽外界干扰。</p>
+                </div>
+                <div class="card">
+                    <h3>酒店级生活</h3>
+                    <p>独立卫浴、恒温热水、营养餐厅，提供稳定续航。</p>
+                </div>
+            </div>
+            <div style="margin-top: 40px; height: 400px; background: url('润德1.png') center/cover; border-radius: 40px;"></div>
+        </section>
+    </div>
+
+    <div id="teachers" class="page">
+        <section class="section container">
+            <h2 style="font-size: 3rem; text-align: center;">与胜者为伍</h2>
+            <div class="grid">
+                <div class="card"><h3>专业导师团</h3><p>省内各大院校专家领衔，深谙阅卷及评分细则。</p></div>
+                <div class="card"><h3>青年骨干</h3><p>1v1 手把手教学，从呼吸到指法，精雕细琢。</p></div>
+            </div>
+        </section>
+    </div>
+
+    <div id="admission" class="page">
+        <section class="section container">
+            <h2 style="font-size: 3rem; text-align: center; color: var(--primary-purple);">2026 寒假班简章</h2>
+            <div class="card" style="margin-bottom: 30px;">
+                <h3>招生专业与对象</h3>
+                <p>面向全省招收 2026 届高三艺术考生（音乐/舞蹈）。</p>
+                <p><strong>专业涵盖：</strong>美声、民族、流行、钢琴、管弦乐、古典舞、民族民间舞等。</p>
+            </div>
+            <div class="grid">
+                <div class="card"><h3>报名流程</h3><p>1.预约测评 -> 2.专家定级 -> 3.缴纳费用 -> 4.入校集训</p></div>
+                <div class="card"><h3>温馨提示</h3><p>名额有限，录满即止。请携带好换洗衣物及个人生活用品。</p></div>
+            </div>
+        </section>
+    </div>
+
+    <div id="contact" class="page">
+        <section class="section container">
+            <h2 style="font-size: 3rem; text-align: center;">联系我们</h2>
+            <div class="card" style="max-width: 600px; margin: 0 auto; text-align: center;">
+                <p>📍 校区地址：兰州市安宁区/城关区润德艺术学校</p>
+                <p>📞 咨询热线：[天宇老师请替换真实号码]</p>
+                <div style="width: 150px; height: 150px; background: #ddd; margin: 30px auto; border-radius: 10px; line-height: 150px;">扫码咨询</div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>© 2026 兰州润德艺术学校 | 陇ICP备XXXXXXXX号</p>
+    </footer>
+
+    <script>
+        function showPage(pageId) {
+            // 隐藏所有页面
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(p => p.classList.remove('page-active'));
+            // 显示目标页面
+            document.getElementById(pageId).classList.add('page-active');
+            // 处理导航高亮
+            const links = document.querySelectorAll('nav a');
+            links.forEach(l => l.classList.remove('nav-active'));
+            // 更新当前点击的链接状态
+            event.target.classList.add('nav-active');
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>
