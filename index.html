@@ -507,7 +507,8 @@
                     .teacher-meta{flex:1}
                     .teacher-name{font-weight:700;color:#111}
                     .teacher-pos{font-size:13px;color:#6B6B6F;margin-top:4px}
-                    .fade-enter-stagger{transition-delay: var(--stagger)}
+                    /* 只对“入场”阶段做 stagger，避免影响后续 hover/点按的跟手性 */
+                    .teacher-card.fade-enter-stagger:not(.in){transition-delay: var(--stagger)}
                     @media (max-width:520px){.teacher-card{flex-direction:row;gap:10px}.teacher-photo{width:64px;height:64px}}
                     </style>
 
@@ -615,8 +616,8 @@
                                 entries.forEach(en => {
                                     if(en.isIntersecting){
                                         const el = en.target;
-                                        const delay = parseInt(getComputedStyle(el).getPropertyValue('--stagger')) || 0;
-                                        setTimeout(()=> el.classList.add('in'), delay);
+                                        // 让 CSS 的 transition-delay 负责 stagger；入场后不再延迟
+                                        requestAnimationFrame(()=> el.classList.add('in'));
                                         obs.unobserve(el);
                                     }
                                 });
