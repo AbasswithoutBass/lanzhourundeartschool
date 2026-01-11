@@ -1,0 +1,1222 @@
+[
+  {
+    "id": "admin_001",
+    "name": "陈涛",
+    "photo": "photos/chen_tao.jpg",
+    "shortSummary": "青年男中音，兰州大剧院演出艺术家。",
+    "bio": "陈涛创始人。兰州大剧院青年男中音。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "管理部",
+        "position": "创始人",
+        "order": 1
+      },
+      {
+        "department": "声乐组",
+        "position": "声乐教师",
+        "order": 15
+      }
+    ]
+  },
+  {
+    "id": "admin_002",
+    "name": "苏海鹏",
+    "photo": "photos/su_haipeng.jpg",
+    "shortSummary": "兰州市润德艺术学校创始人。",
+    "bio": "苏海鹏创始人。兰州市润德艺术学校创始人。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "管理部",
+        "position": "创始人",
+        "order": 2
+      },
+      {
+        "department": "理论组",
+        "position": "视唱练耳教师",
+        "order": 66
+      }
+    ]
+  },
+  {
+    "id": "admin_003",
+    "name": "王玉",
+    "photo": "photos/wang_yu.jpg",
+    "shortSummary": "校长，视唱练耳教师。",
+    "bio": "王玉校长。毕业于兰州城市学院。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "管理部",
+        "position": "校长",
+        "order": 3
+      },
+      {
+        "department": "理论组",
+        "position": "视唱练耳教师",
+        "order": 67
+      }
+    ]
+  },
+  {
+    "id": "dance_001",
+    "name": "韩刚",
+    "photo": "photos/han_gang.jpg",
+    "shortSummary": "舞蹈部校长。",
+    "bio": "韩刚舞蹈部校长。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "管理部",
+        "position": "舞蹈部校长",
+        "order": 4
+      },
+      {
+        "department": "舞蹈部",
+        "position": "舞蹈教师",
+        "order": 76
+      }
+    ]
+  },
+  {
+    "id": "dance_002",
+    "name": "李甜",
+    "photo": "photos/li_tian.jpg",
+    "shortSummary": "舞蹈部执行校长。",
+    "bio": "李甜舞蹈部执行校长。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "管理部",
+        "position": "舞蹈部执行校长",
+        "order": 5
+      },
+      {
+        "department": "舞蹈部",
+        "position": "舞蹈教师",
+        "order": 77
+      }
+    ]
+  },
+  {
+    "id": "dance_003",
+    "name": "秦淼娜",
+    "photo": "photos/qin_miaona.jpg",
+    "shortSummary": "舞蹈部教学主管。",
+    "bio": "秦淼娜舞蹈部教学主管。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "管理部",
+        "position": "舞蹈部教学主管",
+        "order": 6
+      },
+      {
+        "department": "舞蹈部",
+        "position": "舞蹈教师",
+        "order": 78
+      }
+    ]
+  },
+  {
+    "id": "admin_004",
+    "name": "祁军霞",
+    "photo": "photos/qi_junxia.jpg",
+    "shortSummary": "财务总监。",
+    "bio": "祁军霞财务总监。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "管理部",
+        "position": "财务总监",
+        "order": 7
+      },
+      {
+        "department": "理论组",
+        "position": "乐理教师",
+        "order": 68
+      }
+    ]
+  },
+  {
+    "id": "admin_005",
+    "name": "景想东",
+    "photo": "photos/jing_xiangdong.jpg",
+    "shortSummary": "财务主管。",
+    "bio": "景想东财务主管。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "管理部",
+        "position": "财务主管",
+        "order": 8
+      }
+    ]
+  },
+  {
+    "id": "admin_006",
+    "name": "苏海震",
+    "photo": "photos/su_haizhen.jpg",
+    "shortSummary": "后勤主管。",
+    "bio": "苏海震后勤主管。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "管理部",
+        "position": "后勤主管",
+        "order": 9
+      }
+    ]
+  },
+  {
+    "id": "vocal_001",
+    "name": "杜吉刚",
+    "photo": "photos/du_jigang.jpg",
+    "shortSummary": "著名华裔男高音歌唱家。",
+    "bio": "杜吉刚顾问。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "声乐组",
+        "position": "顾问",
+        "order": 10
+      }
+    ]
+  },
+  {
+    "id": "vocal_002",
+    "name": "郭江滨",
+    "photo": "photos/guo_jiangbin.jpg",
+    "shortSummary": "男中音歌唱家。",
+    "bio": "郭江滨兰州润德艺考声乐总监。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "声乐组",
+        "position": "声乐总监",
+        "order": 11
+      }
+    ]
+  },
+  {
+    "id": "vocal_003",
+    "name": "石大勇",
+    "photo": "photos/shi_dayong.jpg",
+    "shortSummary": "男高音。",
+    "bio": "石大勇特聘教师。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "声乐组",
+        "position": "特聘教师",
+        "order": 12
+      }
+    ]
+  },
+  {
+    "id": "vocal_004",
+    "name": "尹胜麟",
+    "photo": "photos/yin_shenglin.jpg",
+    "shortSummary": "博士。",
+    "bio": "尹胜麟特聘教师。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "声乐组",
+        "position": "特聘教师",
+        "order": 13
+      }
+    ]
+  },
+  {
+    "id": "vocal_005",
+    "name": "王举全",
+    "photo": "photos/wang_juquan.jpg",
+    "shortSummary": "声乐教师。",
+    "bio": "王举全声乐教师。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "声乐组",
+        "position": "声乐教师",
+        "order": 14
+      }
+    ]
+  },
+  {
+    "id": "vocal_006",
+    "name": "孙淼",
+    "photo": "photos/sun_miao.jpg",
+    "shortSummary": "女高音。",
+    "bio": "孙淼声乐教师。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "声乐组",
+        "position": "声乐教师",
+        "order": 16
+      }
+    ]
+  },
+  {
+    "id": "vocal_007",
+    "name": "陈璞",
+    "photo": "photos/chen_pudong.jpg",
+    "shortSummary": "男高音。",
+    "bio": "陈璞东声乐教师。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "声乐组",
+        "position": "声乐教师",
+        "order": 17
+      }
+    ]
+  },
+  {
+    "id": "vocal_008",
+    "name": "马熙媛",
+    "photo": "photos/ma_xiyuan.jpg",
+    "shortSummary": "音乐剧演员。",
+    "bio": "马熙媛流行教师。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "声乐组",
+        "position": "流行教师",
+        "order": 18
+      }
+    ]
+  },
+  {
+    "id": "vocal_009",
+    "name": "赵兴财",
+    "photo": "photos/zhao_xingcai.jpg",
+    "shortSummary": "男高音。",
+    "bio": "赵兴财声乐教师。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "声乐组",
+        "position": "声乐教师",
+        "order": 19
+      }
+    ]
+  },
+  {
+    "id": "vocal_010",
+    "name": "吴彬",
+    "photo": "photos/wu_bin.jpg",
+    "shortSummary": "男高音。",
+    "bio": "吴彬声乐教师。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "声乐组",
+        "position": "声乐教师",
+        "order": 20
+      }
+    ]
+  },
+  {
+    "id": "vocal_011",
+    "name": "于伟",
+    "photo": "photos/yu_wei.jpg",
+    "shortSummary": "声乐教师。",
+    "bio": "于伟声乐教师。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "声乐组",
+        "position": "声乐教师",
+        "order": 21
+      }
+    ]
+  },
+  {
+    "id": "vocal_012",
+    "name": "刘鹏",
+    "photo": "photos/liu_peng.jpg",
+    "shortSummary": "声乐教师。",
+    "bio": "刘鹏声乐教师。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "声乐组",
+        "position": "声乐教师",
+        "order": 22
+      }
+    ]
+  },
+  {
+    "id": "vocal_013",
+    "name": "张铂",
+    "photo": "photos/zhang_bo.jpg",
+    "shortSummary": "男中音。",
+    "bio": "张铂声乐教师。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "声乐组",
+        "position": "声乐教师",
+        "order": 23
+      }
+    ]
+  },
+  {
+    "id": "vocal_014",
+    "name": "童倩影",
+    "photo": "photos/tong_qianying.jpg",
+    "shortSummary": "女高音。",
+    "bio": "童倩影声乐教师。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "声乐组",
+        "position": "声乐教师",
+        "order": 24
+      }
+    ]
+  },
+  {
+    "id": "vocal_015",
+    "name": "黄子俊",
+    "photo": "photos/huang_zijun.jpg",
+    "shortSummary": "男中音。",
+    "bio": "黄子俊声乐教师。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "声乐组",
+        "position": "声乐教师",
+        "order": 25
+      }
+    ]
+  },
+  {
+    "id": "vocal_016",
+    "name": "柯夏",
+    "photo": "photos/ke_xia.jpg",
+    "shortSummary": "女高音。",
+    "bio": "柯夏声乐教师。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "声乐组",
+        "position": "声乐教师",
+        "order": 26
+      }
+    ]
+  },
+  {
+    "id": "vocal_017",
+    "name": "刘恩骏",
+    "photo": "photos/liu_enjun.jpg",
+    "shortSummary": "流行教师。",
+    "bio": "刘恩骏流行教师。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "声乐组",
+        "position": "流行教师",
+        "order": 27
+      }
+    ]
+  },
+  {
+    "id": "vocal_018",
+    "name": "李缘园",
+    "photo": "photos/li_yuanyuan.jpg",
+    "shortSummary": "声乐教师。",
+    "bio": "李缘园声乐教师。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "声乐组",
+        "position": "声乐教师",
+        "order": 28
+      }
+    ]
+  },
+  {
+    "id": "vocal_019",
+    "name": "张婧",
+    "photo": "photos/zhang_jing.jpg",
+    "shortSummary": "女高音。",
+    "bio": "张婧声乐教师。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "声乐组",
+        "position": "声乐教师",
+        "order": 29
+      }
+    ]
+  },
+  {
+    "id": "vocal_020",
+    "name": "台璐鑫",
+    "photo": "photos/tai_luxin.jpg",
+    "shortSummary": "女高音。",
+    "bio": "台璐鑫声乐教师。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "声乐组",
+        "position": "声乐教师",
+        "order": 30
+      }
+    ]
+  },
+  {
+    "id": "vocal_021",
+    "name": "王盼",
+    "photo": "photos/wang_pan.jpg",
+    "shortSummary": "副教授。",
+    "bio": "王盼声乐教师。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "声乐组",
+        "position": "声乐教师",
+        "order": 31
+      }
+    ]
+  },
+  {
+    "id": "vocal_022",
+    "name": "张涛",
+    "photo": "photos/zhang_tao.jpg",
+    "shortSummary": "男中音。",
+    "bio": "张涛声乐教师。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "声乐组",
+        "position": "声乐教师",
+        "order": 32
+      }
+    ]
+  },
+  {
+    "id": "instrumental_001",
+    "name": "魏旭东",
+    "photo": "photos/wei_xudong.jpg",
+    "shortSummary": "指挥。",
+    "bio": "魏旭东器乐总监。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "器乐总监",
+        "order": 32
+      }
+    ]
+  },
+  {
+    "id": "instrumental_002",
+    "name": "管民",
+    "photo": "photos/guan_min.jpg",
+    "shortSummary": "二胡教师。",
+    "bio": "管民二胡教师。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "二胡名师",
+        "order": 33
+      }
+    ]
+  },
+  {
+    "id": "instrumental_003",
+    "name": "阚鹏",
+    "photo": "photos/kan_peng.jpg",
+    "shortSummary": "竹笛教师。",
+    "bio": "阚鹏竹笛教师。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "竹笛名师",
+        "order": 34
+      }
+    ]
+  },
+  {
+    "id": "instrumental_004",
+    "name": "王瑞玺",
+    "photo": "photos/wang_ruixi.jpg",
+    "shortSummary": "萨克斯教师。",
+    "bio": "王瑞玺萨克斯教师。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "萨克斯名师",
+        "order": 35
+      }
+    ]
+  },
+  {
+    "id": "instrumental_005",
+    "name": "陈劲",
+    "photo": "photos/chen_jing.jpg",
+    "shortSummary": "键盘教师。",
+    "bio": "陈劲双排键钢琴教师。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "双排键/钢琴教师",
+        "order": 36
+      }
+    ]
+  },
+  {
+    "id": "instrumental_006",
+    "name": "宋景坤",
+    "photo": "photos/song_jingkun.jpg",
+    "shortSummary": "唢呐教师。",
+    "bio": "宋景坤唢呐管子教师。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "唢呐/管子教师",
+        "order": 37
+      }
+    ]
+  },
+  {
+    "id": "instrumental_007",
+    "name": "张伟超",
+    "photo": "photos/zhang_weichao.jpg",
+    "shortSummary": "笙教师。",
+    "bio": "张伟超笙教师。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "笙教师",
+        "order": 38
+      }
+    ]
+  },
+  {
+    "id": "instrumental_008",
+    "name": "肖雪",
+    "photo": "photos/xiao_xue.jpg",
+    "shortSummary": "小提琴教师。",
+    "bio": "肖雪小提琴教师。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "小提琴教师",
+        "order": 53
+      }
+    ]
+  },
+  {
+    "id": "哈文泽",
+    "name": "哈文泽",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "笙教师",
+        "order": 39
+      }
+    ]
+  },
+  {
+    "id": "instrumental_009",
+    "name": "陈昱铭",
+    "photo": "photos/chen_yuming.jpg",
+    "shortSummary": "打击乐教师。",
+    "bio": "陈昱铭打击乐教师。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "打击乐教师",
+        "order": 54
+      }
+    ]
+  },
+  {
+    "id": "王哲宇",
+    "name": "王哲宇",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "钢琴教师",
+        "order": 40
+      }
+    ]
+  },
+  {
+    "id": "instrumental_010",
+    "name": "郑钰",
+    "photo": "photos/zheng_yu.jpg",
+    "shortSummary": "键盘教师。",
+    "bio": "郑钰钢琴低音提琴教师。",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "钢琴/低音提琴教师",
+        "order": 56
+      }
+    ]
+  },
+  {
+    "id": "何佳蔚",
+    "name": "何佳蔚",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "古筝教师",
+        "order": 41
+      }
+    ]
+  },
+  {
+    "id": "梁军",
+    "name": "梁军",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "吉他教师",
+        "order": 42
+      }
+    ]
+  },
+  {
+    "id": "董爌",
+    "name": "董爌",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "电吉他教师",
+        "order": 43
+      }
+    ]
+  },
+  {
+    "id": "王淳",
+    "name": "王淳",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "琵琶教师",
+        "order": 44
+      }
+    ]
+  },
+  {
+    "id": "王雪燕",
+    "name": "王雪燕",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "扬琴教师",
+        "order": 45
+      }
+    ]
+  },
+  {
+    "id": "赵天星",
+    "name": "赵天星",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "打击乐教师",
+        "order": 46
+      }
+    ]
+  },
+  {
+    "id": "李明涛",
+    "name": "李明涛",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "唢呐教师",
+        "order": 47
+      }
+    ]
+  },
+  {
+    "id": "杨文君",
+    "name": "杨文君",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "打击乐教师",
+        "order": 48
+      }
+    ]
+  },
+  {
+    "id": "王旭星",
+    "name": "王旭星",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "竹笛教师",
+        "order": 49
+      }
+    ]
+  },
+  {
+    "id": "张安青",
+    "name": "张安青",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "钢琴教师",
+        "order": 50
+      }
+    ]
+  },
+  {
+    "id": "张婷",
+    "name": "张婷",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "钢琴教师",
+        "order": 51
+      }
+    ]
+  },
+  {
+    "id": "周意斐",
+    "name": "周意斐",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "长笛教师",
+        "order": 52
+      }
+    ]
+  },
+  {
+    "id": "年峥",
+    "name": "年峥",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "长号教师",
+        "order": 57
+      }
+    ]
+  },
+  {
+    "id": "陈晟",
+    "name": "陈晟",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "小号教师",
+        "order": 55
+      }
+    ]
+  },
+  {
+    "id": "田娅蓉",
+    "name": "田娅蓉",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "竖琴教师",
+        "order": 59
+      }
+    ]
+  },
+  {
+    "id": "王露",
+    "name": "王露",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "大提琴教师",
+        "order": 58
+      }
+    ]
+  },
+  {
+    "id": "王乙涵",
+    "name": "王乙涵",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "打击乐教师",
+        "order": 60
+      }
+    ]
+  },
+  {
+    "id": "顾兴涛",
+    "name": "顾兴涛",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "上低音号教师",
+        "order": 61
+      }
+    ]
+  },
+  {
+    "id": "肖晨",
+    "name": "肖晨",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "巴松管教师",
+        "order": 62
+      }
+    ]
+  },
+  {
+    "id": "赵嘉玮",
+    "name": "赵嘉玮",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "圆号教师",
+        "order": 63
+      }
+    ]
+  },
+  {
+    "id": "李文辉",
+    "name": "李文辉",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "器乐组",
+        "position": "竹笛教师",
+        "order": 64
+      }
+    ]
+  },
+  {
+    "id": "乔文华",
+    "name": "乔文华",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "理论组",
+        "position": "乐理教师",
+        "order": 69
+      }
+    ]
+  },
+  {
+    "id": "徐倩",
+    "name": "徐倩",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "理论组",
+        "position": "视唱练耳教师",
+        "order": 70
+      }
+    ]
+  },
+  {
+    "id": "叶国强",
+    "name": "叶国强",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "理论组",
+        "position": "视唱练耳教师",
+        "order": 71
+      }
+    ]
+  },
+  {
+    "id": "臧天宇",
+    "name": "臧天宇",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "理论组",
+        "position": "视唱练耳教师",
+        "order": 72
+      }
+    ]
+  },
+  {
+    "id": "钱昇",
+    "name": "钱昇",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "理论组",
+        "position": "视唱练耳教师",
+        "order": 73
+      }
+    ]
+  },
+  {
+    "id": "宋小龙",
+    "name": "宋小龙",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "理论组",
+        "position": "视唱练耳教师",
+        "order": 74
+      }
+    ]
+  },
+  {
+    "id": "李艳霞",
+    "name": "李艳霞",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "理论组",
+        "position": "视唱练耳教师",
+        "order": 75
+      }
+    ]
+  },
+  {
+    "id": "李龙",
+    "name": "李龙",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "舞蹈部",
+        "position": "舞蹈教师",
+        "order": 79
+      }
+    ]
+  },
+  {
+    "id": "杨怡然",
+    "name": "杨怡然",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "舞蹈部",
+        "position": "舞蹈教师",
+        "order": 80
+      }
+    ]
+  },
+  {
+    "id": "訾陈",
+    "name": "訾陈",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "舞蹈部",
+        "position": "舞蹈教师",
+        "order": 81
+      }
+    ]
+  },
+  {
+    "id": "韩佳芮",
+    "name": "韩佳芮",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "舞蹈部",
+        "position": "舞蹈教师",
+        "order": 82
+      }
+    ]
+  },
+  {
+    "id": "杨晓洁",
+    "name": "杨晓洁",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "舞蹈部",
+        "position": "舞蹈教师",
+        "order": 83
+      }
+    ]
+  },
+  {
+    "id": "周文涛",
+    "name": "周文涛",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "舞蹈部",
+        "position": "舞蹈教师",
+        "order": 84
+      }
+    ]
+  },
+  {
+    "id": "艾哲宇",
+    "name": "艾哲宇",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "舞蹈部",
+        "position": "舞蹈教师",
+        "order": 85
+      }
+    ]
+  },
+  {
+    "id": "李慧芳",
+    "name": "李慧芳",
+    "photo": "photos/placeholder.jpg",
+    "shortSummary": "",
+    "bio": "",
+    "achievements": [],
+    "roles": [
+      {
+        "department": "舞蹈部",
+        "position": "舞蹈教师",
+        "order": 86
+      }
+    ]
+  }
+]
