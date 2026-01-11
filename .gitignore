@@ -1,0 +1,32 @@
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+
+# Virtual env
+.venv/
+
+# Local server pid/log
+.site_httpserver_*.pid
+.site_httpserver_*.log
+
+# Media (do not commit large videos)
+rundevideo.mov
+*.mov
+*.mp4
+*.m4v
+
+# Backups / archives
+*.bak
+*.bak.*
+*.premerge.bak
+
+# OS / editor
+.vscode/
+.idea/
+
+# Large/derived demo dirs (keep if you want to publish them)
+# _import_demo/

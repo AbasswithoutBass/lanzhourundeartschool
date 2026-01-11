@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>教师部门预览（拖拽排序）</title>
+  <style>
+    body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;background:#f5f5f7;margin:0}
+    header{background:#fff;border-bottom:1px solid rgba(0,0,0,.06);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:2}
+    a{color:#660874;text-decoration:none}
+    .wrap{max-width:1280px;margin:18px auto;padding:0 16px}
+    .hint{color:#666;font-size:12px;line-height:1.5}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;align-items:start;margin-top:12px}
+    .dept{background:#fff;border-radius:16px;border:1px solid rgba(0,0,0,.06);box-shadow:0 10px 24px rgba(0,0,0,.06);overflow:hidden}
+    .deptHead{padding:12px 14px;border-bottom:1px solid rgba(0,0,0,.06);display:flex;align-items:center;justify-content:space-between}
+    .deptTitle{font-weight:800}
+    .badge{font-size:12px;color:#660874;background:rgba(102,8,116,.08);border:1px solid rgba(102,8,116,.18);padding:2px 10px;border-radius:999px}
+    .list{padding:10px;display:flex;flex-direction:column;gap:8px;min-height:40px}
+    .item{display:flex;gap:10px;align-items:flex-start;padding:10px;border:1px solid rgba(0,0,0,.08);border-radius:14px;background:#fff;cursor:grab}
+    .item.dragging{opacity:.55;cursor:grabbing}
+    .avatar{width:42px;height:42px;border-radius:12px;background:rgba(0,0,0,.06);object-fit:cover;border:1px solid rgba(0,0,0,.08)}
+    .name{font-weight:800;line-height:1.2}
+    .pos{color:#333;font-size:13px;margin-top:2px}
+    .sum{color:#666;font-size:12px;margin-top:4px;line-height:1.4}
+    .meta{margin-left:auto;text-align:right;display:flex;flex-direction:column;gap:6px}
+    .pill{display:inline-block;font-size:12px;color:#111827;background:#f3f4f6;border:1px solid rgba(0,0,0,.08);padding:2px 8px;border-radius:999px}
+    .btn{display:inline-block;font-size:12px;color:#fff;background:#660874;padding:6px 10px;border-radius:10px;font-weight:700}
+    .bar{display:flex;gap:12px;align-items:center}
+    .toast{position:fixed;right:14px;bottom:14px;background:#111827;color:#fff;padding:10px 12px;border-radius:12px;font-size:13px;opacity:0;transform:translateY(8px);transition:all .2s ease;z-index:3}
+    .toast.show{opacity:1;transform:translateY(0)}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="bar">
+      <a href="/admin/teachers">← 返回教师列表</a>
+      <div style="font-weight:800">部门预览（拖拽排序）</div>
+    </div>
+    <div class="bar">
+      <div class="hint">拖动同一部门内的卡片调整顺序（会写回该部门对应的 roles[].order）。</div>
+      <a href="/logout">退出</a>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="hint">
+      - 这是“按部门预览”的视图：同一位老师跨部门会出现多张岗位卡片。
+      - 为了不把部门整体顺序打乱，保存时会保持该部门原来的最小 order 作为基准，在该区间内重新编号。
+    </div>
+
+    <div class="grid">
+      {% for d in depts %}
+      <section class="dept" data-dept="{{ d.department }}">
+        <div class="deptHead">
+          <div class="deptTitle">{{ d.department }}</div>
+          <div class="badge">{{ (d.roles or [])|length }}</div>
+        </div>
+        <div class="list" data-list>
+          {% for r in (d.roles or []) %}
+          <div class="item" draggable="true" data-rolekey="{{ r.roleKey }}">
+            {% if r.photo %}
+              <img class="avatar" src="/{{ r.photo }}" alt="" onerror="this.style.display='none'" />
+            {% else %}
+              <div class="avatar"></div>
+            {% endif %}
+            <div style="min-width:0">
+              <div class="name">{{ r.name }}</div>
+              <div class="pos">{{ r.position }}</div>
+              {% if r.shortSummary %}
+                <div class="sum">{{ r.shortSummary }}</div>
+              {% endif %}
+            </div>
+            <div class="meta">
+              <span class="pill">order={{ r.order }}</span>
+              <a class="btn" href="/admin/teachers/{{ r.teacherId }}">编辑</a>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const toast = (msg) => {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.add('show');
+      clearTimeout(el._t);
+      el._t = setTimeout(() => el.classList.remove('show'), 1500);
+    };
+
+    let dragEl = null;
+    let originDept = null;
+
+    const lists = Array.from(document.querySelectorAll('[data-list]'));
+
+    for (const list of lists) {
+      list.addEventListener('dragstart', (e) => {
+        const item = e.target.closest('.item');
+        if (!item) return;
+        dragEl = item;
+        originDept = item.closest('[data-dept]')?.getAttribute('data-dept') || null;
+        item.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+      });
+
+      list.addEventListener('dragend', async (e) => {
+        const item = e.target.closest('.item');
+        if (item) item.classList.remove('dragging');
+        if (!dragEl) return;
+
+        const dept = originDept;
+        const deptEl = document.querySelector(`[data-dept="${CSS.escape(dept)}"]`);
+        const roleKeys = Array.from(deptEl.querySelectorAll('.item')).map(x => x.getAttribute('data-rolekey'));
+
+        dragEl = null;
+        originDept = null;
+
+        try {
+          const res = await fetch('/admin/teachers/departments/order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ department: dept, roleKeys })
+          });
+          const data = await res.json();
+          if (!data.ok) throw new Error(data.error || 'save failed');
+
+          // 更新页面上的 order 显示
+          const base = Number(data.base || 1);
+          Array.from(deptEl.querySelectorAll('.item')).forEach((el, idx) => {
+            const pill = el.querySelector('.pill');
+            if (pill) pill.textContent = `order=${base + idx}`;
+          });
+          toast('已保存顺序');
+        } catch (err) {
+          console.error(err);
+          toast('保存失败');
+        }
+      });
+
+      list.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        if (!dragEl) return;
+        const containerDept = list.closest('[data-dept]')?.getAttribute('data-dept') || null;
+        if (!originDept || containerDept !== originDept) return;
+        const after = getDragAfterElement(list, e.clientY);
+        if (after == null) {
+          list.appendChild(dragEl);
+        } else {
+          list.insertBefore(dragEl, after);
+        }
+      });
+    }
+
+    function getDragAfterElement(container, y) {
+      const draggableElements = [...container.querySelectorAll('.item:not(.dragging)')];
+      return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+          return { offset, element: child };
+        } else {
+          return closest;
+        }
+      }, { offset: Number.NEGATIVE_INFINITY, element: null }).element;
+    }
+  </script>
+</body>
+</html>

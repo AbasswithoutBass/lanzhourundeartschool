@@ -1,0 +1,762 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>教师管理（拖拽排序）</title>
+  <style>
+    body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;background:#f5f5f7;margin:0}
+    header{background:#fff;border-bottom:1px solid rgba(0,0,0,.06);padding:10px 12px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:3}
+    a{color:#660874;text-decoration:none}
+    .wrap{max-width:1320px;margin:16px auto;padding:0 16px}
+    .hint{color:#666;font-size:12px;line-height:1.5}
+
+    .flash{margin:10px 0 0;padding:10px 12px;border-radius:12px;font-size:13px;background:#fff;border:1px solid rgba(0,0,0,.08)}
+    .flash.error{background:#fff1f2;color:#9f1239;border:1px solid rgba(159,18,57,.15)}
+    .flash.ok{background:#ecfeff;color:#155e75;border:1px solid rgba(21,94,117,.15)}
+
+    .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .btn{display:inline-block;font-size:12px;color:#fff;background:#660874;padding:7px 10px;border-radius:12px;font-weight:800;border:none;cursor:pointer}
+    .btn2{display:inline-block;font-size:12px;color:#fff;background:#111827;padding:7px 10px;border-radius:12px;font-weight:800;border:none;cursor:pointer}
+    .seg{display:inline-flex;border:1px solid rgba(0,0,0,.12);border-radius:12px;overflow:hidden;background:#fff}
+    .seg button{border:none;background:transparent;padding:7px 9px;font-weight:800;font-size:12px;cursor:pointer;color:#333}
+    .seg button.active{background:rgba(102,8,116,.08);color:#660874}
+    select,input{padding:7px 9px;border-radius:12px;border:1px solid rgba(0,0,0,.12);font-size:12px;background:#fff}
+
+    .grid{display:flex;flex-direction:column;gap:10px;align-items:stretch;margin-top:10px;--cardMin:120px}
+    details.dept{background:#fff;border-radius:14px;border:1px solid rgba(0,0,0,.06);box-shadow:0 8px 18px rgba(0,0,0,.06);overflow:hidden}
+    summary.deptHead{padding:10px 12px;border-bottom:1px solid rgba(0,0,0,.06);display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;list-style:none}
+    summary.deptHead::-webkit-details-marker{display:none}
+    .deptTitle{font-weight:900}
+    .badge{font-size:12px;color:#660874;background:rgba(102,8,116,.08);border:1px solid rgba(102,8,116,.18);padding:2px 10px;border-radius:999px}
+    .list{padding:8px;display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--cardMin),1fr));gap:6px;min-height:24px}
+
+    .item{position:relative;display:flex;gap:6px;align-items:center;justify-content:center;padding:10px 8px;border:1px solid rgba(0,0,0,.08);border-radius:12px;background:#fff;cursor:grab;flex-direction:column;
+      transition:box-shadow .14s ease, opacity .14s ease, background-color .14s ease, border-color .14s ease, filter .14s ease;
+    }
+    /* 只在拖拽排序时启用 transform 过渡，避免平时鼠标划过出现“抖/抽风” */
+    .dragging-active .item{transition:transform .11s cubic-bezier(.2,.8,.2,1), box-shadow .14s ease, opacity .14s ease, background-color .14s ease, border-color .14s ease, filter .14s ease;will-change:transform}
+    .item:hover{box-shadow:0 10px 18px rgba(0,0,0,.08);z-index:1}
+    .item.dragging{opacity:.72;cursor:grabbing;box-shadow:0 18px 28px rgba(0,0,0,.14);transform:translateZ(0);filter:saturate(1.02);z-index:2}
+
+    .item.add{cursor:pointer;border-style:dashed;color:#660874;background:rgba(102,8,116,.04)}
+    .item.add:hover,.item.add:focus{background:rgba(102,8,116,.08)}
+    .plus{font-weight:1000;font-size:22px;line-height:1}
+
+    .item.placeholder{cursor:default;border-style:dashed;background:rgba(17,24,39,.04);border-color:rgba(17,24,39,.14)}
+    .item.placeholder .avatar{opacity:.35}
+    .item.placeholder .name,.item.placeholder .meta{display:none}
+
+    .item.dragFloat{position:fixed;left:0;top:0;z-index:50;pointer-events:none;transform:translate3d(-10000px,-10000px,0);width:var(--w);height:var(--h)}
+    .item.dragging{opacity:1;cursor:grabbing;box-shadow:0 18px 28px rgba(0,0,0,.16);filter:saturate(1.02);z-index:2}
+
+    /* iOS 桌面感：拖拽时其它卡片轻微抖动（很轻，不影响阅读） */
+    @keyframes jiggle{0%{transform:rotate(-.6deg)}100%{transform:rotate(.6deg)}}
+    .jiggle .item:not(.dragging):not(.add):not(.placeholder){animation:jiggle .14s ease-in-out infinite alternate;transform-origin:50% 60%}
+
+    .x{position:absolute;top:6px;right:6px;width:18px;height:18px;border-radius:999px;border:1px solid rgba(0,0,0,.12);background:#fff;color:#111827;display:none;align-items:center;justify-content:center;font-size:14px;line-height:1;cursor:pointer;padding:0}
+    .item:hover .x,.item:focus-within .x{display:flex}
+
+    .avatar{width:36px;height:36px;border-radius:10px;background:rgba(102,8,116,.10);border:1px solid rgba(102,8,116,.18);flex:0 0 auto}
+    .name{font-weight:900;line-height:1.2;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;text-align:center}
+    .meta{display:flex;align-items:center;gap:6px;flex:0 0 auto;min-height:22px}
+    .pill{display:inline-block;font-size:11px;color:#111827;background:#f3f4f6;border:1px solid rgba(0,0,0,.08);padding:1px 7px;border-radius:999px}
+    /* 关键：不要用 display none/block（会触发布局重排，导致网格“蹦迪”） */
+    .pill.order{display:inline-block;opacity:0;visibility:hidden;transition:opacity .12s ease}
+    .edit{display:inline-block;font-size:11px;color:#fff;background:#660874;padding:5px 9px;border-radius:10px;font-weight:900;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .12s ease}
+    .item:hover .pill.order,.item:focus-within .pill.order{opacity:1;visibility:visible}
+    .item:hover .edit,.item:focus-within .edit{opacity:1;visibility:visible;pointer-events:auto}
+
+    /* 小图标模式 */
+    .mode-small{--cardMin:104px}
+    .mode-small .avatar{width:30px;height:30px;border-radius:9px}
+    .mode-small .item{padding:9px 6px;border-radius:11px}
+    .mode-small .name{font-size:12px}
+
+    .mode-large{--cardMin:150px}
+    .mode-large .avatar{width:44px;height:44px;border-radius:12px}
+    .mode-large .name{font-size:14px}
+
+    /* 列表模式：更像表格行 */
+    .mode-list .list{display:flex;flex-direction:column;gap:0;padding:0}
+    .mode-list .item{flex-direction:row;justify-content:flex-start;border:none;border-radius:0;border-bottom:1px solid rgba(0,0,0,.06);padding:8px 10px}
+    .mode-list .item:last-child{border-bottom:none}
+    .mode-list .avatar{width:24px;height:24px;border-radius:8px}
+    .mode-list .name{font-size:13px;text-align:left}
+    .mode-list .pill.order{opacity:1;visibility:visible}
+    .mode-list .edit{opacity:1;visibility:visible;pointer-events:auto}
+
+    .toast{position:fixed;right:14px;bottom:14px;background:#111827;color:#fff;padding:10px 12px;border-radius:12px;font-size:13px;opacity:0;transform:translateY(8px);transition:all .2s ease;z-index:4}
+    .toast.show{opacity:1;transform:translateY(0)}
+
+    .modalMask{position:fixed;inset:0;background:rgba(0,0,0,.28);display:none;align-items:center;justify-content:center;z-index:60;padding:12px}
+    .modalMask.show{display:flex}
+    .modal{background:#fff;border-radius:14px;border:1px solid rgba(0,0,0,.08);box-shadow:0 18px 46px rgba(0,0,0,.18);width:min(520px, calc(100vw - 24px));max-height:min(76vh, 560px);overflow:hidden}
+    .modalHead{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-bottom:1px solid rgba(0,0,0,.06)}
+    .modalTitle{font-weight:1000}
+    .modalClose{width:30px;height:30px;border-radius:999px;border:1px solid rgba(0,0,0,.12);background:#fff;cursor:pointer;font-size:18px;line-height:1}
+    .modalBody{padding:10px 12px;display:flex;flex-direction:column;gap:10px}
+    .candList{display:flex;flex-direction:column;gap:6px;overflow:auto;max-height:46vh;padding-right:2px}
+    .candBtn{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 10px;border-radius:12px;border:1px solid rgba(0,0,0,.10);background:#fff;cursor:pointer;text-align:left}
+    .candBtn:hover{background:rgba(102,8,116,.06);border-color:rgba(102,8,116,.22)}
+    .candName{font-weight:900}
+    .candMeta{font-size:11px;color:#6b7280}
+
+    @media (prefers-reduced-motion: reduce){
+      .item,.toast{transition:none !important}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="toolbar">
+      <a href="/admin">← 后台首页</a>
+      <div style="font-weight:900">教师管理（拖拽排序）</div>
+      <span class="badge" id="topCount" data-teachers="{{ teacher_count }}" data-roles="{{ role_card_count }}">人员 {{ teacher_count }} · 岗位卡片 {{ role_card_count }}</span>
+    </div>
+
+    <div class="toolbar">
+      <div class="seg" role="tablist" aria-label="view mode">
+        <button type="button" data-mode="large" class="active">大图标</button>
+        <button type="button" data-mode="small">小图标</button>
+        <button type="button" data-mode="list">列表</button>
+      </div>
+
+      <select id="deptFilter" title="部门筛选">
+        <option value="">全部部门</option>
+        {% for d in depts %}
+          <option value="{{ d.department }}">{{ d.department }}</option>
+        {% endfor %}
+      </select>
+
+      <input id="q" placeholder="搜索姓名/岗位" style="width:180px" />
+
+      <form method="post" action="/admin/teachers/apply-rules" onsubmit="return confirm('将对全库应用规则（理论组归类/岗位去重/管理部固定顺序），并写入 data/teachers.json（自动备份）。确认继续？');">
+        <button class="btn2" type="submit">全库应用规则</button>
+      </form>
+
+      <a href="/logout">退出</a>
+    </div>
+  </header>
+
+  <div class="wrap">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for cat, msg in messages %}
+          <div class="flash {{cat}}">{{msg}}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="hint">
+      - 同一人多岗会出现多张“岗位卡片”（不是新增员工）；卡片默认只显示姓名，鼠标悬停才显示 order。
+      - 拖拽仅在同一部门内生效，松手即保存。
+    </div>
+
+    <div id="root" class="grid mode-small" data-mode="small">
+      {% for d in depts %}
+      <details class="dept" data-dept="{{ d.department }}" open>
+        <summary class="deptHead">
+          <div class="deptTitle">{{ d.department }}</div>
+          <div class="badge">岗位 {{ (d.roles or [])|length }}</div>
+        </summary>
+        <div class="list" data-list>
+          {% for r in (d.roles or []) %}
+          <div class="item" data-rolekey="{{ r.roleKey }}" data-name="{{ (r.name or '')|lower }}" data-pos="{{ (r.position or '')|lower }}">
+            <button class="x" type="button" title="删除此岗位卡片" aria-label="删除" data-action="remove">×</button>
+            <div class="avatar" aria-hidden="true"></div>
+            <div class="name" title="{{ r.name }}">{{ r.name }}</div>
+            <div class="meta">
+              <span class="pill order">order={{ r.order }}</span>
+              <a class="edit" href="/admin/teachers/{{ r.teacherId }}">编辑</a>
+            </div>
+          </div>
+          {% endfor %}
+
+          <div class="item add" role="button" tabindex="0" data-action="add" data-dept="{{ d.department }}">
+            <div class="plus">＋</div>
+            <div class="name" style="opacity:.8">添加</div>
+          </div>
+        </div>
+      </details>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="modalMask" id="pickerMask" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="pickerTitle">
+      <div class="modalHead">
+        <div class="modalTitle" id="pickerTitle">选择要加入的员工</div>
+        <button class="modalClose" type="button" id="pickerClose" aria-label="关闭">×</button>
+      </div>
+      <div class="modalBody">
+        <div class="toolbar" style="justify-content:space-between">
+          <input id="pickerQ" placeholder="搜索姓名/ID" style="flex:1;min-width:160px" />
+          <button class="btn2" type="button" id="pickerRandom" title="仍然用随机方式添加">随机</button>
+        </div>
+        <div class="candList" id="pickerList"></div>
+        <div class="hint" id="pickerHint"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const root = document.getElementById('root');
+    const toastEl = document.getElementById('toast');
+    const toast = (msg) => {
+      toastEl.textContent = msg;
+      toastEl.classList.add('show');
+      clearTimeout(toastEl._t);
+      toastEl._t = setTimeout(() => toastEl.classList.remove('show'), 1400);
+    };
+
+    // picker modal
+    const pickerMask = document.getElementById('pickerMask');
+    const pickerClose = document.getElementById('pickerClose');
+    const pickerQ = document.getElementById('pickerQ');
+    const pickerList = document.getElementById('pickerList');
+    const pickerHint = document.getElementById('pickerHint');
+    const pickerRandom = document.getElementById('pickerRandom');
+    let pickerDept = '';
+    let pickerAddBtn = null;
+    let pickerAbort = null;
+
+    const openPicker = (dept, addBtn) => {
+      pickerDept = dept;
+      pickerAddBtn = addBtn;
+      pickerQ.value = '';
+      pickerHint.textContent = `部门：${dept}（只显示“尚未在该部门出现”的员工）`;
+      pickerList.innerHTML = '';
+      pickerMask.classList.add('show');
+      pickerMask.setAttribute('aria-hidden', 'false');
+      setTimeout(() => pickerQ.focus(), 0);
+      refreshCandidates();
+    };
+    const closePicker = () => {
+      pickerDept = '';
+      pickerAddBtn = null;
+      if (pickerAbort) { try { pickerAbort.abort(); } catch(e) {} }
+      pickerAbort = null;
+      pickerMask.classList.remove('show');
+      pickerMask.setAttribute('aria-hidden', 'true');
+    };
+    pickerClose.addEventListener('click', closePicker);
+    pickerMask.addEventListener('click', (e) => {
+      if (e.target === pickerMask) closePicker();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && pickerMask.classList.contains('show')) closePicker();
+    });
+
+    const createRoleItem = (r) => {
+      const item = document.createElement('div');
+      item.className = 'item';
+      item.setAttribute('data-rolekey', r.roleKey);
+      item.setAttribute('data-name', (r.name || '').toLowerCase());
+      item.setAttribute('data-pos', (r.position || '').toLowerCase());
+      item.innerHTML = `
+        <button class="x" type="button" title="删除此岗位卡片" aria-label="删除" data-action="remove">×</button>
+        <div class="avatar" aria-hidden="true"></div>
+        <div class="name" title="${(r.name || '').replace(/\"/g,'&quot;')}">${(r.name || '')}</div>
+        <div class="meta">
+          <span class="pill order">order=${r.order}</span>
+          <a class="edit" href="/admin/teachers/${encodeURIComponent(r.teacherId)}">编辑</a>
+        </div>
+      `;
+      return item;
+    };
+
+    const insertRoleCard = (deptEl, addBtn, role) => {
+      const item = createRoleItem(role);
+      addBtn.parentElement.insertBefore(item, addBtn);
+      item.style.transition = 'none';
+      item.style.opacity = '0';
+      item.style.transform = 'scale(0.98)';
+      requestAnimationFrame(() => {
+        item.style.transition = '';
+        item.style.opacity = '';
+        item.style.transform = '';
+      });
+      const newCount = deptEl.querySelectorAll('.item:not(.add)').length;
+      setDeptRoleCount(deptEl, newCount);
+      bumpTopRoleCount(1);
+    };
+
+    const refreshCandidates = async () => {
+      if (!pickerDept) return;
+      const query = (pickerQ.value || '').trim();
+      pickerList.innerHTML = '<div class="hint">加载中…</div>';
+      if (pickerAbort) { try { pickerAbort.abort(); } catch(e) {} }
+      pickerAbort = new AbortController();
+      try {
+        const url = `/admin/teachers/departments/available?department=${encodeURIComponent(pickerDept)}&q=${encodeURIComponent(query)}`;
+        const res = await fetch(url, { signal: pickerAbort.signal });
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error || 'load failed');
+        const teachers = data.teachers || [];
+        if (!teachers.length) {
+          pickerList.innerHTML = '<div class="hint">没有可加入的人（该部门已包含所有员工，或搜索条件过窄）</div>';
+          return;
+        }
+        pickerList.innerHTML = '';
+        teachers.slice(0, 200).forEach(t => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'candBtn';
+          btn.setAttribute('data-tid', t.id);
+          btn.innerHTML = `
+            <div>
+              <div class="candName">${(t.name || '（未命名）').replace(/\"/g,'&quot;')}</div>
+              <div class="candMeta">${(t.id || '')}</div>
+            </div>
+            <div class="pill">加入</div>
+          `;
+          pickerList.appendChild(btn);
+        });
+      } catch (err) {
+        if (err && err.name === 'AbortError') return;
+        console.error(err);
+        pickerList.innerHTML = '<div class="hint">加载失败</div>';
+      }
+    };
+
+    let pickerQTimer = null;
+    pickerQ.addEventListener('input', () => {
+      clearTimeout(pickerQTimer);
+      pickerQTimer = setTimeout(refreshCandidates, 120);
+    });
+
+    pickerList.addEventListener('click', async (e) => {
+      const btn = e.target.closest('.candBtn');
+      if (!btn) return;
+      const teacherId = btn.getAttribute('data-tid') || '';
+      if (!teacherId || !pickerDept || !pickerAddBtn) return;
+      const deptEl = pickerAddBtn.closest('[data-dept]');
+      try {
+        const res = await fetch('/admin/teachers/departments/add-existing', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ department: pickerDept, teacherId })
+        });
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error || 'add failed');
+        insertRoleCard(deptEl, pickerAddBtn, data.role);
+        toast('已添加');
+        closePicker();
+      } catch (err) {
+        console.error(err);
+        toast('添加失败');
+      }
+    });
+
+    pickerRandom.addEventListener('click', async () => {
+      if (!pickerDept || !pickerAddBtn) return;
+      const deptEl = pickerAddBtn.closest('[data-dept]');
+      try {
+        const res = await fetch('/admin/teachers/departments/add-random', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ department: pickerDept })
+        });
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error || 'add failed');
+        insertRoleCard(deptEl, pickerAddBtn, data.role);
+        toast('已随机添加');
+        closePicker();
+      } catch (err) {
+        console.error(err);
+        toast('添加失败');
+      }
+    });
+
+    // view mode
+    const modeButtons = Array.from(document.querySelectorAll('[data-mode]'));
+    const setMode = (mode) => {
+      root.classList.remove('mode-large','mode-small','mode-list');
+      root.classList.add(`mode-${mode}`);
+      root.setAttribute('data-mode', mode);
+      modeButtons.forEach(b => b.classList.toggle('active', b.getAttribute('data-mode') === mode));
+      localStorage.setItem('admin_teachers_mode', mode);
+    };
+    const savedMode = localStorage.getItem('admin_teachers_mode') || 'small';
+    setMode(savedMode);
+    modeButtons.forEach(b => b.addEventListener('click', () => setMode(b.getAttribute('data-mode'))));
+
+    // filter
+    const deptFilter = document.getElementById('deptFilter');
+    const q = document.getElementById('q');
+
+    const applyFilter = () => {
+      const dept = deptFilter.value;
+      const query = (q.value || '').trim().toLowerCase();
+
+      document.querySelectorAll('[data-dept]').forEach(section => {
+        const isDeptOk = !dept || section.getAttribute('data-dept') === dept;
+        let anyVisible = false;
+
+        section.querySelectorAll('.item').forEach(item => {
+          if (item.classList.contains('add')) {
+            const showAdd = isDeptOk && !query;
+            item.style.display = showAdd ? '' : 'none';
+            return;
+          }
+          const text = (item.getAttribute('data-name') || '') + ' ' + (item.getAttribute('data-pos') || '');
+          const hit = !query || text.includes(query);
+          const show = isDeptOk && hit;
+          item.style.display = show ? '' : 'none';
+          if (show) anyVisible = true;
+        });
+
+        section.style.display = (isDeptOk && (anyVisible || !query)) ? '' : 'none';
+      });
+    };
+
+    deptFilter.addEventListener('change', () => {
+      localStorage.setItem('admin_teachers_dept', deptFilter.value);
+      applyFilter();
+    });
+    q.addEventListener('input', applyFilter);
+
+    const savedDept = localStorage.getItem('admin_teachers_dept') || '';
+    deptFilter.value = savedDept;
+    applyFilter();
+
+    // drag & drop (iOS-style, pointer based)
+    let dragEl = null;
+    let placeholderEl = null;
+    let originDept = null;
+    let dragMoved = false;
+    let pointerId = null;
+    let dragOffsetX = 0;
+    let dragOffsetY = 0;
+    let pressTimer = null;
+    let dragStarted = false;
+
+    const canInsertBefore = (container, node, before) => {
+      if (!node || node === before) return false;
+      if (before == null) return container.lastElementChild !== node;
+      return node.nextSibling !== before;
+    };
+
+    const flipAnimate = (container, mutator) => {
+      const children = Array.from(container.querySelectorAll('.item'))
+        .filter(el => !el.classList.contains('add') && !el.classList.contains('placeholder') && el !== dragEl);
+      const first = new Map();
+      for (const el of children) first.set(el, el.getBoundingClientRect());
+      mutator();
+      const last = new Map();
+      for (const el of children) last.set(el, el.getBoundingClientRect());
+      for (const el of children) {
+        const a = first.get(el);
+        const b = last.get(el);
+        if (!a || !b) continue;
+        const dx = a.left - b.left;
+        const dy = a.top - b.top;
+        if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5) continue;
+        el.style.transition = 'none';
+        el.style.transform = `translate(${dx}px, ${dy}px)`;
+        requestAnimationFrame(() => {
+          el.style.transition = '';
+          el.style.transform = '';
+        });
+      }
+    };
+
+    const lists = Array.from(document.querySelectorAll('[data-list]'));
+    const reorderState = new WeakMap();
+    for (const list of lists) reorderState.set(list, { raf: 0, before: null, lastTarget: null, lastAfter: null });
+
+    function beginDrag(item, list, dept, clientX, clientY) {
+      dragEl = item;
+      originDept = dept;
+      dragMoved = false;
+      dragStarted = true;
+      root.classList.add('dragging-active');
+      root.classList.add('jiggle');
+
+      const rect = item.getBoundingClientRect();
+      dragOffsetX = clientX - rect.left;
+      dragOffsetY = clientY - rect.top;
+
+      if (placeholderEl && placeholderEl.parentElement) placeholderEl.remove();
+      placeholderEl = document.createElement('div');
+      placeholderEl.className = 'item placeholder';
+      placeholderEl.style.width = `${Math.round(rect.width)}px`;
+      placeholderEl.style.height = `${Math.round(rect.height)}px`;
+      placeholderEl.innerHTML = `<div class="avatar" aria-hidden="true"></div>`;
+      item.parentElement?.insertBefore(placeholderEl, item);
+
+      item.classList.add('dragging');
+      item.classList.add('dragFloat');
+      item.style.setProperty('--w', `${Math.round(rect.width)}px`);
+      item.style.setProperty('--h', `${Math.round(rect.height)}px`);
+
+      // 浮起的“拿起”效果
+      item.style.transition = 'none';
+      moveDragTo(clientX, clientY);
+      requestAnimationFrame(() => {
+        item.style.transition = '';
+        item.style.transform += ' scale(1.06)';
+      });
+    }
+
+    function moveDragTo(clientX, clientY) {
+      if (!dragEl) return;
+      const x = clientX - dragOffsetX;
+      const y = clientY - dragOffsetY;
+      dragEl.style.transform = `translate3d(${Math.round(x)}px, ${Math.round(y)}px, 0)`;
+    }
+
+    async function endDrag() {
+      if (!dragEl) return;
+      const item = dragEl;
+
+      // 动画落回占位符位置
+      if (placeholderEl && placeholderEl.parentElement) {
+        const pr = placeholderEl.getBoundingClientRect();
+        const x = pr.left;
+        const y = pr.top;
+        item.style.transform = `translate3d(${Math.round(x)}px, ${Math.round(y)}px, 0)`;
+      }
+
+      // 结束清理
+      root.classList.remove('dragging-active');
+      root.classList.remove('jiggle');
+
+      // 插入回 DOM
+      if (placeholderEl && placeholderEl.parentElement) {
+        placeholderEl.parentElement.insertBefore(item, placeholderEl);
+        placeholderEl.remove();
+        placeholderEl = null;
+      }
+
+      item.classList.remove('dragFloat');
+      item.classList.remove('dragging');
+      item.style.removeProperty('--w');
+      item.style.removeProperty('--h');
+      item.style.transform = '';
+
+      const dept = originDept;
+      dragEl = null;
+      originDept = null;
+      dragStarted = false;
+
+      if (!dragMoved || !dept) return;
+
+      const deptEl = document.querySelector(`[data-dept="${CSS.escape(dept)}"]`);
+      const roleEls = Array.from(deptEl.querySelectorAll('.item'))
+        .filter(x => !x.classList.contains('add') && !x.classList.contains('placeholder'));
+      const roleKeys = roleEls.map(x => x.getAttribute('data-rolekey'));
+
+      try {
+        const res = await fetch('/admin/teachers/departments/order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ department: dept, roleKeys })
+        });
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error || 'save failed');
+
+        const base = Number(data.base || 1);
+        roleEls.forEach((el, idx) => {
+          const pill = el.querySelector('.pill');
+          if (pill) pill.textContent = `order=${base + idx}`;
+        });
+        toast('已保存顺序');
+      } catch (err) {
+        console.error(err);
+        toast('保存失败');
+      }
+    }
+
+    // pointer handlers
+    root.addEventListener('pointerdown', (e) => {
+      const onRemove = e.target.closest('[data-action="remove"]');
+      const onAdd = e.target.closest('[data-action="add"]');
+      const onEdit = e.target.closest('a.edit');
+      if (onRemove || onAdd || onEdit) return;
+
+      const item = e.target.closest('.item');
+      if (!item) return;
+      if (item.classList.contains('add') || item.classList.contains('placeholder')) return;
+      const dept = item.closest('[data-dept]')?.getAttribute('data-dept') || null;
+      if (!dept) return;
+
+      pointerId = e.pointerId;
+      const startX = e.clientX;
+      const startY = e.clientY;
+      const list = item.closest('[data-list]');
+      if (!list) return;
+
+      // 长按触发，接近 iOS 桌面感觉
+      clearTimeout(pressTimer);
+      dragStarted = false;
+      pressTimer = setTimeout(() => {
+        beginDrag(item, list, dept, startX, startY);
+      }, 160);
+
+      const move = (ev) => {
+        if (ev.pointerId !== pointerId) return;
+        const dx = ev.clientX - startX;
+        const dy = ev.clientY - startY;
+        // 移动过大则直接开始（更跟手）
+        if (!dragStarted && (dx*dx + dy*dy) > 36) {
+          clearTimeout(pressTimer);
+          beginDrag(item, list, dept, ev.clientX, ev.clientY);
+        }
+        if (!dragStarted) return;
+
+        ev.preventDefault();
+        moveDragTo(ev.clientX, ev.clientY);
+
+        const mode = root.getAttribute('data-mode') || 'small';
+        const st = reorderState.get(list);
+
+        let beforeNode = null;
+        if (mode === 'list') {
+          beforeNode = getDragAfterElementList(list, ev.clientY);
+        } else {
+          const target = getClosestGridElement(list, ev.clientX, ev.clientY);
+          if (!target) {
+            beforeNode = null;
+            st.lastTarget = null;
+            st.lastAfter = null;
+          } else {
+            const box = target.getBoundingClientRect();
+            const cx = box.left + box.width / 2;
+            const cy = box.top + box.height / 2;
+            const ddy = ev.clientY - cy;
+            const ddx = ev.clientX - cx;
+            const DEAD_Y = 9;
+            const DEAD_X = 8;
+            let after;
+            if (st.lastTarget === target && st.lastAfter != null && Math.abs(ddy) < DEAD_Y) after = st.lastAfter;
+            else after = (ddy > 0) || (Math.abs(ddy) < 6 && ddx > DEAD_X);
+            st.lastTarget = target;
+            st.lastAfter = after;
+            beforeNode = after ? target.nextSibling : target;
+          }
+        }
+
+        if (!canInsertBefore(list, placeholderEl, beforeNode)) return;
+        if (st.before === beforeNode) return;
+        st.before = beforeNode;
+        if (st.raf) return;
+        st.raf = requestAnimationFrame(() => {
+          st.raf = 0;
+          const bn = st.before;
+          st.before = null;
+          if (!placeholderEl) return;
+          if (!canInsertBefore(list, placeholderEl, bn)) return;
+          flipAnimate(list, () => {
+            if (bn == null) list.appendChild(placeholderEl);
+            else list.insertBefore(placeholderEl, bn);
+          });
+          dragMoved = true;
+        });
+      };
+
+      const up = (ev) => {
+        if (ev.pointerId !== pointerId) return;
+        clearTimeout(pressTimer);
+        window.removeEventListener('pointermove', move, { passive: false });
+        window.removeEventListener('pointerup', up);
+        window.removeEventListener('pointercancel', up);
+        pointerId = null;
+        if (dragStarted) endDrag();
+      };
+
+      window.addEventListener('pointermove', move, { passive: false });
+      window.addEventListener('pointerup', up);
+      window.addEventListener('pointercancel', up);
+    });
+
+    function getDragAfterElementList(container, y) {
+      const draggableElements = [...container.querySelectorAll('.item:not(.dragging)')]
+        .filter(el => el.style.display !== 'none' && !el.classList.contains('add') && !el.classList.contains('placeholder'));
+      return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+          return { offset, element: child };
+        } else {
+          return closest;
+        }
+      }, { offset: Number.NEGATIVE_INFINITY, element: null }).element;
+    }
+
+    function getClosestGridElement(container, x, y) {
+      const items = [...container.querySelectorAll('.item:not(.dragging)')]
+        .filter(el => el.style.display !== 'none' && !el.classList.contains('add') && !el.classList.contains('placeholder'));
+      let best = null;
+      let bestD = Infinity;
+      for (const el of items) {
+        const box = el.getBoundingClientRect();
+        const cx = box.left + box.width / 2;
+        const cy = box.top + box.height / 2;
+        const dx = x - cx;
+        const dy = y - cy;
+        const d = dx * dx + dy * dy;
+        if (d < bestD) {
+          bestD = d;
+          best = el;
+        }
+      }
+      return best;
+    }
+
+    // add/remove
+    function bumpTopRoleCount(delta) {
+      const el = document.getElementById('topCount');
+      if (!el) return;
+      const teachers = Number(el.getAttribute('data-teachers') || '0');
+      const roles = Number(el.getAttribute('data-roles') || '0') + delta;
+      el.setAttribute('data-roles', String(roles));
+      el.textContent = `人员 ${teachers} · 岗位卡片 ${roles}`;
+    }
+
+    function setDeptRoleCount(deptEl, count) {
+      const badge = deptEl.querySelector('summary .badge');
+      if (badge) badge.textContent = `岗位 ${count}`;
+    }
+
+    document.addEventListener('click', async (e) => {
+      const removeBtn = e.target.closest('[data-action="remove"]');
+      if (removeBtn) {
+        const item = removeBtn.closest('.item');
+        const deptEl = item.closest('[data-dept]');
+        const roleKey = item.getAttribute('data-rolekey');
+        if (!roleKey) return;
+        if (!confirm('确定删除这个岗位卡片？')) return;
+        try {
+          const res = await fetch('/admin/teachers/departments/remove-role', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ roleKey })
+          });
+          const data = await res.json();
+          if (!data.ok) throw new Error(data.error || 'remove failed');
+          item.remove();
+          const newCount = deptEl.querySelectorAll('.item:not(.add)').length;
+          setDeptRoleCount(deptEl, newCount);
+          bumpTopRoleCount(-1);
+          toast('已删除');
+        } catch (err) {
+          console.error(err);
+          toast('删除失败');
+        }
+        return;
+      }
+
+      const addBtn = e.target.closest('[data-action="add"]');
+      if (addBtn) {
+        const dept = addBtn.getAttribute('data-dept') || '';
+        if (!dept) return;
+        openPicker(dept, addBtn);
+      }
+    });
+  </script>
+</body>
+</html>

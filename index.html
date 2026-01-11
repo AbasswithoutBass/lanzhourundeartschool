@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>兰州润德艺术学校 | 官方门户</title>
+    <style>
+        :root {
+            --primary-purple: #660874;
+            --primary-purple-light: #8b2a9b;
+            --apple-dark: #1d1d1f;
+            --apple-gray: #f5f5f7;
+            --card-bg: linear-gradient(135deg, #fdfbfb 0%, #f8f5fa 100%);
+            --glass: rgba(255, 255, 255, 0.92);
+            --gold: #d4af37;
+            --shadow-soft: 0 8px 24px rgba(102, 8, 116, 0.08);
+        }
+
+        body, html { margin: 0; padding: 0; font-family: "SF Pro Display", "PingFang SC", sans-serif; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; background: #fff; }
+
+        /* --- 导航栏 --- */
+        nav {
+            position: fixed; top: 0; width: 100%; height: 50px;
+            background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            z-index: 9999; border-bottom: 1px solid rgba(0,0,0,0.1);
+            display: flex; align-items: center; justify-content: center;
+        }
+        nav a { color: var(--apple-dark); text-decoration: none; font-size: 13px; margin: 0 15px; opacity: 0.7; transition: 0.3s; font-weight: 500; cursor: pointer; }
+        nav a:hover { opacity: 1; color: var(--primary-purple); }
+        .nav-active { opacity: 1; color: var(--primary-purple); font-weight: 600; }
+
+        .ticker { margin-top: 50px; background: #000; color: #fff; padding: 8px 0; font-size: 12px; text-align: center; }
+
+        /* --- 视频 Hero --- */
+        .hero {
+            height: 90vh; position: relative; overflow: hidden;
+            display: flex; align-items: center; justify-content: center; color: #fff; text-align: center;
+            background: linear-gradient(135deg, #660874 0%, #8b2a9b 50%, #b865c9 100%);
+        }
+        .hero video, .hero::before {
+            position: absolute; top: 50%; left: 50%;
+            min-width: 100%; min-height: 100%; width: auto; height: auto;
+            transform: translate(-50%, -50%); z-index: 1; object-fit: cover;
+        }
+        .hero::before {
+            content: '';
+            background: url('润德1.png') center/cover no-repeat;
+            z-index: 0;
+        }
+        .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.35); z-index: 2; }
+        .hero-content { z-index: 3; position: relative; }
+        .hero h1 { font-size: 4.5rem; margin: 0; font-weight: 700; letter-spacing: -2px; text-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+
+        /* --- 页面逻辑 --- */
+        .page { display: none; padding-top: 40px; min-height: 80vh; }
+        .page-active { display: block; animation: fadeIn 0.6s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* --- 通用内容样式 --- */
+        .section { padding: 80px 20px; }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .section-title { font-size: 3rem; text-align: center; margin-bottom: 60px; font-weight: 700; }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .card { 
+            background: var(--card-bg);
+            padding: 40px; 
+            border-radius: 24px; 
+            text-align: left;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(102, 8, 116, 0.08);
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(102, 8, 116, 0.12);
+        }
+        .card h3 { 
+            color: var(--primary-purple); 
+            margin-top: 0; 
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-purple-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* --- 优秀考生板块样式 --- */
+        .student-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+        .student-card { 
+            background: linear-gradient(135deg, #ffffff 0%, #faf8fb 100%);
+            border: 1px solid rgba(102, 8, 116, 0.1);
+            border-radius: 20px; 
+            padding: 25px; 
+            text-align: center; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+        }
+        .student-card:hover { 
+            border-color: var(--primary-purple); 
+            box-shadow: 0 12px 32px rgba(102, 8, 116, 0.15);
+            transform: translateY(-6px);
+        }
+        .student-photo{width:84px;height:84px;border-radius:16px;object-fit:cover;display:block;margin:0 auto 12px;box-shadow:0 6px 18px rgba(102, 8, 116, 0.12)}
+        .student-name { font-size: 1.2rem; font-weight: 700; color: var(--apple-dark); margin-bottom: 5px; }
+        .student-school { font-size: 1rem; color: var(--primary-purple); font-weight: 600; margin-bottom: 5px; }
+        .student-major { font-size: 0.9rem; color: #86868b; }
+
+        footer { background: var(--apple-dark); color: rgba(255,255,255,0.5); padding: 60px 20px; text-align: center; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+    <nav id="nav">
+        <a onclick="showPage('home')" class="nav-active">首页</a>
+        <a onclick="showPage('about')">学校设施</a>
+        <a onclick="showPage('students')">优秀考生</a>
+        <a onclick="showPage('teachers')">名师力量</a>
+        <a onclick="showPage('admission')">信息门户</a>
+        <a onclick="showPage('contact')">联系我们</a>
+    </nav>
+
+    <div class="ticker">📢 最新动态：2026届寒假集训正式开启预约！恭喜润德学子在往届考试中取得辉煌战绩！</div>
+
+    <div id="home" class="page page-active">
+        <section class="hero">
+            <div class="hero-overlay"></div>
+            <video autoplay muted loop playsinline poster="润德1.png">
+                <source src="rundevideo.mov" type="video/quicktime">
+            </video>
+            <div class="hero-content">
+                <h1>逐光踏梦 • 前途生辉</h1>
+                <p style="font-size: 1.5rem; font-weight: 300; margin-top: 15px;">育德立艺，助力每一颗艺术星辰</p>
+            </div>
+        </section>
+        
+        <section class="section container">
+            <div class="grid">
+                <div class="card">
+                    <h3>学校概况</h3>
+                    <p>占地6000余平米，拥有70余间独立琴房、综合音乐厅及专业舞蹈功厅。我们致力于打造最专业的艺考成长空间。</p>
+                </div>
+                <div class="card">
+                    <h3>辉煌战绩</h3>
+                    <p>多年来，润德向全国各大音乐、舞蹈院校输送了大量优质生源，过线率稳居全省前茅。</p>
+                    <a onclick="showPage('students')" style="color:var(--primary-purple); font-weight:600; cursor:pointer;">查看名人堂 ></a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div id="about" class="page">
+        <section class="section container">
+            <h2 class="section-title">一流设施，贴心服务</h2>
+            <div class="card" style="margin-bottom:30px;">
+                <p>学校占地6000余平米。配备综合音乐厅、3间专业舞蹈功厅、70余间独立琴房、10间多功能教室。宿舍采用干湿分离设计，提供洗衣房与24小时热水，全方位保障学习生活。</p>
+            </div>
+            <div style="height: 400px; background: url('润德1.png') center/cover; border-radius: 40px;"></div>
+        </section>
+    </div>
+
+    <div id="students" class="page">
+        <section class="section container">
+            <h2 class="section-title">润德名人堂</h2>
+            <p style="text-align: center; margin-top: -40px; margin-bottom: 60px; color: #86868b;">见证梦想成真的瞬间，下一个就是你</p>
+            <div id="students-grid" class="student-grid"></div>
+
+            <script>
+            (function(){
+                const grid = document.getElementById('students-grid');
+                if(!grid) return;
+
+                if (location.protocol === 'file:') {
+                    grid.innerHTML = [
+                        '<div class="student-card" style="background: var(--apple-gray); border-style: dashed;">',
+                        '  <div class="student-name">本页面以文件方式打开</div>',
+                        '  <div class="student-major" style="line-height:1.6">浏览器会拦截读取本地 JSON（CORS）。请用本地 HTTP 打开：<br><b>python3 -m http.server 8000</b><br>然后访问：<b>http://localhost:8000/</b></div>',
+                        '</div>'
+                    ].join('');
+                    return;
+                }
+
+                fetch('data/students.json')
+                    .then(r => r.ok ? r.json() : Promise.reject(r))
+                    .then(list => renderStudents(Array.isArray(list) ? list : []))
+                    .catch(err => {
+                        console.error('加载 students.json 失败', err);
+                        grid.innerHTML = '<div class="student-card" style="background: var(--apple-gray); border-style: dashed;"><div class="student-name">...</div><div class="student-major">更多录取喜报更新中</div></div>';
+                    });
+
+                function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+                function renderStudents(students){
+                    grid.innerHTML = '';
+                    if(!students.length){
+                        grid.innerHTML = '<div class="student-card" style="background: var(--apple-gray); border-style: dashed;"><div class="student-name">...</div><div class="student-major">更多录取喜报更新中</div></div>';
+                        return;
+                    }
+
+                    students
+                        .slice()
+                        .sort((a,b)=> (Number(a.year||0)===Number(b.year||0) ? 0 : Number(b.year||0)-Number(a.year||0)))
+                        .forEach(s => {
+                            const card = document.createElement('div');
+                            card.className = 'student-card';
+                            const photo = s.photo ? String(s.photo) : '润德1.png';
+                            card.innerHTML = `
+                                <img class="student-photo" src="${esc(photo || '润德1.png')}" alt="${esc(s.name)}">
+                                <div class="student-name">${esc(s.name)}</div>
+                                <div class="student-school">${esc(s.school)}</div>
+                                <div class="student-major">${esc(s.major)}</div>
+                            `;
+                            card.addEventListener('click', ()=> showStudentModal(s));
+                            grid.appendChild(card);
+                        });
+
+                    const more = document.createElement('div');
+                    more.className = 'student-card';
+                    more.style.background = 'var(--apple-gray)';
+                    more.style.borderStyle = 'dashed';
+                    more.innerHTML = '<div class="student-name">...</div><div class="student-major">更多录取喜报更新中</div>';
+                    grid.appendChild(more);
+                }
+
+                function showStudentModal(s){
+                    const dlg = document.createElement('div');
+                    Object.assign(dlg.style, {position:'fixed',left:0,top:0,right:0,bottom:0,background:'rgba(0,0,0,0.72)',backdropFilter:'blur(5px)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:9999});
+
+                    const box = document.createElement('div');
+                    Object.assign(box.style, {width:'min(980px,92%)',maxHeight:'86vh',overflow:'auto',background:'#fff',borderRadius:'16px',boxShadow:'0 20px 60px rgba(0,0,0,0.35)'});
+
+                    const photo = s.photo ? String(s.photo) : '润德1.png';
+                    const admissions = Array.isArray(s.admissions) ? s.admissions : [];
+
+                    box.innerHTML = `
+                        <div style="padding:22px 22px 10px">
+                            <div style="display:flex;gap:16px;align-items:center">
+                                <img src="${esc(photo || '润德1.png')}" style="width:96px;height:96px;object-fit:cover;border-radius:14px;box-shadow:0 8px 18px rgba(102,8,116,0.18)" alt="${esc(s.name)}">
+                                <div style="flex:1">
+                                    <h3 style="margin:0 0 6px 0">${esc(s.name)}</h3>
+                                    <div style="color:#660874;font-weight:600">${esc(s.school)}</div>
+                                    <div style="color:#666;margin-top:4px">${esc(s.major)}${s.year ? ' · ' + esc(s.year) + '届' : ''}</div>
+                                </div>
+                                <button id="stuClose" style="border:none;background:rgba(0,0,0,0.06);padding:10px 14px;border-radius:10px;cursor:pointer">关闭</button>
+                            </div>
+                        </div>
+                        <div style="padding:0 22px 22px">
+                            <div style="margin-top:14px;color:#111;font-weight:700">录取截图</div>
+                            ${admissions.length ? `
+                                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:12px">
+                                    ${admissions.map(a=>{
+                                        const img = a && a.image ? String(a.image) : '';
+                                        const note = a && a.note ? String(a.note) : '';
+                                        return `
+                                            <figure style="margin:0;border:1px solid rgba(0,0,0,0.08);border-radius:12px;overflow:hidden;background:#fff">
+                                                <img src="${esc(img || '润德1.png')}" style="width:100%;height:180px;object-fit:cover;display:block" alt="录取截图">
+                                                ${note ? `<figcaption style="padding:10px 12px;color:#666;font-size:13px">${esc(note)}</figcaption>` : ''}
+                                            </figure>
+                                        `;
+                                    }).join('')}
+                                </div>
+                            ` : '<div style="margin-top:10px;color:#86868b">暂无截图（可通过管理工具批量导入并加水印）</div>'}
+                        </div>
+                    `;
+
+                    dlg.appendChild(box);
+                    document.body.appendChild(dlg);
+                    dlg.querySelector('#stuClose').addEventListener('click', ()=> document.body.removeChild(dlg));
+                    dlg.addEventListener('click', (e)=>{ if(e.target===dlg) document.body.removeChild(dlg); });
+                }
+            })();
+            </script>
+        </section>
+    </div>
+
+    <div id="admission" class="page">
+        <section class="section container">
+                        <h2 class="section-title">信息门户</h2>
+                        <p style="text-align:center;margin-top:-40px;margin-bottom:40px;color:#86868b">通知公告 / 政策文件 / 招生资讯，集中发布与管理</p>
+
+                        <style>
+                            .portal-toolbar{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin-bottom:18px}
+                            .portal-input{padding:12px 14px;border-radius:14px;border:1px solid rgba(0,0,0,0.12);background:#fff;min-width:min(520px,92vw);outline:none}
+                            .portal-select{padding:12px 14px;border-radius:14px;border:1px solid rgba(0,0,0,0.12);background:#fff;outline:none}
+                            .portal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+                            .portal-card{background:#fff;border-radius:18px;box-shadow:0 10px 24px rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.06);overflow:hidden;cursor:pointer;transition:transform .2s ease, box-shadow .2s ease}
+                            .portal-card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(0,0,0,.10)}
+                            .portal-cover{height:148px;background:#f5f5f7;display:flex;align-items:center;justify-content:center;overflow:hidden}
+                            .portal-cover img{width:100%;height:100%;object-fit:cover;display:block}
+                            .portal-body{padding:14px 16px}
+                            .portal-title{font-weight:800;color:#111;line-height:1.35}
+                            .portal-meta{margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;color:#6B6B6F;font-size:13px}
+                            .portal-badge{font-size:12px;padding:4px 10px;border-radius:999px;background:rgba(102,8,116,0.08);color:#660874;font-weight:700}
+                            .portal-pinned{background:rgba(255,149,0,0.14);color:#B05B00}
+                            .portal-summary{margin-top:10px;color:#444;font-size:13.5px;line-height:1.6}
+                        </style>
+
+                        <div class="portal-toolbar">
+                            <input id="portal-q" class="portal-input" placeholder="搜索：标题 / 摘要 / 标签…" />
+                            <select id="portal-cat" class="portal-select">
+                                <option value="">全部分类</option>
+                            </select>
+                        </div>
+
+                        <div id="portal-grid" class="portal-grid"></div>
+
+                        <script>
+                        (function(){
+                            const grid = document.getElementById('portal-grid');
+                            const qEl = document.getElementById('portal-q');
+                            const catEl = document.getElementById('portal-cat');
+                            if(!grid || !qEl || !catEl) return;
+
+                            if (location.protocol === 'file:') {
+                                grid.innerHTML = [
+                                    '<div class="card" style="border-style:dashed">',
+                                    '  <h3 style="margin:0 0 8px 0">本页面以文件方式打开</h3>',
+                                    '  <p style="margin:0;color:#666;line-height:1.7">浏览器会拦截读取本地 JSON（CORS），信息门户无法加载数据。<br>请用本地 HTTP 打开：<b>python3 -m http.server 8000</b>，然后访问：<b>http://localhost:8000/</b></p>',
+                                    '</div>'
+                                ].join('');
+                                return;
+                            }
+
+                            let all = [];
+
+                            fetch('data/portal_posts.json')
+                                .then(r => r.ok ? r.json() : Promise.reject(r))
+                                .then(list => {
+                                    all = Array.isArray(list) ? list : [];
+                                    initCats(all);
+                                    render();
+                                })
+                                .catch(err => {
+                                    console.error('加载 portal_posts.json 失败', err);
+                                    grid.innerHTML = '<div class="card" style="border-style:dashed"><h3 style="margin:0 0 8px 0">信息门户加载失败</h3><p style="margin:0;color:#666">请检查 data/portal_posts.json 是否存在且为有效 JSON。</p></div>';
+                                });
+
+                            function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+                            function norm(s){ return String(s||'').trim(); }
+                            function parseDate(s){ const d = s ? new Date(String(s)) : null; return d && !isNaN(d.getTime()) ? d : null; }
+                            function fmtDate(s){ const d = parseDate(s); if(!d) return ''; const yyyy=d.getFullYear(); const mm=String(d.getMonth()+1).padStart(2,'0'); const dd=String(d.getDate()).padStart(2,'0'); return `${yyyy}-${mm}-${dd}`; }
+
+                            function isPublished(p){
+                                const st = String(p && p.status || 'draft').toLowerCase();
+                                if(st !== 'published') return false;
+                                const when = parseDate(p.publishedAt);
+                                if(!when) return true;
+                                return when.getTime() <= Date.now();
+                            }
+
+                            function initCats(list){
+                                const cats = Array.from(new Set((list||[]).map(p => norm(p.category)).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'zh'));
+                                cats.forEach(c => {
+                                    const opt = document.createElement('option');
+                                    opt.value = c;
+                                    opt.textContent = c;
+                                    catEl.appendChild(opt);
+                                });
+                            }
+
+                            function filtered(){
+                                const q = norm(qEl.value).toLowerCase();
+                                const cat = norm(catEl.value);
+                                return (all||[])
+                                    .filter(isPublished)
+                                    .filter(p => !cat || norm(p.category) === cat)
+                                    .filter(p => {
+                                        if(!q) return true;
+                                        const hay = [p.title, p.summary, (p.tags||[]).join(' '), p.category].map(x=>String(x||'')).join(' ').toLowerCase();
+                                        return hay.includes(q);
+                                    })
+                                    .slice()
+                                    .sort((a,b)=>{
+                                        const ap = !!a.pinned, bp = !!b.pinned;
+                                        if(ap !== bp) return ap ? -1 : 1;
+                                        const ad = parseDate(a.publishedAt) || parseDate(a.updatedAt);
+                                        const bd = parseDate(b.publishedAt) || parseDate(b.updatedAt);
+                                        const at = ad ? ad.getTime() : 0;
+                                        const bt = bd ? bd.getTime() : 0;
+                                        return bt - at;
+                                    });
+                            }
+
+                            function render(){
+                                const list = filtered();
+                                grid.innerHTML = '';
+                                if(!list.length){
+                                    grid.innerHTML = '<div class="card" style="border-style:dashed"><h3 style="margin:0 0 8px 0">暂无内容</h3><p style="margin:0;color:#666">可以在后台添加文章，然后这里会自动显示。</p></div>';
+                                    return;
+                                }
+                                list.forEach(p => {
+                                    const card = document.createElement('div');
+                                    card.className = 'portal-card';
+                                    const cover = norm(p.coverImage);
+                                    const badge = norm(p.category) || '文章';
+                                    const tags = Array.isArray(p.tags) ? p.tags : [];
+                                    const dateStr = fmtDate(p.publishedAt || p.updatedAt);
+                                    card.innerHTML = `
+                                        <div class="portal-cover">${cover ? `<img src="${esc(cover)}" alt="封面">` : '<div style="color:#8e8e93;font-weight:700">润德 · 资讯</div>'}</div>
+                                        <div class="portal-body">
+                                            <div class="portal-title">${esc(p.title || '未命名')}</div>
+                                            <div class="portal-meta">
+                                                <span class="portal-badge">${esc(badge)}</span>
+                                                ${p.pinned ? '<span class="portal-badge portal-pinned">置顶</span>' : ''}
+                                                ${dateStr ? `<span>${esc(dateStr)}</span>` : ''}
+                                                ${tags.slice(0,3).map(t => `<span style="color:#660874">#${esc(t)}</span>`).join('')}
+                                            </div>
+                                            ${p.summary ? `<div class="portal-summary">${esc(p.summary)}</div>` : ''}
+                                        </div>
+                                    `;
+                                    card.addEventListener('click', ()=> openPost(p));
+                                    grid.appendChild(card);
+                                });
+                            }
+
+                            function openPost(p){
+                                const dlg = document.createElement('div');
+                                Object.assign(dlg.style, {position:'fixed',left:0,top:0,right:0,bottom:0,background:'rgba(0,0,0,0.72)',backdropFilter:'blur(5px)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:9999});
+
+                                const box = document.createElement('div');
+                                Object.assign(box.style, {width:'min(980px,92%)',maxHeight:'86vh',overflow:'auto',background:'#fff',borderRadius:'16px',boxShadow:'0 20px 60px rgba(0,0,0,0.35)'});
+
+                                const cover = norm(p.coverImage);
+                                const dateStr = fmtDate(p.publishedAt || p.updatedAt);
+                                const cat = norm(p.category);
+                                const tags = Array.isArray(p.tags) ? p.tags : [];
+                                const bodyHtml = String(p.bodyHtml || '').trim();
+
+                                box.innerHTML = `
+                                    ${cover ? `<img src="${esc(cover)}" style="width:100%;height:260px;object-fit:cover;display:block" alt="封面">` : ''}
+                                    <div style="padding:18px 20px 0">
+                                        <div style="display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap">
+                                            <div>
+                                                <h2 style="margin:0 0 8px 0;line-height:1.25">${esc(p.title || '未命名')}</h2>
+                                                <div style="color:#6B6B6F;font-size:13px;line-height:1.6">
+                                                    ${cat ? `<span style="color:#660874;font-weight:700">${esc(cat)}</span>` : ''}
+                                                    ${dateStr ? ` <span>· ${esc(dateStr)}</span>` : ''}
+                                                    ${tags.length ? ` <span>· ${tags.slice(0,6).map(t=>`#${esc(t)}`).join(' ')}</span>` : ''}
+                                                </div>
+                                            </div>
+                                            <button id="portalClose" style="border:none;background:rgba(0,0,0,0.06);padding:10px 14px;border-radius:10px;cursor:pointer">关闭</button>
+                                        </div>
+                                    </div>
+                                    <div style="padding:14px 20px 20px;line-height:1.85;color:#111">
+                                        ${bodyHtml ? bodyHtml : '<p style="color:#86868b">（正文为空）</p>'}
+                                    </div>
+                                `;
+
+                                dlg.appendChild(box);
+                                document.body.appendChild(dlg);
+                                dlg.querySelector('#portalClose').addEventListener('click', ()=> document.body.removeChild(dlg));
+                                dlg.addEventListener('click', (e)=>{ if(e.target===dlg) document.body.removeChild(dlg); });
+                            }
+
+                            qEl.addEventListener('input', render);
+                            catEl.addEventListener('change', render);
+                        })();
+                        </script>
+        </section>
+    </div>
+
+                <div id="teachers" class="page">
+                    <!-- 名师团队（按部门分组渲染） -->
+                    <!-- 使用更新后的渲染片段：snippets/teachers_fragment.html -->
+                    <!-- 我们直接内联相同逻辑以避免额外请求： -->
+                    <section id="teachers-section" class="section container" aria-labelledby="teachers-title">
+                        <h2 id="teachers-title">名师团队</h2>
+                        <div id="teachers-by-dept"></div>
+                    </section>
+
+                    <!-- 下面样式与脚本与 snippets/teachers_fragment.html 保持一致 -->
+                    <style>
+                    .dept-block{margin-bottom:32px}
+                    .dept-title{
+                        font-size:22px;
+                        margin:10px 0 16px;
+                        color:#2B2B2B;
+                        padding-left:12px;
+                        border-left:4px solid var(--primary-purple);
+                        background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-purple-light) 100%);
+                        -webkit-background-clip: text;
+                        -webkit-text-fill-color: transparent;
+                        background-clip: text;
+                    }
+                    .dept-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+                    .teacher-card{
+                        background:linear-gradient(135deg, #ffffff 0%, #faf8fb 100%);
+                        border-radius:16px;
+                        padding:16px;
+                        display:flex;
+                        gap:12px;
+                        align-items:flex-start;
+                        box-shadow:0 4px 16px rgba(102, 8, 116, 0.08);
+                        border: 1px solid rgba(102, 8, 116, 0.08);
+                        cursor:pointer;
+                        transform:translateY(12px);
+                        opacity:0;
+                        transition:all 420ms cubic-bezier(.2,.8,.2,1);
+                    }
+                    .teacher-card.in{transform:none;opacity:1}
+                    .teacher-card:hover{
+                        transform:translateY(-8px);
+                        box-shadow:0 16px 32px rgba(102, 8, 116, 0.15);
+                        border-color: var(--primary-purple);
+                    }
+                    .teacher-photo{width:72px;height:72px;border-radius:8px;object-fit:cover;flex:0 0 72px}
+                    .teacher-meta{flex:1}
+                    .teacher-name{font-weight:700;color:#111}
+                    .teacher-pos{font-size:13px;color:#6B6B6F;margin-top:4px}
+                    .fade-enter-stagger{transition-delay: var(--stagger)}
+                    @media (max-width:520px){.teacher-card{flex-direction:row;gap:10px}.teacher-photo{width:64px;height:64px}}
+                    </style>
+
+                    <script>
+                    (function(){
+                        const container = document.getElementById('teachers-by-dept');
+                        if(!container) return;
+
+                        if (location.protocol === 'file:') {
+                            container.innerHTML = [
+                                '<div style="padding:12px 14px;border:1px dashed rgba(102, 8, 116, 0.28);border-radius:12px;background:rgba(102, 8, 116, 0.04);color:#333;line-height:1.7">',
+                                '  <b>教师信息未加载：</b>当前以文件方式打开（file://），浏览器会拦截读取本地 JSON（CORS）。<br>',
+                                '  请用本地 HTTP 打开：<b>python3 -m http.server 8000</b>，然后访问：<b>http://localhost:8000/</b>',
+                                '</div>'
+                            ].join('');
+                            return;
+                        }
+
+                        fetch('data/teachers.json')
+                            .then(r => r.ok ? r.json() : Promise.reject(r))
+                            .then(data => renderByDept(data))
+                            .catch(err => {
+                                console.error('加载 teachers.json 失败', err);
+                                container.innerHTML = '<p>教师信息加载失败。</p>';
+                            });
+
+                        function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+                        // v2 数据：一个教师对象含多个 roles（跨部门/身兼数职）
+                        // 展示排序：按 teacher-liest 的出现顺序（roles[].order）
+                        function flattenRoleCards(teachers){
+                            const cards = [];
+                            (teachers || []).forEach(t => {
+                                const roles = t.roles || [];
+                                roles.forEach(r => {
+                                    const order = Number.isFinite(r.order) ? r.order : parseInt(r.order || '999999', 10);
+                                    cards.push({
+                                        teacher: t,
+                                        department: r.department || '其他',
+                                        position: r.position || '',
+                                        order: Number.isFinite(order) ? order : 999999
+                                    });
+                                });
+                            });
+                            return cards;
+                        }
+
+                        function groupByDept(cards){
+                            const map = new Map();
+                            (cards || []).forEach(c => {
+                                const d = c.department || '其他';
+                                if(!map.has(d)) map.set(d, []);
+                                map.get(d).push(c);
+                            });
+                            return map;
+                        }
+
+                        function renderByDept(teachers){
+                            container.innerHTML = '';
+                            const cards = flattenRoleCards(teachers);
+                            const groups = groupByDept(cards);
+
+                            // 部门排序：按该部门最早出现的 role.order
+                            const deptEntries = Array.from(groups.entries()).map(([dept, items]) => {
+                                const minOrder = Math.min(...items.map(x => x.order));
+                                return {dept, items, minOrder};
+                            }).sort((a,b)=>{
+                                const ad = String(a.dept||'');
+                                const bd = String(b.dept||'');
+                                if(ad === '舞蹈部' && bd !== '舞蹈部') return 1;
+                                if(bd === '舞蹈部' && ad !== '舞蹈部') return -1;
+                                return a.minOrder - b.minOrder;
+                            });
+
+                            deptEntries.forEach(({items, dept}) => {
+                                const block = document.createElement('section');
+                                block.className = 'dept-block';
+                                block.innerHTML = `<h3 class="dept-title">${esc(dept)}</h3><div class="dept-grid"></div>`;
+                                const grid = block.querySelector('.dept-grid');
+                                items
+                                  .slice()
+                                  .sort((a,b)=>a.order-b.order)
+                                  .forEach((c, idx) => {
+                                    const t = c.teacher;
+                                    const photo = t.photo && !String(t.photo).includes('占位') ? t.photo : 'photos/placeholder.jpg';
+                                    const card = document.createElement('article');
+                                    card.className = 'teacher-card';
+                                    card.setAttribute('role','listitem');
+                                    card.innerHTML = `
+                                        <img class="teacher-photo" src="${esc(photo)}" alt="${esc(t.name)} 头像">
+                                        <div class="teacher-meta">
+                                            <div class="teacher-name">${esc(t.name)}</div>
+                                            <div class="teacher-pos">${esc(c.position)}</div>
+                                        </div>
+                                    `;
+                                    card.addEventListener('click', ()=> showDetail(t, c));
+                                    card.style.setProperty('--stagger', (idx * 40) + 'ms');
+                                    card.classList.add('fade-enter-stagger');
+                                    grid.appendChild(card);
+                                });
+                                container.appendChild(block);
+                            });
+
+                            const obs = new IntersectionObserver((entries)=>{
+                                entries.forEach(en => {
+                                    if(en.isIntersecting){
+                                        const el = en.target;
+                                        const delay = parseInt(getComputedStyle(el).getPropertyValue('--stagger')) || 0;
+                                        setTimeout(()=> el.classList.add('in'), delay);
+                                        obs.unobserve(el);
+                                    }
+                                });
+                            }, {threshold: 0.12});
+
+                            document.querySelectorAll('.teacher-card').forEach(c => obs.observe(c));
+                        }
+
+                        function showDetail(t, roleCtx){
+                            const dlg = document.createElement('div');
+                            dlg.className = 'teacher-detail-modal';
+                            Object.assign(dlg.style, {
+                                position:'fixed',
+                                left:0,
+                                top:0,
+                                right:0,
+                                bottom:0,
+                                background:'rgba(0,0,0,0.75)',
+                                backdropFilter:'blur(5px)',
+                                display:'flex',
+                                alignItems:'center',
+                                justifyContent:'center',
+                                zIndex:9999,
+                                animation:'fadeIn 0.3s ease'
+                            });
+                            
+                            const box = document.createElement('div');
+                            Object.assign(box.style, {
+                                width:'min(920px,92%)',
+                                maxHeight:'85vh',
+                                overflow:'auto',
+                                background:'linear-gradient(135deg, #ffffff 0%, #f8f4f9 100%)',
+                                borderRadius:'16px',
+                                boxShadow:'0 20px 60px rgba(102,8,116,0.3)',
+                                animation:'slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                                border:'1px solid rgba(139,42,155,0.1)'
+                            });
+                            
+                            box.innerHTML = `
+                                <style>
+                                    @keyframes fadeIn {
+                                        from { opacity: 0; }
+                                        to { opacity: 1; }
+                                    }
+                                    @keyframes slideUp {
+                                        from { transform: translateY(30px); opacity: 0; }
+                                        to { transform: translateY(0); opacity: 1; }
+                                    }
+                                    .teacher-detail-modal::-webkit-scrollbar {
+                                        width: 8px;
+                                    }
+                                    .teacher-detail-modal::-webkit-scrollbar-track {
+                                        background: rgba(0,0,0,0.1);
+                                        border-radius: 4px;
+                                    }
+                                    .teacher-detail-modal::-webkit-scrollbar-thumb {
+                                        background: rgba(102,8,116,0.5);
+                                        border-radius: 4px;
+                                    }
+                                </style>
+                                <div style="padding:32px">
+                                    <div style="display:flex;gap:24px;align-items:flex-start;margin-bottom:24px">
+                                        <img src="${esc(t.photo && !t.photo.includes('占位')?t.photo:'photos/placeholder.jpg')}" 
+                                             style="width:140px;height:140px;object-fit:cover;border-radius:12px;
+                                                    box-shadow:0 8px 16px rgba(102,8,116,0.2);
+                                                    border:3px solid rgba(139,42,155,0.1)">
+                                        <div style="flex:1">
+                                            <h2 style="margin:0 0 8px 0;
+                                                       background:linear-gradient(135deg, #660874 0%, #8b2a9b 100%);
+                                                       -webkit-background-clip:text;
+                                                       -webkit-text-fill-color:transparent;
+                                                       background-clip:text;
+                                                       font-size:32px;
+                                                       font-weight:700">
+                                                ${esc(t.name)}
+                                            </h2>
+                                            <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px">
+                                                <span style="padding:6px 14px;
+                                                             background:linear-gradient(135deg, #660874 0%, #8b2a9b 100%);
+                                                             color:white;
+                                                             border-radius:20px;
+                                                             font-size:14px;
+                                                             font-weight:500;
+                                                             box-shadow:0 2px 8px rgba(102,8,116,0.3)">
+                                                    ${esc(roleCtx && roleCtx.position ? roleCtx.position : '')}
+                                                </span>
+                                                <span style="padding:6px 14px;
+                                                             background:rgba(139,42,155,0.1);
+                                                             color:#660874;
+                                                             border-radius:20px;
+                                                             font-size:14px;
+                                                             font-weight:500">
+                                                    ${esc(roleCtx && roleCtx.department ? roleCtx.department : (t.department || ''))}
+                                                </span>
+                                            </div>
+                                            <div style="color:#666;font-size:15px;line-height:1.6;
+                                                       padding:12px;
+                                                       background:rgba(139,42,155,0.05);
+                                                       border-left:3px solid #8b2a9b;
+                                                       border-radius:4px">
+                                                ${esc(t.shortSummary || '资深教师，经验丰富')}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style="margin-top:28px;padding:20px;
+                                               background:white;
+                                               border-radius:12px;
+                                               box-shadow:0 2px 8px rgba(0,0,0,0.05)">
+                                        <h3 style="margin:0 0 16px 0;
+                                                   color:#660874;
+                                                   font-size:20px;
+                                                   padding-bottom:12px;
+                                                   border-bottom:2px solid rgba(139,42,155,0.2)">
+                                            个人简介
+                                        </h3>
+                                        <p style="line-height:1.8;
+                                                  color:#333;
+                                                  font-size:15px;
+                                                  margin:0;
+                                                  text-align:justify">
+                                            ${esc(t.bio)}
+                                        </p>
+                                    </div>
+                                    
+                                    ${(t.achievements && t.achievements.length > 0) ? `
+                                    <div style="margin-top:24px;padding:20px;
+                                               background:white;
+                                               border-radius:12px;
+                                               box-shadow:0 2px 8px rgba(0,0,0,0.05)">
+                                        <h3 style="margin:0 0 16px 0;
+                                                   color:#660874;
+                                                   font-size:20px;
+                                                   padding-bottom:12px;
+                                                   border-bottom:2px solid rgba(139,42,155,0.2)">
+                                            主要成就
+                                        </h3>
+                                        <ul style="margin:0;
+                                                   padding-left:24px;
+                                                   color:#333;
+                                                   line-height:1.8;
+                                                   font-size:15px">
+                                            ${t.achievements.map(a=>`<li style="margin-bottom:8px">${esc(a)}</li>`).join('')}
+                                        </ul>
+                                    </div>
+                                    ` : ''}
+                                    
+                                    <div style="text-align:center;margin-top:28px">
+                                        <button id="closeBtn" 
+                                                style="padding:12px 48px;
+                                                       background:linear-gradient(135deg, #660874 0%, #8b2a9b 100%);
+                                                       color:white;
+                                                       border:none;
+                                                       border-radius:25px;
+                                                       font-size:16px;
+                                                       font-weight:600;
+                                                       cursor:pointer;
+                                                       box-shadow:0 4px 12px rgba(102,8,116,0.3);
+                                                       transition:all 0.3s ease">
+                                            关闭
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                            
+                            dlg.appendChild(box);
+                            document.body.appendChild(dlg);
+                            
+                            // 添加关闭按钮交互效果
+                            const closeBtn = dlg.querySelector('#closeBtn');
+                            closeBtn.addEventListener('mouseenter', function() {
+                                this.style.transform = 'scale(1.05)';
+                                this.style.boxShadow = '0 6px 20px rgba(102,8,116,0.4)';
+                            });
+                            closeBtn.addEventListener('mouseleave', function() {
+                                this.style.transform = 'scale(1)';
+                                this.style.boxShadow = '0 4px 12px rgba(102,8,116,0.3)';
+                            });
+                            
+                            // 点击背景关闭
+                            dlg.addEventListener('click', (e) => {
+                                if(e.target === dlg) {
+                                    dlg.style.animation = 'fadeOut 0.3s ease';
+                                    setTimeout(() => document.body.removeChild(dlg), 300);
+                                }
+                            });
+                            
+                            // 点击关闭按钮
+                            closeBtn.addEventListener('click', () => {
+                                dlg.style.animation = 'fadeOut 0.3s ease';
+                                setTimeout(() => document.body.removeChild(dlg), 300);
+                            });
+                            
+                            // 添加淡出动画
+                            const style = document.createElement('style');
+                            style.textContent = '@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }';
+                            document.head.appendChild(style);
+                        }
+
+                    })();
+                    </script>
+                </div>
+    <div id="contact" class="page"><section class="section container"><h2>联系我们：XXX-XXXX-XXXX</h2></section></div>
+
+    <footer>
+        <p>© 2026 兰州润德艺术学校 | 育德立艺 助力梦想</p>
+    </footer>
+
+    <script>
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('page-active'));
+            document.getElementById(pageId).classList.add('page-active');
+            document.querySelectorAll('nav a').forEach(l => l.classList.remove('nav-active'));
+            if(event) event.target.classList.add('nav-active');
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>

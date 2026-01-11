@@ -1,0 +1,17 @@
+[
+  {
+    "id": "demo_import_student_001",
+    "name": "导入示例同学",
+    "school": "示例学院",
+    "major": "示例专业",
+    "year": 2026,
+    "photo": "students/photos/demo_import_student_001.png",
+    "admissions": [
+      {
+        "image": "students/admissions/demo_import_student_001_offer.png",
+        "watermarked": true,
+        "note": "示例录取截图"
+      }
+    ]
+  }
+]

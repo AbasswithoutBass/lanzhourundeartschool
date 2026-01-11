@@ -1,0 +1,633 @@
+[
+  {
+    "id": "chen_tao",
+    "name": "陈涛",
+    "department": "管理部",
+    "position": "创始人",
+    "shortSummary": "青年男中音，兰州大学艺术学院音乐表演专业。声乐演出与教学经验丰富。",
+    "photo": "photos/chen_tao.jpg (占位)",
+    "bio": "陈涛，青年男中音，兰州大学艺术学院音乐表演专业毕业。长期活跃于歌剧与交响合唱演出舞台。",
+    "achievements": [
+      "2025 年获“青歌新人”称号"
+    ]
+  },
+  {
+    "id": "su_haipeng",
+    "name": "苏海鹏",
+    "department": "管理部",
+    "position": "创始人",
+    "shortSummary": "润德艺术学校创始人，12 年以上艺考教学与管理经验。",
+    "photo": "photos/su_haipeng.jpg (占位)",
+    "bio": "苏海鹏，润德艺术学校创始人之一，从事艺考教学与管理多年。",
+    "achievements": []
+  },
+  {
+    "id": "su_haipeng_theory",
+    "name": "苏海鹏",
+    "department": "理论组",
+    "position": "视唱练耳教师",
+    "shortSummary": "润德艺术学校创始人，视唱练耳与教学管理经验丰富。",
+    "photo": "photos/su_haipeng.jpg (占位)",
+    "bio": "苏海鹏，润德艺术学校创始人，兰州市安宁区民办教育协会理事，长期从事艺考教学与管理，视唱练耳教学能力突出并多次赴外学习先进教学方法。",
+    "achievements": []
+  },
+  {
+    "id": "wang_yu",
+    "name": "王玉",
+    "department": "管理部",
+    "position": "校长",
+    "shortSummary": "视唱练耳教师，自 2017 年从教。",
+    "photo": "photos/wang_yu.jpg (占位)",
+    "bio": "王玉，参与合唱团排练与视唱练耳教学。",
+    "achievements": []
+  },
+  {
+    "id": "wang_yu_theory",
+    "name": "王玉",
+    "department": "理论组",
+    "position": "视唱练耳教师",
+    "shortSummary": "视唱练耳教师，曾任合唱团负责人并有丰富舞台与教学经验。",
+    "photo": "photos/wang_yu_theory.jpg (占位)",
+    "bio": "王玉，毕业于兰州城市学院，师从萧昱副教授，自 2017 年起从事视唱练耳教学，参与过大型交响排练与舞台演出，教学认真负责。",
+    "achievements": []
+  },
+  {
+    "id": "han_gang",
+    "name": "韩刚",
+    "department": "舞蹈部",
+    "position": "舞蹈部校长",
+    "shortSummary": "舞蹈编导与执行导演，擅长民族舞编排。",
+    "photo": "photos/han_gang.jpg (占位)",
+    "bio": "韩刚，舞蹈编导与执行导演，参与多项大型晚会策划。",
+    "achievements": []
+  },
+  {
+    "id": "li_tian",
+    "name": "李甜",
+    "department": "舞蹈部",
+    "position": "舞蹈部执行校长",
+    "shortSummary": "长期从事民族舞蹈排演与教学。",
+    "photo": "photos/li_tian.jpg (占位)",
+    "bio": "李甜，参与多次省级与国家级演出与交流。",
+    "achievements": []
+  },
+  {
+    "id": "qin_miaona_add",
+    "name": "秦淼娜",
+    "department": "舞蹈部",
+    "position": "舞蹈教师",
+    "shortSummary": "舞蹈教学与编排经验丰富，参与多次省级与国家级演出。",
+    "photo": "photos/qin_miaona_add.jpg (占位)",
+    "bio": "秦淼娜，多次在省级比赛中获奖并参与中央电视台与人民大会堂的重要演出，具备系统教学与大型活动排演经验。",
+    "achievements": []
+  },
+  {
+    "id": "qi_junxia",
+    "name": "祁军霞",
+    "department": "理论组",
+    "position": "乐理教师",
+    "shortSummary": "乐理教师，中共党员，参与教材编写并有多年艺考教学经验。",
+    "photo": "photos/qi_junxia_theory.jpg (占位)",
+    "bio": "祁军霞，中共党员，音乐学学士，长期从事艺考培训與乐理教学，曾参与编著《高考基本乐理冲刺试卷》，教学成果显著。",
+    "achievements": []
+  },
+  {
+    "id": "jing_xiangdong",
+    "name": "景想东",
+    "department": "管理部",
+    "position": "财务主管",
+    "shortSummary": "财务主管，负责学校财务管理工作。",
+    "photo": "photos/jing_xiangdong.jpg (占位)",
+    "bio": "景想东，财务主管。",
+    "achievements": []
+  },
+  {
+    "id": "du_jigang",
+    "name": "杜吉刚",
+    "department": "声乐组",
+    "position": "顾问",
+    "shortSummary": "著名华裔男高音，曾为中央歌剧院主要演员，担任多项国际赛事评委。",
+    "photo": "photos/du_jigang.jpg (占位)",
+    "bio": "杜吉刚，著名华裔男高音歌唱家，曾为中央歌剧院主要演员并受聘为多项国家级与国际性声乐赛事的评委与专家。",
+    "achievements": []
+  },
+  {
+    "id": "shi_dayong",
+    "name": "石大勇",
+    "department": "声乐组",
+    "position": "特聘教师",
+    "shortSummary": "特聘声乐教师。",
+    "photo": "photos/shi_dayong.jpg (占位)",
+    "bio": "石大勇，特聘声乐教师。",
+    "achievements": []
+  },
+  {
+    "id": "yin_shenglin",
+    "name": "尹胜麟",
+    "department": "声乐组",
+    "position": "特聘教师",
+    "shortSummary": "博士、男高音，西北民族大学音乐学院副教授、硕士生导师。",
+    "photo": "photos/yin_shenglin.jpg (占位)",
+    "bio": "尹胜麟，博士、男高音，西北民族大学音乐学院副教授、硕士生导师，具有国际化学习与教学背景。",
+    "achievements": []
+  },
+  {
+    "id": "wang_juquan",
+    "name": "王举全",
+    "department": "声乐组",
+    "position": "声乐教师",
+    "shortSummary": "从事声乐艺考教学逾 20 年，培养多名获奖学生。",
+    "photo": "photos/wang_juquan.jpg (占位)",
+    "bio": "王举全，从事声乐艺考教学逾 20 年，在教学过程中培养出多名在省级与国家级赛事中获奖的学生。",
+    "achievements": []
+  },
+  {
+    "id": "sun_miao",
+    "name": "孙淼",
+    "department": "声乐组",
+    "position": "声乐教师",
+    "shortSummary": "女高音，硕士研究生，甘肃省歌剧院青年演员。",
+    "photo": "photos/sun_miao.jpg (占位)",
+    "bio": "孙淼，女高音，硕士研究生学历，甘肃省歌剧院青年演员，具备良好的舞台表演与声乐基础。",
+    "achievements": []
+  },
+  {
+    "id": "chen_pudong",
+    "name": "陈璞东",
+    "department": "声乐组",
+    "position": "声乐教师",
+    "shortSummary": "男高音，声乐博士，曾在多项国内外赛事中获奖。",
+    "photo": "photos/chen_pudong.jpg (占位)",
+    "bio": "陈璞东，男高音，声乐博士，曾在多项国内外赛事中获奖并参与舞台创作与教学工作。",
+    "achievements": []
+  },
+  {
+    "id": "ma_xiyuan",
+    "name": "马熙媛",
+    "department": "声乐组",
+    "position": "流行与音乐剧教师",
+    "shortSummary": "音乐剧演员与流行歌手，参与多部音乐剧演出。",
+    "photo": "photos/ma_xiyuan.jpg (占位)",
+    "bio": "马熙媛，音乐剧演员与流行歌手，参与多部音乐剧演出并发表原创作品。",
+    "achievements": []
+  },
+  {
+    "id": "zhao_xingcai",
+    "name": "赵兴财",
+    "department": "声乐组",
+    "position": "声乐教师",
+    "shortSummary": "男高音，甘肃省音乐家协会会员，长期参与歌剧与交响合唱演出。",
+    "photo": "photos/zhao_xingcai.jpg (占位)",
+    "bio": "赵兴财，男高音，甘肃省音乐家协会会员，长期参与歌剧与交响合唱演出。",
+    "achievements": []
+  },
+  {
+    "id": "wu_bin",
+    "name": "吴彬",
+    "department": "声乐组",
+    "position": "声乐教师",
+    "shortSummary": "兰州音乐厅合唱团男高音，中国金融音乐家协会会员。",
+    "photo": "photos/wu_bin.jpg (占位)",
+    "bio": "吴彬，兰州音乐厅合唱团男高音，中国金融音乐家协会会员。",
+    "achievements": [
+      "第四届中国民族声乐敦煌奖西南赛区三等奖"
+    ]
+  },
+  {
+    "id": "yu_wei",
+    "name": "于伟",
+    "department": "声乐组",
+    "position": "声乐教师",
+    "shortSummary": "硕士研究生，2017 年加入兰州音乐厅合唱团。",
+    "photo": "photos/yu_wei.jpg (占位)",
+    "bio": "于伟，硕士研究生学历，2017 年加入兰州音乐厅合唱团，参与多部歌剧与大型晚会演出。",
+    "achievements": []
+  },
+  {
+    "id": "liu_peng",
+    "name": "刘鹏",
+    "department": "声乐组",
+    "position": "声乐教师",
+    "shortSummary": "中共党员，参与多台歌剧与交响合唱作品演出。",
+    "photo": "photos/liu_peng.jpg (占位)",
+    "bio": "刘鹏，中共党员，参与《波西米亚人》《图兰朵》《茶花女》《卡门》等歌剧演出。",
+    "achievements": []
+  },
+  {
+    "id": "zhang_bo",
+    "name": "张铂",
+    "department": "声乐组",
+    "position": "声乐教师",
+    "shortSummary": "兰州大剧院男中音，甘肃省音乐家协会会员。",
+    "photo": "photos/zhang_bo.jpg (占位)",
+    "bio": "张铂，兰州大剧院男中音，甘肃省音乐家协会会员，参与多部歌剧与交响合唱演出。",
+    "achievements": []
+  },
+  {
+    "id": "tong_qianying",
+    "name": "童倩影",
+    "department": "声乐组",
+    "position": "声乐教师",
+    "shortSummary": "抒情女高音，毕业于四川音乐学院歌剧系。",
+    "photo": "photos/tong_qianying.jpg (占位)",
+    "bio": "童倩影，抒情女高音，毕业于四川音乐学院歌剧系，在国内外竞赛中获多项荣誉。",
+    "achievements": []
+  },
+  {
+    "id": "huang_zijun",
+    "name": "黄子俊",
+    "department": "声乐组",
+    "position": "声乐教师",
+    "shortSummary": "青年抒情男中音，本科毕业于四川音乐学院歌剧系。",
+    "photo": "photos/huang_zijun.jpg (占位)",
+    "bio": "黄子俊，青年抒情男中音，本科毕业于四川音乐学院歌剧系，参与国际音乐节与比赛并获多项荣誉。",
+    "achievements": []
+  },
+  {
+    "id": "ke_xia",
+    "name": "柯夏",
+    "department": "声乐组",
+    "position": "声乐教师",
+    "shortSummary": "青年抒情女高音，毕业于四川音乐学院歌剧系。",
+    "photo": "photos/ke_xia.jpg (占位)",
+    "bio": "柯夏，青年抒情女高音，毕业于四川音乐学院歌剧系，曾获新加坡中Sin国际音乐比赛歌剧组第一名。",
+    "achievements": [
+      "新加坡中Sin国际音乐比赛歌剧组第一名"
+    ]
+  },
+  {
+    "id": "wei_xudong",
+    "name": "魏旭东",
+    "department": "器乐组",
+    "position": "器乐总监",
+    "shortSummary": "兰州交响乐团驻团指挥、兰州音乐厅合唱团团长。",
+    "photo": "photos/wei_xudong.jpg (占位)",
+    "bio": "魏旭东，兰州交响乐团驻团指挥、兰州音乐厅合唱团团长，长期担任多团指挥并组织大型交响合唱演出。",
+    "achievements": []
+  },
+  {
+    "id": "guan_min",
+    "name": "管民",
+    "department": "器乐组",
+    "position": "二胡教师",
+    "shortSummary": "二胡演奏硕士，西北民族大学副教授、硕士生导师。",
+    "photo": "photos/guan_min.jpg (占位)",
+    "bio": "管民，二胡演奏硕士，现任西北民族大学副教授、硕士生导师，长期从事民族器乐教学与演出。",
+    "achievements": []
+  },
+  {
+    "id": "kan_peng",
+    "name": "阚鹏",
+    "department": "器乐组",
+    "position": "竹笛教师",
+    "shortSummary": "竹笛演奏硕士，任教于西北民族大学音乐学院。",
+    "photo": "photos/kan_peng.jpg (占位)",
+    "bio": "阚鹏，竹笛演奏硕士，任教于西北民族大学音乐学院，曾在中国音乐金钟奖及竹笛邀请赛中获奖。",
+    "achievements": []
+  },
+  {
+    "id": "wang_ruixi",
+    "name": "王瑞玺",
+    "department": "器乐组",
+    "position": "萨克斯教师",
+    "shortSummary": "德国柏林音乐学院古典萨克斯演奏硕士。",
+    "photo": "photos/wang_ruixi.jpg (占位)",
+    "bio": "王瑞玺，德国柏林音乐学院古典萨克斯演奏硕士，现为西北民族大学音乐学院外籍萨克斯导师。",
+    "achievements": []
+  },
+  {
+    "id": "chen_jin",
+    "name": "陈劲",
+    "department": "器乐组",
+    "position": "双排键/钢琴教师",
+    "shortSummary": "兰州文理学院音乐舞蹈学院双排键与钢琴讲师。",
+    "photo": "photos/chen_jin.jpg (占位)",
+    "bio": "陈劲，兰州文理学院音乐舞蹈学院双排键与钢琴讲师，长期参与电子键盘领域的赛事评审与教学工作。",
+    "achievements": []
+  },
+  {
+    "id": "song_jingkun",
+    "name": "宋景坤",
+    "department": "器乐组",
+    "position": "唢呐/管子教师",
+    "shortSummary": "唢呐与管子演奏家、教育家，曾任甘肃省歌舞剧院民族乐团团长。",
+    "photo": "photos/song_jingkun.jpg (占位)",
+    "bio": "宋景坤，唢呐与管子演奏家、教育家，曾任甘肃省歌舞剧院民族乐团团长，培养多名进入国内一流音乐院校的学生。",
+    "achievements": []
+  },
+  {
+    "id": "zhang_weichao",
+    "name": "张伟超",
+    "department": "器乐组",
+    "position": "笙教师",
+    "shortSummary": "笙演奏与教学专家，曾在省级器乐大赛中获奖并多次担任评委。",
+    "photo": "photos/zhang_weichao.jpg (占位)",
+    "bio": "张伟超，笙演奏与教学专家，曾在省级器乐大赛中获奖并多次担任评委与指导教师。",
+    "achievements": []
+  },
+  {
+    "id": "xiao_xue",
+    "name": "肖雪",
+    "department": "器乐组",
+    "position": "小提琴教师",
+    "shortSummary": "三级演奏员，兰州交响乐团第一小提琴声部演奏员，演出经验丰富。",
+    "photo": "photos/xiao_xue.jpg (占位)",
+    "bio": "肖雪，三级演奏员，现任兰州交响乐团第一小提琴声部演奏员，兰州市音乐家协会会员。2010 年毕业于华南理工大学艺术学院，曾参加高雅艺术进校园活动，并受邀参加张学友巡回演唱会等大型演出，2014 年加入兰州交响乐团，随团参与国内外重要演出。",
+    "achievements": []
+  },
+  {
+    "id": "chen_yuming",
+    "name": "陈昱铭",
+    "department": "器乐组",
+    "position": "打击乐教师",
+    "shortSummary": "兰州交响乐团打击乐演奏员，马林巴与打击乐教育专家。",
+    "photo": "photos/chen_yuming.jpg (占位)",
+    "bio": "陈昱铭，兰州交响乐团打击乐演奏员，中国马林巴协会理事，曾赴法国、美国等地交流演出并参与大型国庆与节庆演出，获多项教学与指导奖项。",
+    "achievements": [
+      "2022 年获文化和旅游部人才中心全国优秀指导教师",
+      "中国青少年音乐比赛“蜂鸟音乐奖”最佳教师奖"
+    ]
+  },
+  {
+    "id": "zheng_yu",
+    "name": "郑钰",
+    "department": "器乐组",
+    "position": "钢琴/低音提琴教师",
+    "shortSummary": "钢琴与低音提琴双专业演奏员，兰州交响乐团低音提琴演奏员。",
+    "photo": "photos/zheng_yu.jpg (占位)",
+    "bio": "郑钰，毕业于华南理工大学艺术学院音乐表演专业，2014 年加入兰州交响乐团担任低音提琴演奏员，同时从事钢琴教学。曾随团赴维也纳、意大利、罗马、北京、上海等地演出，并在国内多项比赛与表演中获奖。",
+    "achievements": [
+      "2016 年获中国西部音乐表演决赛合奏专业一等奖"
+    ]
+  },
+  {
+    "id": "chen_sheng",
+    "name": "陈晟",
+    "department": "器乐组",
+    "position": "小号教师",
+    "shortSummary": "小号演奏家，受多位国际大师指导，具备丰富交响与独奏经验。",
+    "photo": "photos/chen_sheng.jpg (占位)",
+    "bio": "陈晟，受多位国内外名师指导，2013 年考入上海音乐学院并担任小号首席，参与多场重要演出与音乐节，并与多位国际演奏家同台演出。",
+    "achievements": []
+  },
+  {
+    "id": "tian_yarong",
+    "name": "田娅蓉",
+    "department": "器乐组",
+    "position": "竖琴教师",
+    "shortSummary": "竖琴首席、二级演奏员，兼任高校导师与省级评委。",
+    "photo": "photos/tian_yarong.jpg (占位)",
+    "bio": "田娅蓉，兰州交响乐团竖琴首席，二级演奏员，担任多项省市级评委并参与大型交响与纪念性演出，教学与演出经验丰富。",
+    "achievements": []
+  },
+  {
+    "id": "wang_lu",
+    "name": "王露",
+    "department": "器乐组",
+    "position": "大提琴教师",
+    "shortSummary": "兰州交响乐团大提琴演奏员，长期参与国内外演出。",
+    "photo": "photos/wang_lu.jpg (占位)",
+    "bio": "王露，自幼学习大提琴并师从赵嘉楠教授，随团参与多项国际与国内演出，与知名指挥与演奏家合作，演出经验丰富。",
+    "achievements": []
+  },
+  {
+    "id": "wang_yihan",
+    "name": "王乙涵",
+    "department": "器乐组",
+    "position": "打击乐教师",
+    "shortSummary": "打击乐首席与教学者，长期参与大型演出并担任赛事评委。",
+    "photo": "photos/wang_yihan.jpg (占位)",
+    "bio": "王乙涵，毕业于四川音乐学院，师从多位著名教师，现任甘肃省打击乐协会常务副秘书长并承担多所学校的打击乐教学与演出任务。",
+    "achievements": []
+  },
+  {
+    "id": "gu_xingtao",
+    "name": "顾兴涛",
+    "department": "器乐组",
+    "position": "上低音号教师",
+    "shortSummary": "大号兼上低音号演奏员，长期参与交响演出与教学。",
+    "photo": "photos/gu_xingtao.jpg (占位)",
+    "bio": "顾兴涛，自 1998 年起任职于兰州歌舞剧院交响乐团，担任大号与上低音号演奏员，多次参与重要演出并培养多名学生考入国内重点音乐学院。",
+    "achievements": []
+  },
+  {
+    "id": "xiao_chen",
+    "name": "肖晨",
+    "department": "器乐组",
+    "position": "巴松管教师",
+    "shortSummary": "巴松首席与高校客座讲师，教学与演出并重。",
+    "photo": "photos/xiao_chen.jpg (占位)",
+    "bio": "肖晨，2003 年考入天津音乐学院学习巴松，2007 年加入兰州交响乐团担任巴松首席，并在比赛与教学中取得多项成绩，兼任多所高校客座讲师。",
+    "achievements": []
+  },
+  {
+    "id": "zhao_jiawei",
+    "name": "赵嘉玮",
+    "department": "器乐组",
+    "position": "圆号教师",
+    "shortSummary": "圆号首席，长期随团参与各类交响与歌剧演出。",
+    "photo": "photos/zhao_jiawei.jpg (占位)",
+    "bio": "赵嘉玮，自幼学习圆号并在华南理工大学深造，后加入兰州交响乐团并担任圆号副首席与首席，长期参与各类风格演出并与多位指挥和演奏家合作。",
+    "achievements": []
+  },
+  {
+    "id": "li_wenhui",
+    "name": "李文辉",
+    "department": "器乐组",
+    "position": "竹笛教师",
+    "shortSummary": "竹笛演奏与教学者，多次获奖并参与教学研究项目。",
+    "photo": "photos/li_wenhui.jpg (占位)",
+    "bio": "李文辉，毕业于西北民族大学音乐学院，竹笛专业演奏与教学者，曾获国际与国内比赛奖项并参与教学研究与实践活动。",
+    "achievements": []
+  },
+  {
+    "id": "li_long",
+    "name": "李龙",
+    "department": "舞蹈部",
+    "position": "舞蹈教师",
+    "shortSummary": "舞蹈领舞与表演教师，参与多部大型舞剧与交流演出。",
+    "photo": "photos/li_long.jpg (占位)",
+    "bio": "李龙，曾在梅兰芳大剧院等舞台担任领舞，参与多次国内大型节庆与交流演出，毕业于西北民族大学舞蹈学院并从事艺考教学多年，演出与教学经验兼备。",
+    "achievements": []
+  },
+  {
+    "id": "yang_yiran",
+    "name": "杨怡然",
+    "department": "舞蹈部",
+    "position": "舞蹈教师",
+    "shortSummary": "艺术硕士，擅长芭蕾与民族舞，参与大型演出与国际交流。",
+    "photo": "photos/yang_yiran.jpg (占位)",
+    "bio": "杨怡然，西北师范大学艺术硕士，参与《大梦敦煌》《相约敦煌》等多项大型演出并赴海外交流，具备扎实的教学与演出背景。",
+    "achievements": []
+  },
+  {
+    "id": "zi_chen",
+    "name": "訾陈",
+    "department": "舞蹈部",
+    "position": "舞蹈教师",
+    "shortSummary": "创编与表演兼备的舞蹈教师，院校奖项众多。",
+    "photo": "photos/zi_chen.jpg (占位)",
+    "bio": "訾陈，舞蹈创编与表演者，曾在多项院校原创与编创比赛中获奖并具备丰富的教学与编导经验。",
+    "achievements": []
+  },
+  {
+    "id": "han_jiarui",
+    "name": "韩佳芮",
+    "department": "舞蹈部",
+    "position": "舞蹈教师",
+    "shortSummary": "上海戏剧学院毕业，具有丰富的舞台演出与比赛获奖经历。",
+    "photo": "photos/han_jiarui.jpg (占位)",
+    "bio": "韩佳芮，毕业于上海戏剧学院，参与过世博会开幕式、东亚舞蹈文化交流等项目，并在多项全国比赛中获奖，教学经验丰富。",
+    "achievements": []
+  },
+  {
+    "id": "yang_xiaojie",
+    "name": "杨晓洁",
+    "department": "舞蹈部",
+    "position": "舞蹈教师",
+    "shortSummary": "民族舞编创与表演教师，多次参与国际文化交流。",
+    "photo": "photos/yang_xiaojie.jpg (占位)",
+    "bio": "杨晓洁，长期参与民族舞创作与展演，曾代表团体赴荷兰、德国等地交流演出，作品多次在省级比赛中获奖。",
+    "achievements": []
+  },
+  {
+    "id": "zhou_wentao",
+    "name": "周文涛",
+    "department": "舞蹈部",
+    "position": "舞蹈教师",
+    "shortSummary": "编导与排练指导，参与多项高校与省级大型演出。",
+    "photo": "photos/zhou_wentao.jpg (占位)",
+    "bio": "周文涛，具有高校舞蹈排练与指导经验，参与多项省级与校园原创文化精品巡演并担任排练指导与教学。",
+    "achievements": []
+  },
+  {
+    "id": "ai_zheyu",
+    "name": "艾哲宇",
+    "department": "舞蹈部",
+    "position": "芭蕾/舞蹈教师",
+    "shortSummary": "芭蕾表演兼教育专业毕业，芭蕾基训教师与表演者。",
+    "photo": "photos/ai_zheyu.jpg (占位)",
+    "bio": "艾哲宇，沈阳音乐学院舞蹈学院芭蕾表演兼教育专业毕业，曾任苏州芭蕾舞团与兰州芭蕾团演员，参与多部经典舞剧并获省级与国际赛事奖项，现从事芭蕾基训教学。",
+    "achievements": []
+  },
+  {
+    "id": "li_huifang",
+    "name": "李慧芳",
+    "department": "舞蹈部",
+    "position": "舞蹈教师",
+    "shortSummary": "参与省级原创舞蹈项目并获奖，具备教学与演出经验。",
+    "photo": "photos/li_huifang.jpg (占位)",
+    "bio": "李慧芳，参与青海省原创舞蹈大赛并获奖，多次参加省级与学术交流演出，具备系统的教学经验。",
+    "achievements": []
+  },
+  {
+    "id": "nian_zheng",
+    "name": "年峥",
+    "department": "器乐组",
+    "position": "长号教师",
+    "shortSummary": "长号首席，长期担任演出与教学工作，曾多次赴国外演出。",
+    "photo": "photos/nian_zheng.jpg (占位)",
+    "bio": "年峥，2007 年进入兰州歌舞剧院交响乐团任长号首席，参与多次国际演出与大型纪念活动，并兼任多所中小学与高校的长号外聘教师，教学覆盖基础与合奏实践。",
+    "achievements": []
+  },
+  {
+    "id": "qiao_wenhua",
+    "name": "乔文华",
+    "department": "理论组",
+    "position": "乐理教师",
+    "shortSummary": "乐理与作曲教师，擅长钢琴伴奏与创作。",
+    "photo": "photos/qiao_wenhua.jpg (占位)",
+    "bio": "乔文华，毕业于兰州城市学院，师从赵文臻教授，擅长理论创作与钢琴即兴伴奏，曾在全国性编创讲习中获奖。",
+    "achievements": []
+  },
+  {
+    "id": "xu_qian",
+    "name": "徐倩",
+    "department": "理论组",
+    "position": "视唱练耳教师",
+    "shortSummary": "硕士、注册音乐教育指导师，教研与竞赛指导经验丰富。",
+    "photo": "photos/xu_qian.jpg (占位)",
+    "bio": "徐倩，西北民族大学硕士，IEAC 国际注册音乐教育指导师，具备丰富的教学与研究经验，曾在国家级期刊发表论文并参与多项教学项目。",
+    "achievements": []
+  },
+  {
+    "id": "ye_guoqiang",
+    "name": "叶国强",
+    "department": "理论组",
+    "position": "视唱练耳教师",
+    "shortSummary": "海南师范大学音乐学院毕业，参与多项省级庆典与校园艺术活动。",
+    "photo": "photos/ye_guoqiang.jpg (占位)",
+    "bio": "叶国强，毕业于海南师范大学音乐学院，曾师从周怡教授与孙志贤教授，参与多次高雅艺术进校园活动与省级晚会演出，教学与演出演出经验成熟。",
+    "achievements": []
+  },
+  {
+    "id": "zang_tianyu",
+    "name": "臧天宇",
+    "department": "理论组",
+    "position": "视唱练耳教师",
+    "shortSummary": "合唱与编曲能力兼备，参与学院合唱团与泛音团多次演出。",
+    "photo": "photos/zang_tianyu.jpg (占位)",
+    "bio": "臧天宇，曾参与西北师范大学音乐学院合唱团与泛音人声团演出，擅长编曲与混音，拥有多首原创作品并参与学院新媒体工作。",
+    "achievements": []
+  },
+  {
+    "id": "qian_sheng",
+    "name": "钱昇",
+    "department": "理论组",
+    "position": "视唱练耳教师",
+    "shortSummary": "艺考教师，教学严格务实，带队获多项赛事殊荣。",
+    "photo": "photos/qian_sheng.jpg (占位)",
+    "bio": "钱昇，从事艺考教育 8 年，带队参加全国大学生艺术展演与多项演出活动，教学认真负责并受到学生认可。",
+    "achievements": []
+  },
+  {
+    "id": "song_xiaolong",
+    "name": "宋小龙",
+    "department": "理论组",
+    "position": "视唱练耳教师",
+    "shortSummary": "合唱与声乐教师，比赛获奖经验丰富，教学经验充足。",
+    "photo": "photos/song_xiaolong.jpg (占位)",
+    "bio": "宋小龙，长治学院音乐学专业毕业，曾在多项合唱比赛中获奖并参与中央电视台合唱录制，后长期从事声乐与视唱练耳教学。",
+    "achievements": []
+  },
+  {
+    "id": "li_yanxia",
+    "name": "李艳霞",
+    "department": "理论组",
+    "position": "视唱练耳教师",
+    "shortSummary": "河西学院毕业，持有教师资格与普通话证书，注重个性化教学。",
+    "photo": "photos/li_yanxia.jpg (占位)",
+    "bio": "李艳霞，毕业于河西学院音乐学专业，持有高中音乐教师资格证与普通话二级甲等证书，教学注重因材施教并适用于中学与艺考基础教学。",
+    "achievements": []
+  },
+  {
+    "id": "su_haizhen",
+    "name": "苏海震",
+    "department": "管理部",
+    "position": "后勤主管",
+    "shortSummary": "后勤主管，为人耿直热情，关爱学生，工作踏实。",
+    "photo": "photos/su_haizhen.jpg (占位)",
+    "bio": "苏海震，后勤主管。长期负责学校后勤保障工作，致力于提升后勤服务质量与效率。",
+    "achievements": []
+  },
+  {
+    "id": "guo_jiangbin",
+    "name": "郭江滨",
+    "department": "声乐组",
+    "position": "顾问",
+    "shortSummary": "男中音歌唱家、四川音乐学院声乐副教授，担任多项国内外赛事评审。",
+    "photo": "photos/guo_jiangbin.jpg (占位)",
+    "bio": "郭江滨，男中音歌唱家、四川音乐学院声乐副教授，担任多项国内外赛事评审并受聘为多所高校与机构的特聘教授与顾问。",
+    "achievements": []
+  },
+  {
+    "id": "zhang_jing",
+    "name": "张婧",
+    "department": "声乐组",
+    "position": "声乐教师",
+    "shortSummary": "青年女高音，兰州音乐厅合唱团成员。",
+    "photo": "photos/zhang_jing.jpg (占位)",
+    "bio": "张婧，青年女高音，毕业于西北民族大学，参与多项重大演出。",
+    "achievements": []
+  }
+]

@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>学生管理</title>
+  <style>
+    body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;background:#f5f5f7;margin:0}
+    header{background:#fff;border-bottom:1px solid rgba(0,0,0,.06);padding:10px 12px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:3}
+    a{color:#660874;text-decoration:none}
+    .wrap{max-width:1320px;margin:16px auto;padding:0 16px}
+    .hint{color:#666;font-size:12px;line-height:1.5}
+
+    .flash{margin:10px 0 0;padding:10px 12px;border-radius:12px;font-size:13px;background:#fff;border:1px solid rgba(0,0,0,.08)}
+    .flash.error{background:#fff1f2;color:#9f1239;border:1px solid rgba(159,18,57,.15)}
+    .flash.ok{background:#ecfeff;color:#155e75;border:1px solid rgba(21,94,117,.15)}
+
+    .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .btn{display:inline-block;font-size:12px;color:#fff;background:#660874;padding:7px 10px;border-radius:12px;font-weight:800;border:none;cursor:pointer}
+    .btn2{display:inline-block;font-size:12px;color:#fff;background:#111827;padding:7px 10px;border-radius:12px;font-weight:800;border:none;cursor:pointer}
+    .seg{display:inline-flex;border:1px solid rgba(0,0,0,.12);border-radius:12px;overflow:hidden;background:#fff}
+    .seg button{border:none;background:transparent;padding:7px 9px;font-weight:800;font-size:12px;cursor:pointer;color:#333}
+    .seg button.active{background:rgba(102,8,116,.08);color:#660874}
+    select,input{padding:7px 9px;border-radius:12px;border:1px solid rgba(0,0,0,.12);font-size:12px;background:#fff}
+
+    .grid{display:flex;flex-direction:column;gap:10px;align-items:stretch;margin-top:10px;--cardMin:170px}
+    details.group{background:#fff;border-radius:14px;border:1px solid rgba(0,0,0,.06);box-shadow:0 8px 18px rgba(0,0,0,.06);overflow:hidden}
+    summary.groupHead{padding:10px 12px;border-bottom:1px solid rgba(0,0,0,.06);display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;list-style:none}
+    summary.groupHead::-webkit-details-marker{display:none}
+    .groupTitle{font-weight:900}
+    .badge{font-size:12px;color:#660874;background:rgba(102,8,116,.08);border:1px solid rgba(102,8,116,.18);padding:2px 10px;border-radius:999px}
+    .list{padding:8px;display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--cardMin),1fr));gap:6px;min-height:24px}
+
+    .item{position:relative;display:flex;gap:6px;align-items:flex-start;justify-content:flex-start;padding:10px 10px;border:1px solid rgba(0,0,0,.08);border-radius:12px;background:#fff;cursor:pointer;flex-direction:column;
+      transition:box-shadow .14s ease, opacity .14s ease, background-color .14s ease, border-color .14s ease;
+    }
+    .item:hover{box-shadow:0 10px 18px rgba(0,0,0,.08)}
+
+    .x{position:absolute;top:6px;right:6px;width:18px;height:18px;border-radius:999px;border:1px solid rgba(0,0,0,.12);background:#fff;color:#111827;display:none;align-items:center;justify-content:center;font-size:14px;line-height:1;cursor:pointer;padding:0}
+    .item:hover .x,.item:focus-within .x{display:flex}
+
+    .avatar{width:38px;height:38px;border-radius:10px;background:rgba(102,8,116,.10);border:1px solid rgba(102,8,116,.18)}
+    .name{font-weight:900;line-height:1.2;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+    .meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+    .pill{display:inline-block;font-size:11px;color:#111827;background:#f3f4f6;border:1px solid rgba(0,0,0,.08);padding:1px 7px;border-radius:999px}
+    .edit{display:none}
+    .item:hover .edit,.item:focus-within .edit{display:inline-block}
+    .edit{display:inline-block;font-size:11px;color:#fff;background:#660874;padding:5px 9px;border-radius:10px;font-weight:900;text-decoration:none}
+    .small{font-size:12px;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+
+    /* 小图标模式 */
+    .mode-small{--cardMin:150px}
+    .mode-small .avatar{width:34px;height:34px}
+    .mode-small .name{font-size:13px}
+
+    .mode-large{--cardMin:220px}
+    .mode-large .avatar{width:44px;height:44px;border-radius:12px}
+    .mode-large .name{font-size:15px}
+
+    /* 列表模式 */
+    .mode-list .list{display:flex;flex-direction:column;gap:0;padding:0}
+    .mode-list .item{flex-direction:row;align-items:center;border:none;border-radius:0;border-bottom:1px solid rgba(0,0,0,.06);padding:10px 12px}
+    .mode-list .item:last-child{border-bottom:none}
+    .mode-list .meta{margin-left:auto;justify-content:flex-end}
+    .mode-list .small{display:none}
+    .mode-list .edit{display:inline-block}
+
+    details.addBox{background:#fff;border-radius:14px;border:1px solid rgba(0,0,0,.06);box-shadow:0 8px 18px rgba(0,0,0,.06);overflow:hidden;margin-top:10px}
+    summary.addHead{padding:10px 12px;cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px}
+    summary.addHead::-webkit-details-marker{display:none}
+    .form{padding:12px;border-top:1px solid rgba(0,0,0,.06)}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+
+    .toast{position:fixed;right:14px;bottom:14px;background:#111827;color:#fff;padding:10px 12px;border-radius:12px;font-size:13px;opacity:0;transform:translateY(8px);transition:all .2s ease;z-index:4}
+    .toast.show{opacity:1;transform:translateY(0)}
+
+    @media (prefers-reduced-motion: reduce){
+      .item,.toast{transition:none !important}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="toolbar">
+      <a href="/admin">← 后台首页</a>
+      <div style="font-weight:900">学生管理</div>
+      <span class="badge">共 {{ students|length }} 人</span>
+    </div>
+
+    <div class="toolbar">
+      <div class="seg" role="tablist" aria-label="view mode">
+        <button type="button" data-mode="large" class="active">大图标</button>
+        <button type="button" data-mode="small">小图标</button>
+        <button type="button" data-mode="list">列表</button>
+      </div>
+
+      <select id="yearFilter" title="年份筛选">
+        <option value="">全部年份</option>
+        {% for g in students|groupby('year') %}
+          {% set y = g.grouper %}
+          <option value="{{ y if y is not none else 'none' }}">{{ y if y is not none else '未设置' }}</option>
+        {% endfor %}
+      </select>
+
+      <input id="q" placeholder="搜索姓名/学校/专业" style="width:200px" />
+
+      <form method="post" action="/admin/students/apply-rules" onsubmit="return confirm('将对全库应用规则（字段规范化/清理 admissions/排序），并写入 data/students.json（自动备份）。确认继续？');">
+        <button class="btn2" type="submit">全库应用规则</button>
+      </form>
+
+      <a href="/logout">退出</a>
+    </div>
+  </header>
+
+  <div class="wrap">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for cat, msg in messages %}
+          <div class="flash {{cat}}">{{msg}}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="hint">
+      - 默认按 year(降序)+name 排序，并按 year 分组展示；admissions 用于前端弹窗展示。
+      - 右上角 × 可快速删除（不影响编辑页的细项管理）。
+    </div>
+
+    <details class="addBox">
+      <summary class="addHead">
+        <div style="font-weight:900">新增优秀考生</div>
+        <span class="badge">展开/收起</span>
+      </summary>
+      <div class="form">
+        <form method="post" action="/admin/students/add">
+          <div class="row3">
+            <div>
+              <div class="hint" style="margin-bottom:6px">姓名</div>
+              <input name="name" placeholder="张三" required />
+            </div>
+            <div>
+              <div class="hint" style="margin-bottom:6px">年份</div>
+              <input name="year" type="number" placeholder="2026" />
+            </div>
+            <div>
+              <div class="hint" style="margin-bottom:6px">照片路径</div>
+              <input name="photo" placeholder="students/photos/xxx.jpg 或 润德1.png" />
+            </div>
+          </div>
+          <div class="row" style="margin-top:10px">
+            <div>
+              <div class="hint" style="margin-bottom:6px">学校</div>
+              <input name="school" placeholder="中央音乐学院" required />
+            </div>
+            <div>
+              <div class="hint" style="margin-bottom:6px">专业</div>
+              <input name="major" placeholder="声乐表演" required />
+            </div>
+          </div>
+          <div style="margin-top:10px;text-align:right">
+            <button class="btn" type="submit">新增学生</button>
+          </div>
+        </form>
+      </div>
+    </details>
+
+    <div id="root" class="grid mode-small" data-mode="small">
+      {% for g in students|groupby('year') %}
+        {% set y = g.grouper %}
+        {% set ykey = y if y is not none else 'none' %}
+        <details class="group" data-year="{{ ykey }}" open>
+          <summary class="groupHead">
+            <div class="groupTitle">{{ y if y is not none else '未设置年份' }}</div>
+            <div class="badge">人数 {{ g.list|length }}</div>
+          </summary>
+          <div class="list" data-list>
+            {% for s in g.list %}
+              <div class="item" tabindex="0" data-id="{{ s.id }}" data-q="{{ (s.name or '')|lower }} {{ (s.school or '')|lower }} {{ (s.major or '')|lower }} {{ (s.year or '') }}">
+                <button class="x" type="button" title="删除此学生" aria-label="删除" data-action="delete">×</button>
+                <div class="avatar" aria-hidden="true"></div>
+                <div class="name" title="{{ s.name }}">{{ s.name }}</div>
+                <div class="meta">
+                  {% if s.school %}<span class="pill">{{ s.school }}</span>{% endif %}
+                  {% if s.major %}<span class="pill">{{ s.major }}</span>{% endif %}
+                  {% if s.year %}<span class="pill">{{ s.year }}</span>{% endif %}
+                  <a class="edit" href="/admin/students/{{ s.id }}">编辑</a>
+                </div>
+                {% if s.photo %}<div class="small" title="{{ s.photo }}">{{ s.photo }}</div>{% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        </details>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const root = document.getElementById('root');
+    const toastEl = document.getElementById('toast');
+    const toast = (msg) => {
+      toastEl.textContent = msg;
+      toastEl.classList.add('show');
+      clearTimeout(toastEl._t);
+      toastEl._t = setTimeout(() => toastEl.classList.remove('show'), 1400);
+    };
+
+    // view mode
+    const modeButtons = Array.from(document.querySelectorAll('[data-mode]'));
+    const setMode = (mode) => {
+      root.classList.remove('mode-large','mode-small','mode-list');
+      root.classList.add(`mode-${mode}`);
+      root.setAttribute('data-mode', mode);
+      modeButtons.forEach(b => b.classList.toggle('active', b.getAttribute('data-mode') === mode));
+      localStorage.setItem('admin_students_mode', mode);
+    };
+    const savedMode = localStorage.getItem('admin_students_mode') || 'small';
+    setMode(savedMode);
+    modeButtons.forEach(b => b.addEventListener('click', () => setMode(b.getAttribute('data-mode'))));
+
+    // filter
+    const yearFilter = document.getElementById('yearFilter');
+    const q = document.getElementById('q');
+
+    const applyFilter = () => {
+      const year = yearFilter.value;
+      const query = (q.value || '').trim().toLowerCase();
+
+      document.querySelectorAll('[data-year]').forEach(section => {
+        const isYearOk = !year || section.getAttribute('data-year') === year;
+        let anyVisible = false;
+
+        section.querySelectorAll('.item').forEach(item => {
+          const text = item.getAttribute('data-q') || '';
+          const hit = !query || text.includes(query);
+          const show = isYearOk && hit;
+          item.style.display = show ? '' : 'none';
+          if (show) anyVisible = true;
+        });
+
+        section.style.display = (isYearOk && (anyVisible || !query)) ? '' : 'none';
+      });
+    };
+
+    yearFilter.addEventListener('change', () => {
+      localStorage.setItem('admin_students_year', yearFilter.value);
+      applyFilter();
+    });
+    q.addEventListener('input', applyFilter);
+
+    const savedYear = localStorage.getItem('admin_students_year') || '';
+    yearFilter.value = savedYear;
+    applyFilter();
+
+    // click to edit
+    document.addEventListener('click', (e) => {
+      const del = e.target.closest('[data-action="delete"]');
+      if (del) return;
+      const card = e.target.closest('.item');
+      if (!card) return;
+      const link = card.querySelector('a.edit');
+      if (link && !e.target.closest('a')) {
+        window.location.href = link.getAttribute('href');
+      }
+    });
+
+    // delete
+    document.addEventListener('click', async (e) => {
+      const del = e.target.closest('[data-action="delete"]');
+      if (!del) return;
+      const card = del.closest('.item');
+      const sid = card?.getAttribute('data-id');
+      if (!sid) return;
+      if (!confirm('确定删除这个学生吗？')) return;
+      try {
+        const res = await fetch(`/admin/students/${encodeURIComponent(sid)}/delete`, { method: 'POST' });
+        if (!res.ok) throw new Error('delete failed');
+        card.remove();
+        toast('已删除');
+      } catch (err) {
+        console.error(err);
+        toast('删除失败');
+      }
+    });
+  </script>
+</body>
+</html>

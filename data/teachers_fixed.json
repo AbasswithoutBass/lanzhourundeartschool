@@ -1,0 +1,52 @@
+[
+  {
+    "id": "chen_tao",
+    "name": "陈涛",
+    "department": "管理部",
+    "position": "创始人",
+    "shortSummary": "青年男中音，兰州大学艺术学院音乐表演专业。声乐演出与教学经验丰富。",
+    "photo": "photos/chen_tao.jpg (占位)",
+    "bio": "陈涛，青年男中音，兰州大学艺术学院音乐表演专业毕业。长期活跃于歌剧与交响合唱演出舞台。",
+    "achievements": ["2025 年获“青歌新人”称号"]
+  },
+  {
+    "id": "su_haipeng",
+    "name": "苏海鹏",
+    "department": "管理部",
+    "position": "创始人",
+    "shortSummary": "润德艺术学校创始人，12 年以上艺考教学与管理经验。",
+    "photo": "photos/su_haipeng.jpg (占位)",
+    "bio": "苏海鹏，润德艺术学校创始人之一，从事艺考教学与管理多年。",
+    "achievements": []
+  },
+  {
+    "id": "wang_yu",
+    "name": "王玉",
+    "department": "管理部",
+    "position": "校长",
+    "shortSummary": "视唱练耳教师，自 2017 年从教。",
+    "photo": "photos/wang_yu.jpg (占位)",
+    "bio": "王玉，参与合唱团排练与视唱练耳教学。",
+    "achievements": []
+  },
+  {
+    "id": "han_gang",
+    "name": "韩刚",
+    "department": "舞蹈部",
+    "position": "舞蹈部校长",
+    "shortSummary": "舞蹈编导与执行导演，擅长民族舞编排。",
+    "photo": "photos/han_gang.jpg (占位)",
+    "bio": "韩刚，舞蹈编导与执行导演，参与多项大型晚会策划。",
+    "achievements": []
+  },
+  {
+    "id": "li_tian",
+    "name": "李甜",
+    "department": "舞蹈部",
+    "position": "舞蹈部执行校长",
+    "shortSummary": "长期从事民族舞蹈排演与教学。",
+    "photo": "photos/li_tian.jpg (占位)",
+    "bio": "李甜，参与多次省级与国家级演出与交流。",
+    "achievements": []
+  }
+]

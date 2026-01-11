@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>编辑教师</title>
+  <style>
+    body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;background:#f5f5f7;margin:0}
+    header{background:#fff;border-bottom:1px solid rgba(0,0,0,.06);padding:14px 18px;display:flex;align-items:center;justify-content:space-between}
+    a{color:#660874;text-decoration:none}
+    .wrap{max-width:980px;margin:22px auto;padding:0 16px}
+    .card{background:#fff;border-radius:16px;padding:16px;box-shadow:0 10px 24px rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.06)}
+    label{display:block;margin-top:12px;color:#444;font-size:13px}
+    input,textarea{width:100%;padding:10px 12px;border:1px solid rgba(0,0,0,.12);border-radius:12px;font-size:14px}
+    textarea{min-height:120px;resize:vertical}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+    .btn{display:inline-block;margin-top:14px;padding:10px 14px;border-radius:12px;background:#660874;color:#fff;font-weight:700;border:none;cursor:pointer}
+    .btn2{display:inline-block;margin-top:14px;padding:10px 14px;border-radius:12px;background:#111827;color:#fff;font-weight:700;border:none;cursor:pointer}
+    .btnDanger{display:inline-block;margin-top:14px;padding:10px 14px;border-radius:12px;background:#b91c1c;color:#fff;font-weight:700;border:none;cursor:pointer}
+    .flash{margin:10px 0 0;padding:10px 12px;border-radius:12px;font-size:13px}
+    .flash.error{background:#fff1f2;color:#9f1239;border:1px solid rgba(159,18,57,.15)}
+    .flash.ok{background:#ecfeff;color:#155e75;border:1px solid rgba(21,94,117,.15)}
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    th,td{padding:10px 8px;border-bottom:1px solid rgba(0,0,0,.06);text-align:left;vertical-align:top;font-size:14px}
+    th{font-size:13px;color:#666;font-weight:700}
+    .small{font-size:12px;color:#666}
+    .checkRow{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:10px}
+    .checkRow label{margin:0;display:flex;gap:8px;align-items:center}
+  </style>
+</head>
+<body>
+  <header>
+    <div><a href="/admin/teachers">← 返回列表</a></div>
+    <div style="font-weight:700">编辑教师：{{ teacher.name }}</div>
+    <div><a href="/logout">退出</a></div>
+  </header>
+
+  <div class="wrap">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for cat, msg in messages %}
+          <div class="flash {{cat}}">{{msg}}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="card">
+      <div class="row">
+        <div>
+          <label>头像路径（相对站点根目录）</label>
+          <input name="photo" form="f" value="{{ teacher.photo or '' }}" placeholder="photos/xxx.jpg" />
+        </div>
+        <div>
+          <label>一句话简介（shortSummary）</label>
+          <input name="shortSummary" form="f" value="{{ teacher.shortSummary or '' }}" placeholder="可留空" />
+        </div>
+      </div>
+
+      <label>详细简介（bio）</label>
+      <textarea name="bio" form="f" placeholder="可留空">{{ teacher.bio or '' }}</textarea>
+
+      <label>岗位与排序（roles）</label>
+      <div class="small">前端展示按 roles[].order 排序；拖拽排序请用“教师管理（按部门预览 + 拖拽排序）”。此页适合精确改岗位文字与 order。</div>
+
+      <form id="f" method="post" action="">
+        <input type="hidden" name="action" value="save_all" />
+        <table>
+          <thead>
+            <tr>
+              <th style="width:42px">删</th>
+              <th>部门</th>
+              <th>岗位</th>
+              <th style="width:110px">order</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in (teacher.roles or []) %}
+            <tr>
+              <td>
+                <input type="checkbox" name="role_delete" value="{{ loop.index0 }}" />
+              </td>
+              <td>
+                <input name="role_department" value="{{ r.department }}" />
+              </td>
+              <td>
+                <input name="role_position" value="{{ r.position }}" />
+              </td>
+              <td>
+                <input name="role_order" type="number" value="{{ r.order }}" />
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <div class="checkRow">
+          <label><input type="checkbox" name="apply_rules" checked /> 应用规则（理论组归类/岗位去重/岗位规范化）</label>
+          <label><input type="checkbox" name="apply_mgmt_order" checked /> 管理部按固定顺序设置 order</label>
+        </div>
+
+        <button class="btn" type="submit">保存（更新岗位/排序）</button>
+      </form>
+
+      <div style="height:14px"></div>
+
+      <label>新增岗位</label>
+      <form method="post" action="">
+        <input type="hidden" name="action" value="add_role" />
+        <div class="row">
+          <div>
+            <label>部门</label>
+            <input name="new_department" placeholder="例如：声乐组 / 器乐组 / 理论组 / 管理部" />
+          </div>
+          <div>
+            <label>order</label>
+            <input name="new_order" type="number" placeholder="例如：999" />
+          </div>
+        </div>
+        <label>岗位</label>
+        <input name="new_position" placeholder="例如：声乐教师 / 钢琴名师 / 创始人" />
+
+        <div class="checkRow">
+          <label><input type="checkbox" name="apply_rules" checked /> 应用规则</label>
+          <label><input type="checkbox" name="apply_mgmt_order" checked /> 管理部固定顺序</label>
+        </div>
+
+        <button class="btn2" type="submit">新增岗位</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

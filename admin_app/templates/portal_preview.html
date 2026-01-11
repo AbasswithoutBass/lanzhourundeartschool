@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{ post.title or '预览' }}</title>
+  <style>
+    body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;background:#f5f5f7;margin:0}
+    header{background:#fff;border-bottom:1px solid rgba(0,0,0,.06);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    a{color:#660874;text-decoration:none}
+    .wrap{max-width:980px;margin:18px auto;padding:0 16px}
+    .card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 10px 24px rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.06)}
+    .meta{color:#6B6B6F;font-size:13px;line-height:1.6}
+    .body{padding:18px 20px 22px;line-height:1.9;color:#111}
+    .body img{max-width:100%;height:auto;border-radius:12px}
+  </style>
+</head>
+<body>
+  <header>
+    <div style="font-weight:800">文章预览</div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <a href="/admin/portal/{{ post.id }}">返回编辑</a>
+      <a href="/admin/portal">返回列表</a>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="card">
+      {% if post.coverImage %}
+        <img src="/site/{{ post.coverImage }}" style="width:100%;height:260px;object-fit:cover;display:block" alt="cover">
+      {% endif %}
+      <div style="padding:18px 20px 0">
+        <h1 style="margin:0 0 10px 0;line-height:1.25">{{ post.title or '未命名' }}</h1>
+        <div class="meta">
+          {% if post.category %}<b style="color:#660874">{{ post.category }}</b>{% endif %}
+          {% if post.publishedAt %} · {{ post.publishedAt }}{% endif %}
+          {% if post.tags %} · {% for t in post.tags[:8] %}#{{ t }}{% if not loop.last %} {% endif %}{% endfor %}{% endif %}
+        </div>
+      </div>
+      <div class="body">
+        {{ (post.bodyHtml or '')|safe }}
+      </div>
+    </div>
+  </div>
+</body>
+</html>

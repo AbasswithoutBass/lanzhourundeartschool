@@ -1,0 +1,13 @@
+[
+  {
+    "id": "demo_import_teacher_001",
+    "name": "导入示例老师",
+    "photo": "teachers/photos/demo_import_teacher_001.jpg",
+    "shortSummary": "批量导入示例",
+    "bio": "这是通过批量导入创建/更新的老师记录。",
+    "achievements": [],
+    "roles": [
+      {"department": "管理部", "position": "（待设置）", "order": 999}
+    ]
+  }
+]

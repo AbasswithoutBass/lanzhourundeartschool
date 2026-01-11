@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{ '新建文章' if is_new else '编辑文章' }}</title>
+  <style>
+    body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;background:#f5f5f7;margin:0}
+    header{background:#fff;border-bottom:1px solid rgba(0,0,0,.06);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    a{color:#660874;text-decoration:none}
+    .wrap{max-width:1100px;margin:24px auto;padding:0 16px}
+    .grid{display:grid;grid-template-columns:1.2fr 0.8fr;gap:14px}
+    @media(max-width:920px){.grid{grid-template-columns:1fr}}
+    .card{background:#fff;border-radius:16px;padding:16px;box-shadow:0 10px 24px rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.06)}
+    label{display:block;font-size:13px;color:#666;font-weight:700;margin:10px 0 6px}
+    input,select,textarea{width:100%;padding:10px 12px;border-radius:12px;border:1px solid rgba(0,0,0,0.12);outline:none;background:#fff}
+    textarea{min-height:260px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;line-height:1.6}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media(max-width:520px){.row{grid-template-columns:1fr}}
+    .btn{display:inline-block;padding:10px 12px;border-radius:12px;background:#660874;color:#fff;font-weight:800;border:none;cursor:pointer}
+    .btn2{display:inline-block;padding:10px 12px;border-radius:12px;background:#fff;color:#660874;font-weight:800;border:1px solid rgba(102,8,116,0.25);cursor:pointer}
+    .k{color:#666;font-size:13px;line-height:1.6}
+    .msg{margin:4px 0;font-size:13px;line-height:1.5}
+    .msg.ok{color:#1d6a2b}
+    .msg.error{color:#c21a12}
+    .pill{display:inline-block;font-size:12px;padding:3px 10px;border-radius:999px;background:rgba(102,8,116,0.08);color:#660874;font-weight:800}
+    .danger{background:#fff;border:1px solid rgba(255,59,48,0.25);color:#c21a12}
+  </style>
+</head>
+<body>
+  <header>
+    <div style="font-weight:800">{{ '新建文章' if is_new else '编辑文章' }}</div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <a href="/admin/portal">返回列表</a>
+      {% if not is_new %}
+        <a href="/admin/portal/{{ post.id }}/preview" target="_blank" rel="noopener">预览</a>
+      {% endif %}
+      <a href="/logout">退出</a>
+    </div>
+  </header>
+
+  <div class="wrap">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="card" style="margin-bottom:12px">
+          {% for category, message in messages %}
+            <div class="msg {{ 'error' if category=='error' else 'ok' }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <div class="grid">
+      <div class="card">
+        <form method="post" action="{{ '/admin/portal/new' if is_new else '/admin/portal/' + post.id }}">
+          <label>标题（必填）</label>
+          <input name="title" value="{{ post.title or '' }}" required />
+
+          <div class="row">
+            <div>
+              <label>分类</label>
+              <input name="category" value="{{ post.category or '' }}" placeholder="例如：通知 / 政策 / 招生" />
+            </div>
+            <div>
+              <label>标签（逗号分隔）</label>
+              <input name="tags" value="{{ (post.tags|join(', ')) if post.tags else '' }}" placeholder="例如：甘肃省教育厅, 重要" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label>状态</label>
+              <select name="status">
+                <option value="draft" {{ 'selected' if (post.status or 'draft') != 'published' else '' }}>草稿</option>
+                <option value="published" {{ 'selected' if (post.status or '') == 'published' else '' }}>发布</option>
+              </select>
+            </div>
+            <div>
+              <label>发布时间（可空）</label>
+              <input name="publishedAt" value="{{ post.publishedAt or '' }}" placeholder="例如：2026-01-11T09:30:00" />
+              <div class="k">留空时：首次“发布”会自动填当前时间。</div>
+            </div>
+          </div>
+
+          <label>置顶</label>
+          <div class="k"><input type="checkbox" name="pinned" value="1" {{ 'checked' if post.pinned else '' }} style="width:auto;vertical-align:middle" /> <span class="pill">置顶</span>（列表排序优先）</div>
+
+          <label>封面图片路径（可空）</label>
+          <input name="coverImage" value="{{ post.coverImage or '' }}" placeholder="例如：assets/portal/202601/xxx.jpg" />
+
+          <label>分享链接（用于海报二维码，可空）</label>
+          <input name="shareUrl" value="{{ post.shareUrl or '' }}" placeholder="例如：https://xxx.pages.dev/#admission" />
+          <div class="k">填了这里后，“竖屏海报”会自动生成二维码，方便直接发公众号引流回站点。</div>
+
+          <label>摘要（用于列表展示）</label>
+          <textarea name="summary" style="min-height:92px;font-family:inherit">{{ post.summary or '' }}</textarea>
+
+          <label>正文（支持 HTML，图片用 &lt;img src=&quot;...&quot;&gt;）</label>
+          <textarea name="bodyHtml">{{ post.bodyHtml or '' }}</textarea>
+
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px">
+            <button class="btn" type="submit">保存</button>
+            <a class="btn2" href="/admin/portal">返回列表</a>
+            {% if not is_new %}
+              <a class="btn2" href="/admin/portal/{{ post.id }}/poster.png?theme=brand" target="_blank" rel="noopener">海报-品牌紫(PNG)</a>
+              <a class="btn2" href="/admin/portal/{{ post.id }}/poster.png?theme=minimal" target="_blank" rel="noopener">海报-极简黑白(PNG)</a>
+              <form method="post" action="/admin/portal/{{ post.id }}/delete" onsubmit="return confirm('确定删除这篇文章？');" style="display:inline">
+                <button class="btn2 danger" type="submit">删除</button>
+              </form>
+            {% endif %}
+          </div>
+
+          {% if not is_new %}
+            <div class="k" style="margin-top:10px">
+              海报参数：可在链接后加 <span style="font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace">&amp;max_lines=18</span> 控制正文截断行数；加 <span style="font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace">&amp;qr=0</span> 关闭二维码。
+            </div>
+          {% endif %}
+
+          <div class="k" style="margin-top:10px">
+            前台会从 <span style="font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace">data/portal_posts.json</span> 读取并展示“已发布”的文章。
+          </div>
+        </form>
+      </div>
+
+      <div class="card">
+        <div style="font-weight:800;margin-bottom:6px">图片上传</div>
+        <div class="k">上传后会保存到 <span style="font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace">assets/portal/</span>，并返回可直接粘贴到正文/封面的路径。</div>
+
+        <label>选择图片（jpg/png/webp）</label>
+        <input id="imgFile" type="file" accept=".jpg,.jpeg,.png,.webp" />
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px">
+          <button id="uploadBtn" class="btn2" type="button">上传图片</button>
+        </div>
+
+        <div id="uploadOut" class="k" style="margin-top:12px"></div>
+
+        {% if post.coverImage %}
+          <div style="margin-top:14px;font-weight:800">封面预览</div>
+          <div class="k">（预览通过后台内部的 /site/ 映射，仅用于管理界面）</div>
+          <div style="margin-top:8px;border:1px solid rgba(0,0,0,0.08);border-radius:12px;overflow:hidden;background:#fff">
+            <img src="/site/{{ post.coverImage }}" style="width:100%;height:220px;object-fit:cover;display:block" alt="cover">
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const btn = document.getElementById('uploadBtn');
+      const fileEl = document.getElementById('imgFile');
+      const out = document.getElementById('uploadOut');
+      if(!btn || !fileEl || !out) return;
+
+      btn.addEventListener('click', async ()=>{
+        const f = fileEl.files && fileEl.files[0];
+        if(!f){ out.textContent = '请选择图片文件。'; return; }
+        out.textContent = '上传中…';
+
+        const fd = new FormData();
+        fd.append('image', f);
+
+        try{
+          const resp = await fetch('/admin/portal/upload-image', {method:'POST', body: fd});
+          const j = await resp.json();
+          if(!resp.ok || !j.ok) throw new Error(j && j.error ? j.error : 'upload failed');
+
+          const path = j.path;
+          const preview = '/site/' + path;
+          out.innerHTML = [
+            '上传成功：',
+            '<div style="margin-top:6px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace">'+ path +'</div>',
+            '<div style="margin-top:8px">正文用：<span style="font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace">&lt;img src=&quot;'+ path +'&quot; alt=&quot;&quot;&gt;</span></div>',
+            '<div style="margin-top:10px;border:1px solid rgba(0,0,0,0.08);border-radius:12px;overflow:hidden"><img src="'+ preview +'" style="width:100%;height:200px;object-fit:cover;display:block"></div>'
+          ].join('');
+        }catch(e){
+          console.error(e);
+          out.textContent = '上传失败：' + (e && e.message ? e.message : String(e));
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!-- 教师卡片渲染片段（按部门分组，并带入场/悬停动效） -->
+<section id="teachers-section" aria-labelledby="teachers-title">
+  <h2 id="teachers-title">教师团队</h2>
+  <div id="teachers-by-dept"></div>
+</section>
+
+<style>
+/* 样式：按部门分组，每组带标题；卡片带交错入场动画与悬停高亮 */
+#teachers-section{padding:36px 20px;background:transparent}
+#teachers-title{font-size:28px;color:#1D1D1F;margin-bottom:20px}
+.dept-block{margin-bottom:28px}
+.dept-title{font-size:20px;margin:10px 0 12px;color:#2B2B2B}
+.dept-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+.teacher-card{background:rgba(255,255,255,0.9);border-radius:12px;padding:14px;display:flex;gap:12px;align-items:flex-start;box-shadow:0 6px 18px rgba(0,0,0,0.06);cursor:pointer;transform:translateY(12px);opacity:0;transition:transform 420ms cubic-bezier(.2,.8,.2,1),opacity 420ms ease}
+.teacher-card.in{transform:none;opacity:1}
+.teacher-card:hover{transform:translateY(-6px);box-shadow:0 18px 28px rgba(0,0,0,0.12)}
+.teacher-photo{width:72px;height:72px;border-radius:8px;object-fit:cover;flex:0 0 72px}
+.teacher-meta{flex:1}
+.teacher-name{font-weight:700;color:#111}
+.teacher-pos{font-size:13px;color:#6B6B6F;margin-top:4px}
+.fade-enter-stagger{transition-delay: var(--stagger)}
+
+/* 响应式微调 */
+@media (max-width:520px){.teacher-card{flex-direction:row;gap:10px}.teacher-photo{width:64px;height:64px}}
+</style>
+
+<script>
+// 按部门分组渲染并做交错入场动画
+(function(){
+  const container = document.getElementById('teachers-by-dept');
+  if(!container) return;
+
+  fetch('data/teachers.json')
+    .then(r => r.ok ? r.json() : Promise.reject(r))
+    .then(data => renderByDept(data))
+    .catch(err => {
+      console.error('加载 teachers.json 失败', err);
+      container.innerHTML = '<p>教师信息加载失败。</p>';
+    });
+
+  function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  // v2 数据：一个教师对象含多个 roles（跨部门/身兼数职）
+  // 展示排序：按 teacher-liest 的出现顺序（roles[].order）
+  function flattenRoleCards(teachers){
+    const cards = [];
+    (teachers||[]).forEach(t => {
+      (t.roles||[]).forEach(r => {
+        const order = Number.isFinite(r.order) ? r.order : parseInt(r.order || '999999', 10);
+        cards.push({
+          teacher: t,
+          department: r.department || '其他',
+          position: r.position || '',
+          order: Number.isFinite(order) ? order : 999999
+        });
+      });
+    });
+    return cards;
+  }
+
+  function groupByDept(cards){
+    const map = new Map();
+    (cards||[]).forEach(c => {
+      const d = c.department || '其他';
+      if(!map.has(d)) map.set(d, []);
+      map.get(d).push(c);
+    });
+    return map;
+  }
+
+  function renderByDept(teachers){
+    container.innerHTML = '';
+    const cards = flattenRoleCards(teachers);
+    const groups = groupByDept(cards);
+
+    const deptEntries = Array.from(groups.entries()).map(([dept, items]) => {
+      const minOrder = Math.min(...items.map(x => x.order));
+      return {dept, items, minOrder};
+    }).sort((a,b)=>{
+      const ad = String(a.dept||'');
+      const bd = String(b.dept||'');
+      if(ad === '舞蹈部' && bd !== '舞蹈部') return 1;
+      if(bd === '舞蹈部' && ad !== '舞蹈部') return -1;
+      return a.minOrder - b.minOrder;
+    });
+
+    deptEntries.forEach(({items, dept}) => {
+      const block = document.createElement('section');
+      block.className = 'dept-block';
+      block.innerHTML = `<h3 class="dept-title">${esc(dept)}</h3><div class="dept-grid"></div>`;
+      const grid = block.querySelector('.dept-grid');
+      items
+        .slice()
+        .sort((a,b)=>a.order-b.order)
+        .forEach((c, idx) => {
+        const t = c.teacher;
+        const photo = t.photo && !String(t.photo).includes('占位') ? t.photo : 'photos/placeholder.jpg';
+        const card = document.createElement('article');
+        card.className = 'teacher-card';
+        card.setAttribute('role','listitem');
+        card.innerHTML = `
+          <img class="teacher-photo" src="${esc(photo)}" alt="${esc(t.name)} 头像">
+          <div class="teacher-meta">
+            <div class="teacher-name">${esc(t.name)}</div>
+            <div class="teacher-pos">${esc(c.position)}</div>
+          </div>
+        `;
+        card.addEventListener('click', ()=> showDetail(t, c));
+        // stagger via CSS var
+        card.style.setProperty('--stagger', (idx * 40) + 'ms');
+        card.classList.add('fade-enter-stagger');
+        grid.appendChild(card);
+      });
+      container.appendChild(block);
+    });
+
+    // 使用 IntersectionObserver 做入场动画（当卡片进入视口时加上 .in）
+    const obs = new IntersectionObserver((entries)=>{
+      entries.forEach(en => {
+        if(en.isIntersecting){
+          const el = en.target;
+          // 通过 setTimeout 实现交错动画（参考 --stagger）
+          const delay = parseInt(getComputedStyle(el).getPropertyValue('--stagger')) || 0;
+          setTimeout(()=> el.classList.add('in'), delay);
+          obs.unobserve(el);
+        }
+      });
+    }, {threshold: 0.12});
+
+    document.querySelectorAll('.teacher-card').forEach(c => obs.observe(c));
+  }
+
+  // 简洁模态弹窗用于显示详细信息
+  function showDetail(t, roleCtx){
+    const dlg = document.createElement('div');
+    dlg.className = 'teacher-modal';
+    Object.assign(dlg.style, {position:'fixed',left:0,top:0,right:0,bottom:0,background:'rgba(0,0,0,0.5)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:9999});
+    const box = document.createElement('div');
+    Object.assign(box.style, {width:'min(880px,92%)',maxHeight:'80%',overflow:'auto',background:'#fff',borderRadius:'12px',padding:'20px'});
+    box.innerHTML = `
+      <div style="display:flex;gap:12px;align-items:center">
+        <img src="${esc(t.photo && !t.photo.includes('占位')?t.photo:'photos/placeholder.jpg')}" style="width:96px;height:96px;object-fit:cover;border-radius:8px">
+        <div>
+          <h3 style="margin:0">${esc(t.name)}</h3>
+          <div style="color:#666">${esc(roleCtx && roleCtx.position ? roleCtx.position : '')} · ${esc(roleCtx && roleCtx.department ? roleCtx.department : '')}</div>
+        </div>
+      </div>
+      <hr style="margin:12px 0">
+      <p>${esc(t.bio)}</p>
+      <p><strong>主要成就：</strong></p>
+      <ul>${(t.achievements||[]).map(a=>'<li>'+esc(a)+'</li>').join('')}</ul>
+      <div style="text-align:right;margin-top:12px;"><button id="closeBtn">关闭</button></div>
+    `;
+    dlg.appendChild(box);
+    document.body.appendChild(dlg);
+    dlg.querySelector('#closeBtn').addEventListener('click', ()=> document.body.removeChild(dlg));
+  }
+
+})();
+</script>

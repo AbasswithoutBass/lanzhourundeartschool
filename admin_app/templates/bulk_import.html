@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>批量导入</title>
+  <style>
+    body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;background:#f5f5f7;margin:0}
+    header{background:#fff;border-bottom:1px solid rgba(0,0,0,.06);padding:14px 18px;display:flex;align-items:center;justify-content:space-between}
+    a{color:#660874;text-decoration:none}
+    .wrap{max-width:1100px;margin:22px auto;padding:0 16px}
+    .card{background:#fff;border-radius:16px;padding:16px;box-shadow:0 10px 24px rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.06)}
+    .card + .card{margin-top:14px}
+    h2{margin:0 0 8px;font-size:16px}
+    .small{font-size:12px;color:#666;line-height:1.6}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .btn{display:inline-block;margin-top:10px;padding:10px 14px;border-radius:12px;background:#660874;color:#fff;font-weight:800;border:none;cursor:pointer}
+    .btn2{display:inline-block;margin-top:10px;padding:10px 14px;border-radius:12px;background:#111827;color:#fff;font-weight:800;border:none;cursor:pointer}
+    select{padding:10px 12px;border-radius:12px;border:1px solid rgba(0,0,0,.12);background:#fff}
+    input[type="file"]{padding:10px 12px;border-radius:12px;border:1px dashed rgba(0,0,0,.18);background:#fff;min-width:min(560px, 100%)}
+    .flash{margin:10px 0 0;padding:10px 12px;border-radius:12px;font-size:13px;background:#fff;border:1px solid rgba(0,0,0,.08)}
+    .flash.error{background:#fff1f2;color:#9f1239;border:1px solid rgba(159,18,57,.15)}
+    .flash.ok{background:#ecfeff;color:#155e75;border:1px solid rgba(21,94,117,.15)}
+    pre{white-space:pre-wrap;background:#0b1020;color:#e5e7eb;padding:12px;border-radius:12px;overflow:auto}
+    code{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:12px}
+    .k{font-weight:900;color:#111827}
+  </style>
+</head>
+<body>
+  <header>
+    <div><a href="/admin">← 返回后台首页</a></div>
+    <div style="font-weight:900">批量导入</div>
+    <div><a href="/logout">退出</a></div>
+  </header>
+
+  <div class="wrap">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for cat, msg in messages %}
+          <div class="flash {{cat}}">{{msg}}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% if result %}
+      <div class="card">
+        <h2>导入结果</h2>
+        <div class="small">
+          <div><span class="k">类型：</span>{{ result.kind }}</div>
+          <div><span class="k">模式：</span>{{ result.mode }}</div>
+          <div><span class="k">校验通过：</span>{{ '是' if result.ok else '否' }}</div>
+          <div><span class="k">处理记录：</span>{{ result.records }}</div>
+          <div><span class="k">新增：</span>{{ result.created }}　<span class="k">更新：</span>{{ result.updated }}</div>
+          <div><span class="k">复制文件：</span>{{ result.files_copied }}</div>
+        </div>
+        {% if result.errors %}
+          <div class="flash error" style="margin-top:10px">
+            <div style="font-weight:900;margin-bottom:6px">错误（需先修复才能导入）</div>
+            <div class="small">
+              {% for e in result.errors %}
+                <div>- {{ e }}</div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+        {% if result.warnings %}
+          <div class="flash" style="margin-top:10px">
+            <div style="font-weight:900;margin-bottom:6px">提示</div>
+            <div class="small">
+              {% for e in result.warnings %}
+                <div>- {{ e }}</div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="card">
+      <h2>规范文件夹结构（必须遵守）</h2>
+      <div class="small">
+        请选择一个“打包目录”上传（可直接选文件夹）。系统会读取该目录下的结构并严格校验：
+      </div>
+      <pre><code>导入包根目录/
+  teachers/
+    teachers.json
+    photos/
+      *.jpg|png|webp
+  students/
+    students.json
+    photos/
+      *.jpg|png|webp
+    admissions/
+      *.jpg|png|webp
+</code></pre>
+      <div class="small">
+        <div>- 只接受相对路径；不允许出现 <code>..</code> 或绝对路径。</div>
+        <div>- <code>teachers/teachers.json</code> 的 <code>photo</code> 只能写 <code>teachers/photos/xxx.jpg</code>（导入后会自动改写成 <code>photos/xxx.jpg</code>）。</div>
+        <div>- <code>students/students.json</code> 的 <code>photo</code> 必须写 <code>students/photos/xxx.jpg</code>；<code>admissions[].image</code> 必须写 <code>students/admissions/xxx.jpg</code>。</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>导入教师</h2>
+      <form method="post" action="/admin/import/teachers" enctype="multipart/form-data">
+        <div class="row">
+          <input type="file" name="files" webkitdirectory directory multiple required />
+          <select name="mode" title="导入模式">
+            <option value="merge">合并（按 id 更新/新增）</option>
+            <option value="replace">覆盖（按 id 整条覆盖）</option>
+          </select>
+          <label class="small" style="display:flex;gap:8px;align-items:center;margin:0">
+            <input type="checkbox" name="dry_run" /> 仅校验（不写入）
+          </label>
+        </div>
+        <div class="small" style="margin-top:8px">
+          规则（教师）：必须包含 <code>teachers/teachers.json</code> 与 <code>teachers/photos/</code>；
+          <code>teachers.json</code> 里每条的 <code>photo</code> 必须写 <code>teachers/photos/文件名.jpg</code>（支持 jpg/png/webp）。
+        </div>
+        <button class="btn" type="submit">上传并导入教师</button>
+      </form>
+      <div class="small" style="margin-top:8px">提示：Chrome/Edge/Safari 支持选择文件夹；如果浏览器不支持，请把目录压缩成 zip 我再给你加 zip 导入。</div>
+    </div>
+
+    <div class="card">
+      <h2>教师 Excel 导入（.xlsx）</h2>
+      <div class="small">
+        每行可代表一个岗位（同一 <code>id</code> 可出现多行来添加多岗）。必填列：<code>id</code>、<code>name</code>。
+        可选列：<code>photo</code>（写 <code>photos/xxx.jpg</code> 或 <code>teachers/photos/xxx.jpg</code>）、<code>shortSummary</code>、<code>bio</code>、<code>achievements</code>（用 <code>|</code> 分隔）、<code>department</code>、<code>position</code>、<code>order</code>。
+        可选：同时选择一个文件夹上传（必须包含 <code>teachers/photos/</code>），系统会按 Excel 中的 photo 路径自动复制到项目里。
+      </div>
+      <div class="small" style="margin-top:8px">
+        <a href="/admin/import/templates/teachers.xlsx">下载教师 Excel 模板</a>
+      </div>
+      <form method="post" action="/admin/import/teachers-excel" enctype="multipart/form-data">
+        <div class="row">
+          <input type="file" name="excel" accept=".xlsx" required />
+          <input type="file" name="files" webkitdirectory directory multiple title="可选：包含 teachers/photos 的目录" />
+          <select name="mode" title="导入模式">
+            <option value="merge">合并（按 id 更新/新增）</option>
+            <option value="replace">覆盖（按 id 整条覆盖）</option>
+          </select>
+          <label class="small" style="display:flex;gap:8px;align-items:center;margin:0">
+            <input type="checkbox" name="dry_run" /> 仅校验（不写入）
+          </label>
+        </div>
+        <button class="btn" type="submit">上传并导入（Excel）</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>导入学生</h2>
+      <form method="post" action="/admin/import/students" enctype="multipart/form-data">
+        <div class="row">
+          <input type="file" name="files" webkitdirectory directory multiple required />
+          <select name="mode" title="导入模式">
+            <option value="merge">合并（按 id 更新/新增）</option>
+            <option value="replace">覆盖（按 id 整条覆盖）</option>
+          </select>
+          <label class="small" style="display:flex;gap:8px;align-items:center;margin:0">
+            <input type="checkbox" name="dry_run" /> 仅校验（不写入）
+          </label>
+        </div>
+        <div class="small" style="margin-top:8px">
+          规则（学生）：必须包含 <code>students/students.json</code>、<code>students/photos/</code>、<code>students/admissions/</code>；
+          <code>students.json</code> 里 <code>photo</code> 必须写 <code>students/photos/文件名</code>，
+          <code>admissions[].image</code> 必须写 <code>students/admissions/文件名</code>（支持 jpg/png/webp）。
+        </div>
+        <button class="btn2" type="submit">上传并导入学生</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>学生 Excel 导入（.xlsx）</h2>
+      <div class="small">
+        必填列：<code>id</code>、<code>name</code>、<code>school</code>、<code>major</code>、<code>year</code>。
+        可选列：<code>photo</code>（必须写 <code>students/photos/xxx.jpg</code>）、
+        <code>admission_image</code>（必须写 <code>students/admissions/xxx.jpg</code>）、<code>admission_note</code>、<code>admission_watermarked</code>（是/否、1/0、true/false 均可）。
+        同一 <code>id</code> 可出现多行来添加多张录取截图。
+        可选：同时选择一个文件夹上传（必须包含 <code>students/photos/</code>、<code>students/admissions/</code>），系统会按 Excel 中的路径自动复制到项目里。
+      </div>
+      <div class="small" style="margin-top:8px">
+        <a href="/admin/import/templates/students.xlsx">下载学生 Excel 模板</a>
+      </div>
+      <form method="post" action="/admin/import/students-excel" enctype="multipart/form-data">
+        <div class="row">
+          <input type="file" name="excel" accept=".xlsx" required />
+          <input type="file" name="files" webkitdirectory directory multiple title="可选：包含 students/photos 与 students/admissions 的目录" />
+          <select name="mode" title="导入模式">
+            <option value="merge">合并（按 id 更新/新增）</option>
+            <option value="replace">覆盖（按 id 整条覆盖）</option>
+          </select>
+          <label class="small" style="display:flex;gap:8px;align-items:center;margin:0">
+            <input type="checkbox" name="dry_run" /> 仅校验（不写入）
+          </label>
+        </div>
+        <button class="btn2" type="submit">上传并导入（Excel）</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

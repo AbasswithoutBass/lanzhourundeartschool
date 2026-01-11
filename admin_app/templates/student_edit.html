@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>编辑学生</title>
+  <style>
+    body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;background:#f5f5f7;margin:0}
+    header{background:#fff;border-bottom:1px solid rgba(0,0,0,.06);padding:14px 18px;display:flex;align-items:center;justify-content:space-between}
+    a{color:#660874;text-decoration:none}
+    .wrap{max-width:1100px;margin:22px auto;padding:0 16px}
+    .card{background:#fff;border-radius:16px;padding:16px;box-shadow:0 10px 24px rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.06)}
+    .card + .card{margin-top:14px}
+    label{display:block;margin-top:12px;color:#444;font-size:13px}
+    input[type="text"],
+    input[type="number"],
+    input[type="url"],
+    input[type="search"],
+    input[type="password"],
+    input:not([type]),
+    textarea{width:100%;padding:10px 12px;border:1px solid rgba(0,0,0,.12);border-radius:12px;font-size:14px}
+    input[type="checkbox"],input[type="radio"]{width:auto;padding:0;border:none;accent-color:#660874}
+    textarea{min-height:100px;resize:vertical}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .btn{display:inline-block;margin-top:14px;padding:10px 14px;border-radius:12px;background:#660874;color:#fff;font-weight:700;border:none;cursor:pointer}
+    .btn2{display:inline-block;margin-top:14px;padding:10px 14px;border-radius:12px;background:#111827;color:#fff;font-weight:700;border:none;cursor:pointer}
+    .btnDanger{display:inline-block;margin-top:14px;padding:10px 14px;border-radius:12px;background:#b91c1c;color:#fff;font-weight:700;border:none;cursor:pointer}
+    .flash{margin:10px 0 0;padding:10px 12px;border-radius:12px;font-size:13px}
+    .flash.error{background:#fff1f2;color:#9f1239;border:1px solid rgba(159,18,57,.15)}
+    .flash.ok{background:#ecfeff;color:#155e75;border:1px solid rgba(21,94,117,.15)}
+    table{width:100%;border-collapse:collapse;margin-top:8px}
+    th,td{padding:8px;border-bottom:1px solid rgba(0,0,0,.06);text-align:left;vertical-align:top;font-size:14px}
+    th{font-size:13px;color:#666;font-weight:700}
+    td.cb,th.cb{text-align:center;vertical-align:middle}
+    .small{font-size:12px;color:#666}
+  </style>
+</head>
+<body>
+  <header>
+    <div><a href="/admin/students">← 返回列表</a></div>
+    <div style="font-weight:700">编辑学生：{{ student.name }}</div>
+    <div><a href="/logout">退出</a></div>
+  </header>
+
+  <div class="wrap">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for cat, msg in messages %}
+          <div class="flash {{cat}}">{{msg}}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="card">
+      <div class="small">id: {{ student.id }}</div>
+
+      <form id="f" method="post" action="">
+        <input type="hidden" name="action" value="save_all" />
+
+        <div class="row">
+          <div>
+            <label>姓名</label>
+            <input name="name" value="{{ student.name or '' }}" required />
+          </div>
+          <div>
+            <label>年份</label>
+            <input name="year" type="number" value="{{ student.year or '' }}" placeholder="2026" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>学校</label>
+            <input name="school" value="{{ student.school or '' }}" required />
+          </div>
+          <div>
+            <label>专业</label>
+            <input name="major" value="{{ student.major or '' }}" required />
+          </div>
+        </div>
+
+        <label>照片路径</label>
+        <input name="photo" value="{{ student.photo or '' }}" placeholder="students/photos/xxx.jpg 或 润德1.png" />
+
+        <label>录取截图（admissions）</label>
+        <div class="small">提示：image 写相对站点根目录的路径；勾选“已水印”仅作标记，不会自动生成水印图片。</div>
+
+        <table>
+          <thead>
+            <tr>
+              <th class="cb" style="width:42px">删</th>
+              <th>image</th>
+              <th class="cb" style="width:90px">已水印</th>
+              <th>note</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for a in (student.admissions or []) %}
+            <tr>
+              <td class="cb"><input type="checkbox" name="admission_delete" value="{{ loop.index0 }}" /></td>
+              <td><input name="admission_image" value="{{ a.image }}" /></td>
+              <td class="cb">
+                <input type="checkbox" name="admission_watermarked" value="{{ loop.index0 }}" {% if a.watermarked %}checked{% endif %} />
+              </td>
+              <td><input name="admission_note" value="{{ a.note or '' }}" /></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <button class="btn" type="submit">保存</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <label>新增录取截图</label>
+      <form method="post" action="">
+        <input type="hidden" name="action" value="add_admission" />
+        <div class="row">
+          <div>
+            <label>image</label>
+            <input name="new_image" placeholder="students/admissions/xxx.jpg" />
+          </div>
+          <div>
+            <label>note</label>
+            <input name="new_note" placeholder="例如：录取截图" />
+          </div>
+        </div>
+        <label style="display:flex;gap:8px;align-items:center;margin-top:10px">
+          <input type="checkbox" name="new_watermarked" /> 已水印
+        </label>
+        <button class="btn2" type="submit">新增</button>
+      </form>
+
+      <form method="post" action="/admin/students/{{ student.id }}/delete" onsubmit="return confirm('确认删除该学生？此操作会写回 students.json（自动备份）。');">
+        <button class="btnDanger" type="submit">删除该学生</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

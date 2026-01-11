@@ -1,0 +1,85 @@
+2026-01-11  合并并修复 `data/teachers.json`：
+- 修复文件 JSON 语法错误，整理为单一数组。
+- 合并 `data/teachers_additions.json` 中新增器乐与理论组条目。
+- 更新 `docs/teachers.md`，添加“近期新增器乐教师”与“理论组教师”小节。
+2026-01-10 10:15 — 新建 TECHNICAL_HANDOVER.md：写入交底文档与初次任务清单。 — by Copilot
+2026-01-11 09:20 — 整理教师团队文案并保存为 docs/teachers.md，已修订语句与补充结构说明。 — by Copilot
+2026-01-11 10:05 — 生成 data/teachers.json（供前端渲染），包含教师团队结构化数据与占位头像路径。 — by Copilot
+2026-01-11 10:25 — 生成教师卡片渲染片段 `snippets/teachers_fragment.html`，包含 HTML/CSS/JS 渲染示例并说明替换点。 — by Copilot
+2026-01-11 10:40 — 将教师卡片渲染片段合入 `index.html`，替换名师占位区并添加注释与渲染脚本。 — by Copilot
+2026-01-11 11:05 — 将提供的声乐组教师条目整理并追加到 `data/teachers.json`，并在 `docs/teachers.md` 中新增“声乐组”章节。 — by Copilot
+2026-01-11 11:30 — 追加更多声乐组教师（吴彬、于伟、刘鹏、张铂、童倩影、黄子俊、柯夏）到 `data/teachers.json`，并更新 `docs/teachers.md`。 — by Copilot
+2026-01-11 11:55 — 追加声乐组新教师（刘恩骏、李缘园、张婧、台璐鑫、王盼、张涛）到 `data/teachers.json` 并更新 `docs/teachers.md`。 — by Copilot
+2026-01-11 12:20 — 追加器乐组教师（魏旭东、管民、阚鹏、王瑞玺、陈劲、宋景坤、张伟超）到 `data/teachers.json` 并更新 `docs/teachers.md`。 — by Copilot
+2026-01-11 12:45 — 追加器乐组新增教师（哈文泽、王哲宇、何佳蔚、梁军、董、王淳、王雪燕、赵天星）到 `data/teachers.json` 并更新 `docs/teachers.md`。 — by Copilot
+
+2026-01-11 13:10 — 发现 `data/teachers.json` 含损坏段，已备份为 `data/teachers.json.bak`，并创建 `data/teachers_fixed.json`（格式化并通过 JSON 校验）。 — by Copilot
+2026-01-11 13:10 — 下一步建议：替换前端 fetch 源为 `data/teachers_fixed.json` 或继续合并并清理主 `data/teachers.json`。 — by Copilot
+2026-01-11 13:25 — 已将前端 fetch 路径更新为 `data/teachers_fixed.json`，并更新了相关注释与错误日志（index.html + snippets/teachers_fragment.html）。 — by Copilot
+2026-01-11 13:40 — 合并 `data/teachers_fixed.json` 与 `data/teachers_additions.json`（从损坏的 additions 中提取有效对象）为单一 `data/teachers.json`，并将前端恢复为读取 `data/teachers.json`（备份保存在 `data/teachers.json.premerge.bak`）。 — by Copilot
+
+2026-01-11 14:05 — 创建教师数据管理模块 `modules/teachers/manage.py`（支持 list/validate/add/remove），并添加使用说明 `modules/teachers/README.md`。 — by Copilot
+ 
+2026-01-11 14:20 — 归档冗余与损坏文件到 `data/archive/`：`teachers.json.bak`、`teachers.json.bak2`、`teachers.json.premerge.bak`、`teachers_additions.json`。保留 `teachers.json`、`teachers_fixed.json`、`teachers_additions_extracted.json` 供前端与后续合并使用。 — by Copilot
+
+2026-01-11 14:30 — 已从仓库根目录删除冗余原始副本并确认归档位置：`data/archive/`（操作已完成）。 — by Copilot
+
+2026-01-11 14:50 — 更新前端教师展示：按部门分组显示并增加卡片入场动效（修改 `snippets/teachers_fragment.html` 并内联更新 `index.html`）。 — by Copilot
+
+2026-01-11 15:10 — 补全所有缺失教师（对比 docs/teachers.md）：新增 27 位教师到 `data/teachers.json`，包括管理部（2人）、声乐组（17人）、器乐组（8人）。当前总数 64 人，数据校验通过。 — by Copilot
+2026-01-11 15:30 — 修复开屏视频/poster变灰问题：添加紫色渐变背景与伪元素固定poster；优化整体色调：卡片渐变背景、柔和阴影、标题渐变色、优化教师与学生卡片hover效果。 — by Copilot
+2026-01-11 02:39:18 - 教师排序完成：已按 docs/teachers.md 原始顺序重新排序 data/teachers.json（62人），增强详情页面展示效果（新增渐变背景、动画、完整信息展示）
+2026-01-11 03:04:41 - 开始按用户提供的完整原文重建教师数据库（需要重新整理所有60+位教师的完整信息，修正错字和格式）
+2026-01-11 03:15:43 - 教师数据库重建完成：已按 docs/teachers.md 原始顺序重新排列 55 位教师（管理部6人、理论组3人、声乐组16人、器乐组19人、舞蹈部11人），JSON格式验证通过，部分bio字段待完善
+2026-01-11 03:25:46 - 已初步解析teacher-liest文件生成73人数据，需要修正部门归属（韩刚/李甜/秦淼娜应归管理部）
+2026-01-11 03:29:51 - 已清空教师数据，保留框架，等待用户手动分类
+2026-01-11 03:30:02 - 已清空教师数据（已备份至 data/archive/），保留框架，等待用户手动分类
+2026-01-11 04:17 — 从 teacher-liest 同步岗位与排序（写入 teachers.json） — by manage.py
+2026-01-11 04:18 — 从 teacher-liest 同步岗位与排序（写入 teachers.json） — by manage.py
+2026-01-11 04:19 — 从 teacher-liest 同步岗位与排序（写入 teachers.json） — by manage.py
+2026-01-11 04:23 — 从 teacher-liest 同步岗位与排序（写入 teachers.json） — by manage.py
+2026-01-11 04:46 — 从 teacher-liest 同步岗位与排序（写入 teachers.json） — by manage.py
+2026-01-11 05:02 — 从 teacher-liest 同步岗位与排序（写入 teachers.json） — by manage.py
+2026-01-11 05:03 — 从 teacher-liest 同步岗位与排序（写入 teachers.json） — by manage.py
+
+2026-01-11 — 管理后台：教师页整合与交互升级 — by Copilot
+- 合并“教师管理页”与“部门预览/拖拽排序页”为统一入口 `/admin/teachers`（旧入口重定向）。
+- 教师数据升级为 v2 模型：人唯一 + roles[] 多岗卡片，roles[].order 控制排序（写入 data/teachers.json）。
+- 教师页交互：每部门末尾支持“添加岗位卡片”，卡片右上角“× 删除”，并改为 pointer-based 拖拽（更适配 iOS/触控）。
+- UI 修复：小图标 hover 抖动（display 改为 opacity/visibility + 固定 meta 高度）。
+
+2026-01-11 — 管理后台：学生页风格统一与布局修复 — by Copilot
+- 学生列表页 students_list.html 统一为教师风格：分组折叠、网格卡片、多视图、搜索筛选、toast、删除。
+- 学生编辑页 student_edit.html 修复 admissions 表格 checkbox 被 input{width:100%} 拉伸问题：仅文本输入 100% 宽，checkbox/radio 用 auto，并让表格 checkbox 列居中。
+
+2026-01-11 — 教师“添加”从随机改为可选择员工 — by Copilot
+- 保留随机按钮，同时新增“可搜索选择现有员工加入部门”的 modal。
+- 新增接口：GET /admin/teachers/departments/available（候选老师列表，支持搜索）、POST /admin/teachers/departments/add-existing（指定 teacherId 加入部门）。
+
+2026-01-11 — 一键启动/停止脚本（后台 + 前台静态站点）— by Copilot
+- 新增 scripts/admin_start.command、scripts/admin_stop.command：自动 kill 5050 并启动 Flask 管理后台。
+- 新增 scripts/site_start.command、scripts/site_stop.command：启动/停止本地静态 http.server（默认 8000），避免 file:// 下 fetch 本地 JSON 的 CORS 拦截。
+
+2026-01-11 — 批量导入体系（文件夹 + Excel + 模板）— by Copilot
+- 新增导入页 /admin/import，后台首页新增“批量导入”入口卡片。
+- 文件夹导入：支持上传规范文件夹（webkitdirectory），严格结构校验、dry-run、merge/replace、复制图片文件到项目目录并写回 JSON。
+- Excel 导入：安装 openpyxl；新增教师/学生 Excel 导入路由（merge/replace + dry-run）；支持 Excel 表单 + 可选图片文件夹同时上传并自动复制。
+- 模板下载：新增动态生成 teachers/students Excel 模板（含 README sheet），页面提供下载链接。
+
+2026-01-11 — 修复：管理后台启动崩溃 — by Copilot
+- 修复 admin_app/app.py 中学生 Excel admissions 处理段缩进错误（IndentationError），通过 py_compile 并验证可启动运行。
+
+2026-01-11 — 修复：前台 file:// CORS 报错 — by Copilot
+- index.html 中 teachers/students 数据加载加入 file:// 检测与页面提示，避免控制台 CORS 报错；推荐通过本地 HTTP 打开。
+- 更新 QUICK_START.md：补充 site_start/site_stop 使用方式与信息门户入口说明。
+
+2026-01-11 — 信息门户（原“招生简章”升级为文章集合）— by Copilot
+- 前台“招生简章”页升级为“信息门户”：从 data/portal_posts.json 读取文章，支持搜索/分类筛选、卡片弹窗查看全文。
+- 导航栏文案统一改为“信息门户”。
+- 后台新增信息门户管理工具：/admin/portal（文章 CRUD、预览、图片上传到 assets/portal/）。
+
+2026-01-11 — 公众号配图：竖屏海报生成工具 — by Copilot
+- 安装 pillow + qrcode；新增 /admin/portal/<pid>/poster.png 生成固定竖屏海报（默认 1080×1920，非长截图）。
+- 海报支持两套主题：theme=brand（品牌紫）/ theme=minimal（极简黑白）。
+- 文章新增 shareUrl 字段：海报可自动生成二维码引流回原文；支持参数 max_lines 控制正文节选、qr=0 关闭二维码。
+- portal_edit.html 增加一键下载海报按钮与参数提示。
