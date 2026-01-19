@@ -220,8 +220,13 @@ def create_app():
 
     def _gh_get_file(relpath: str):
         mode, token, repo, branch = _github_cfg()
+        return _gh_get_file_at_ref(relpath, ref=branch)
+
+    def _gh_get_file_at_ref(relpath: str, ref: str | None):
+        mode, token, repo, branch = _github_cfg()
         relpath = str(relpath or '').lstrip('/')
-        url = f'https://api.github.com/repos/{repo}/contents/{urllib.parse.quote(relpath)}?ref={urllib.parse.quote(branch)}'
+        ref_q = urllib.parse.quote(str(ref or branch))
+        url = f'https://api.github.com/repos/{repo}/contents/{urllib.parse.quote(relpath)}?ref={ref_q}'
         try:
             meta = _gh_api('GET', url)
         except RuntimeError as e:
@@ -264,6 +269,28 @@ def create_app():
             body['sha'] = old_sha
 
         _gh_api('PUT', url, body=body)
+
+    def _gh_list_commits(path: str, per_page: int = 12) -> list[dict]:
+        """List recent commits touching a repo path."""
+        _mode, _token, repo, branch = _github_cfg()
+        q = urllib.parse.urlencode({'sha': branch, 'path': path, 'per_page': int(per_page)})
+        url = f'https://api.github.com/repos/{repo}/commits?{q}'
+        data = _gh_api('GET', url)
+        if not isinstance(data, list):
+            return []
+
+        out: list[dict] = []
+        for c in data:
+            if not isinstance(c, dict):
+                continue
+            sha = str(c.get('sha') or '')
+            commit = c.get('commit') if isinstance(c.get('commit'), dict) else {}
+            msg = str((commit or {}).get('message') or '').split('\n')[0]
+            author = (commit or {}).get('author') if isinstance((commit or {}).get('author'), dict) else {}
+            date = str((author or {}).get('date') or '')
+            url_html = str(c.get('html_url') or '')
+            out.append({'sha': sha[:12], 'message': msg or '—', 'date': date.replace('T', ' ').replace('Z', ''), 'url': url_html})
+        return out
 
     def load_json(path: Path):
         if _github_enabled():
@@ -786,6 +813,97 @@ def create_app():
             student_count=len(students),
             portal_count=len(portal_posts),
         )
+
+    @app.get('/healthz')
+    def healthz():
+        return jsonify({'ok': True, 'ts': _now_iso(), 'site_mode': _SITE_MODE})
+
+    @app.get('/admin/ops')
+    @login_required
+    def admin_ops():
+        storage_mode = (os.environ.get('ADMIN_STORAGE') or '').strip().lower() or 'local'
+        _mode, _token, repo, branch = _github_cfg()
+        github_enabled = _github_enabled()
+
+        commit_url = ''
+        if github_enabled:
+            try:
+                # Get latest commit on branch
+                url = f'https://api.github.com/repos/{repo}/commits/{urllib.parse.quote(branch)}'
+                meta = _gh_api('GET', url)
+                if isinstance(meta, dict):
+                    commit_url = str(meta.get('html_url') or '')
+            except Exception:
+                commit_url = ''
+
+        def _repo_path(p: Path) -> str:
+            try:
+                return p.relative_to(ROOT).as_posix()
+            except Exception:
+                return ''
+
+        files = [
+            {'key': 'teachers', 'title': '教师库', 'repo_path': _repo_path(DATA_TEACHERS)},
+            {'key': 'students', 'title': '名人堂（学生）', 'repo_path': _repo_path(DATA_STUDENTS)},
+            {'key': 'portal', 'title': '信息门户', 'repo_path': _repo_path(DATA_PORTAL)},
+        ]
+        for it in files:
+            it['commits'] = _gh_list_commits(it['repo_path'], per_page=10) if github_enabled and it['repo_path'] else []
+
+        return render_template(
+            'ops.html',
+            site_mode=_SITE_MODE,
+            storage_mode=storage_mode,
+            github_enabled=github_enabled,
+            github_repo=repo,
+            github_branch=branch,
+            github_commit_url=commit_url,
+            files=files,
+        )
+
+    @app.post('/admin/ops/rollback')
+    @login_required
+    def admin_ops_rollback():
+        if not _github_enabled():
+            flash('未启用 GitHub 存储模式，无法回滚。', 'error')
+            return redirect(url_for('admin_ops'))
+
+        key = str(request.form.get('key') or '').strip()
+        sha = str(request.form.get('sha') or '').strip()
+        if not key or not sha:
+            flash('参数缺失。', 'error')
+            return redirect(url_for('admin_ops'))
+
+        mapping = {
+            'teachers': DATA_TEACHERS,
+            'students': DATA_STUDENTS,
+            'portal': DATA_PORTAL,
+        }
+        if key not in mapping:
+            flash('未知回滚对象。', 'error')
+            return redirect(url_for('admin_ops'))
+
+        p = mapping[key]
+        try:
+            repo_path = p.relative_to(ROOT).as_posix()
+        except Exception:
+            flash('无法确定仓库路径。', 'error')
+            return redirect(url_for('admin_ops'))
+
+        try:
+            content, _ = _gh_get_file_at_ref(repo_path, ref=sha)
+            if not content:
+                flash('目标版本内容不存在。', 'error')
+                return redirect(url_for('admin_ops'))
+            # validate JSON
+            json.loads(content.decode('utf-8'))
+            _gh_put_file(repo_path, content, message=f'回滚 {repo_path} 到 {sha[:12]}')
+        except Exception as e:
+            flash(f'回滚失败：{e}', 'error')
+            return redirect(url_for('admin_ops'))
+
+        flash('回滚已提交到 GitHub，Cloudflare 将自动重新部署。', 'ok')
+        return redirect(url_for('admin_ops'))
 
     @app.get('/admin/portal')
     @login_required
