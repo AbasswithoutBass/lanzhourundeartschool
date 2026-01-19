@@ -26,6 +26,15 @@
     .small{font-size:12px;color:#666}
     .checkRow{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:10px}
     .checkRow label{margin:0;display:flex;gap:8px;align-items:center}
+    .drop{margin-top:10px;border:2px dashed rgba(102,8,116,0.32);border-radius:14px;padding:12px;background:rgba(102,8,116,0.04)}
+    .drop.drag{background:rgba(102,8,116,0.10);border-color:rgba(102,8,116,0.55)}
+    .drop h4{margin:0 0 6px 0;font-size:13px;color:#660874}
+    .drop .k{font-size:12px;color:#666;line-height:1.6}
+    .drop .row2{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
+    .drop .btnMini{padding:9px 12px;border-radius:12px;background:#fff;color:#660874;font-weight:800;border:1px solid rgba(102,8,116,0.25);cursor:pointer}
+    .dropOut{margin-top:10px;font-size:12px;color:#374151;line-height:1.6}
+    .preview{margin-top:10px;border:1px solid rgba(0,0,0,0.08);border-radius:12px;overflow:hidden;background:#fff}
+    .preview img{width:100%;height:200px;object-fit:cover;display:block}
   </style>
 </head>
 <body>
@@ -48,7 +57,19 @@
       <div class="row">
         <div>
           <label>头像路径（相对站点根目录）</label>
-          <input name="photo" form="f" value="{{ teacher.photo or '' }}" placeholder="photos/xxx.jpg" />
+          <input id="photoInput" name="photo" form="f" value="{{ teacher.photo or '' }}" placeholder="photos/xxx.jpg" />
+
+          <div id="dropZone" class="drop">
+            <h4>拖拽上传头像</h4>
+            <div class="k">把照片直接拖到这里，或点“选择文件”。上传后会自动填入上面的头像路径（写入 <span style="font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace">photos/</span>）。</div>
+            <div class="row2">
+              <input id="photoFile" type="file" accept=".jpg,.jpeg,.png,.webp" style="display:none" />
+              <button id="pickBtn" class="btnMini" type="button">选择文件</button>
+              <button id="uploadBtn" class="btnMini" type="button">上传</button>
+            </div>
+            <div id="dropOut" class="dropOut"></div>
+            <div id="preview" class="preview" style="display:none"></div>
+          </div>
         </div>
         <div>
           <label>一句话简介（shortSummary）</label>
@@ -128,5 +149,69 @@
       </form>
     </div>
   </div>
+
+  <script>
+    (function(){
+      const dz = document.getElementById('dropZone');
+      const fileEl = document.getElementById('photoFile');
+      const pickBtn = document.getElementById('pickBtn');
+      const uploadBtn = document.getElementById('uploadBtn');
+      const out = document.getElementById('dropOut');
+      const photoInput = document.getElementById('photoInput');
+      const preview = document.getElementById('preview');
+      if(!dz || !fileEl || !pickBtn || !uploadBtn || !out || !photoInput || !preview) return;
+
+      function setPreview(rel){
+        if(!rel){ preview.style.display = 'none'; preview.innerHTML = ''; return; }
+        preview.style.display = 'block';
+        preview.innerHTML = '<img src="/site/'+ encodeURI(rel) +'" alt="preview">';
+      }
+
+      // init preview
+      try{ setPreview(String(photoInput.value||'').trim()); }catch(e){}
+
+      function pick(){ fileEl.click(); }
+      pickBtn.addEventListener('click', pick);
+
+      async function upload(f){
+        if(!f){ out.textContent = '请选择图片文件。'; return; }
+        out.textContent = '上传中…';
+        const fd = new FormData();
+        fd.append('image', f);
+        fd.append('kind', 'teacher');
+        try{
+          const resp = await fetch('/admin/upload-photo', {method:'POST', body: fd});
+          const j = await resp.json();
+          if(!resp.ok || !j.ok) throw new Error(j && j.error ? j.error : 'upload failed');
+          const rel = String(j.path || '').trim();
+          photoInput.value = rel;
+          out.innerHTML = '上传成功：<span style="font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace">'+ rel +'</span>'; 
+          setPreview(rel);
+        }catch(e){
+          console.error(e);
+          out.textContent = '上传失败：' + (e && e.message ? e.message : String(e));
+        }
+      }
+
+      uploadBtn.addEventListener('click', ()=>{
+        const f = fileEl.files && fileEl.files[0];
+        upload(f);
+      });
+
+      fileEl.addEventListener('change', ()=>{
+        const f = fileEl.files && fileEl.files[0];
+        if(f) out.textContent = '已选择：' + f.name + '（点“上传”开始）';
+      });
+
+      function prevent(e){ e.preventDefault(); e.stopPropagation(); }
+      ;['dragenter','dragover'].forEach(ev=> dz.addEventListener(ev, (e)=>{ prevent(e); dz.classList.add('drag'); }));
+      ;['dragleave','drop'].forEach(ev=> dz.addEventListener(ev, (e)=>{ prevent(e); dz.classList.remove('drag'); }));
+
+      dz.addEventListener('drop', (e)=>{
+        const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+        upload(f);
+      });
+    })();
+  </script>
 </body>
 </html>

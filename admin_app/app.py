@@ -1319,6 +1319,61 @@ def create_app():
         rel = f'assets/portal/{yyyymm}/{name}'
         return jsonify({'ok': True, 'path': rel})
 
+    @app.post('/admin/upload-photo')
+    @login_required
+    def admin_upload_photo():
+        """Upload photos for teachers/students/admissions.
+
+        Returns a site-relative path (without leading slash), suitable for writing into JSON.
+        """
+        f = request.files.get('image')
+        if not f or not getattr(f, 'filename', None):
+            return jsonify({'ok': False, 'error': 'missing image'}), 400
+
+        kind = str(request.form.get('kind') or request.args.get('kind') or 'teacher').strip().lower()
+        if kind not in {'teacher', 'student', 'admission'}:
+            return jsonify({'ok': False, 'error': 'invalid kind'}), 400
+
+        orig = str(f.filename or '')
+        ext = (Path(orig).suffix or '').lower()
+        if ext not in {'.jpg', '.jpeg', '.png', '.webp'}:
+            return jsonify({'ok': False, 'error': 'unsupported image type'}), 400
+
+        if kind == 'teacher':
+            rel_dir = 'photos'
+        elif kind == 'student':
+            rel_dir = 'students/photos'
+        else:
+            rel_dir = 'students/admissions'
+
+        safe_base = _safe_filename(Path(orig).stem)
+        ts = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+        name = f'{ts}_{safe_base}{ext}'
+        rel = f'{rel_dir}/{name}'
+
+        try:
+            f.stream.seek(0)
+        except Exception:
+            pass
+
+        if _github_enabled():
+            data = f.stream.read()
+            repo_path = f'public/{rel}'.lstrip('/')
+            _gh_put_file(repo_path, data, message=f'上传图片 {repo_path}')
+            return jsonify({'ok': True, 'path': rel})
+
+        # local file mode
+        if _SITE_MODE in {'public', 'deploy', 'cloud'}:
+            dest = (ROOT / 'public' / rel)
+        else:
+            dest = (ROOT / rel)
+        dest.parent.mkdir(parents=True, exist_ok=True)
+
+        with dest.open('wb') as w:
+            shutil.copyfileobj(f.stream, w)
+
+        return jsonify({'ok': True, 'path': rel})
+
     @app.get('/site/<path:relpath>')
     @login_required
     def site_file(relpath: str):
@@ -1328,7 +1383,19 @@ def create_app():
         except Exception:
             return jsonify({'ok': False, 'error': 'invalid path'}), 400
 
-        if not (rp.startswith('assets/portal/') or rp == 'assets/portal'):
+        allow_prefixes = (
+            'assets/portal/',
+            'photos/',
+            'students/photos/',
+            'students/admissions/',
+        )
+        allow_exact = {
+            'assets/portal',
+            'photos',
+            'students/photos',
+            'students/admissions',
+        }
+        if not (rp in allow_exact or any(rp.startswith(pfx) for pfx in allow_prefixes)):
             return jsonify({'ok': False, 'error': 'forbidden'}), 403
 
         # GitHub 存储模式：直接从仓库读取并代理返回
