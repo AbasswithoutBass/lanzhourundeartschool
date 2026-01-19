@@ -944,6 +944,19 @@ def create_app():
 
         return render_template('portal_list.html', posts=filtered, q=q)
 
+    @app.get('/admin/portal/template.docx')
+    @login_required
+    def portal_docx_template():
+        p = ROOT / 'docs' / 'portal_article_template.docx'
+        if not p.exists() or not p.is_file():
+            return jsonify({'ok': False, 'error': 'template not found'}), 404
+        return send_file(
+            p,
+            as_attachment=True,
+            download_name='信息门户文章模板.docx',
+            mimetype='application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        )
+
     @app.get('/admin/portal/new')
     @login_required
     def portal_new_page():
