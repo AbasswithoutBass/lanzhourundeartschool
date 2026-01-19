@@ -13,6 +13,7 @@ from functools import wraps
 from pathlib import Path
 import importlib.util
 from typing import Iterable
+import ipaddress
 
 try:
     from PIL import Image, ImageDraw, ImageFont
@@ -107,9 +108,52 @@ def create_app():
     def is_authed() -> bool:
         return bool(session.get('admin_authed'))
 
+    def _client_ip() -> str:
+        """Best-effort client ip.
+
+        If behind a reverse proxy (Render/Fly/etc), set ADMIN_TRUST_PROXY=1
+        so we honor X-Forwarded-For.
+        """
+        trust = (os.environ.get('ADMIN_TRUST_PROXY') or '').strip().lower() in {'1', 'true', 'yes'}
+        if trust:
+            xff = request.headers.get('X-Forwarded-For', '')
+            if xff:
+                # first ip is the original client
+                return xff.split(',')[0].strip()
+        return (request.remote_addr or '').strip()
+
+    def _ip_allowed() -> bool:
+        raw = (os.environ.get('ADMIN_ALLOWED_IPS') or '').strip()
+        if not raw:
+            return True
+
+        ip_s = _client_ip()
+        if not ip_s:
+            return False
+        try:
+            ip = ipaddress.ip_address(ip_s)
+        except Exception:
+            return False
+
+        parts = [p.strip() for p in raw.replace('，', ',').split(',') if p.strip()]
+        for p in parts:
+            try:
+                if '/' in p:
+                    net = ipaddress.ip_network(p, strict=False)
+                    if ip in net:
+                        return True
+                else:
+                    if ip == ipaddress.ip_address(p):
+                        return True
+            except Exception:
+                continue
+        return False
+
     def login_required(fn):
         @wraps(fn)
         def wrapper(*args, **kwargs):
+            if not _ip_allowed():
+                return 'Forbidden', 403
             if not is_authed():
                 return redirect(url_for('login', next=request.path))
             return fn(*args, **kwargs)
