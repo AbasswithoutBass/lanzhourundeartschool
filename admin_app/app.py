@@ -33,9 +33,18 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DATA_TEACHERS = ROOT / 'data' / 'teachers.json'
-DATA_STUDENTS = ROOT / 'data' / 'students.json'
-DATA_PORTAL = ROOT / 'data' / 'portal_posts.json'
+
+# 后台默认是本地/内网工具：写入 data/ 与 assets/portal/。
+# 若希望后台“控制已部署到 Cloudflare 的静态站点”，应写入 public/ 目录：
+# - JSON: public/data/*.json
+# - 门户图片: public/assets/portal/...
+_SITE_MODE = (os.environ.get('ADMIN_SITE_MODE') or 'local').strip().lower()
+_DATA_ROOT = (ROOT / 'public' / 'data') if _SITE_MODE in {'public', 'deploy', 'cloud'} else (ROOT / 'data')
+_PORTAL_ASSETS_ROOT = (ROOT / 'public' / 'assets' / 'portal') if _SITE_MODE in {'public', 'deploy', 'cloud'} else (ROOT / 'assets' / 'portal')
+
+DATA_TEACHERS = _DATA_ROOT / 'teachers.json'
+DATA_STUDENTS = _DATA_ROOT / 'students.json'
+DATA_PORTAL = _DATA_ROOT / 'portal_posts.json'
 
 _TEACHERS_MANAGE = None
 _STUDENTS_MANAGE = None
@@ -107,21 +116,139 @@ def create_app():
         return wrapper
 
     def backup_file(path: Path):
+        # GitHub 存储模式下不做本地备份（每次写入都会形成 Git commit）。
+        if (os.environ.get('ADMIN_STORAGE') or '').strip().lower() == 'github':
+            return
         if not path.exists():
             return
         ts = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
         bak = path.with_suffix(path.suffix + '.bak.' + ts)
         shutil.copy2(path, bak)
 
+    def _github_cfg():
+        mode = (os.environ.get('ADMIN_STORAGE') or '').strip().lower()
+        token = (os.environ.get('GITHUB_TOKEN') or '').strip()
+        repo = (os.environ.get('GITHUB_REPO') or '').strip()  # owner/repo
+        branch = (os.environ.get('GITHUB_BRANCH') or 'main').strip()
+        return mode, token, repo, branch
+
+    def _github_enabled() -> bool:
+        mode, token, repo, _ = _github_cfg()
+        return bool(mode == 'github' and token and repo)
+
+    def _gh_api(method: str, url: str, body: dict | None = None):
+        mode, token, repo, branch = _github_cfg()
+        if not token or not repo:
+            raise RuntimeError('缺少 GITHUB_TOKEN / GITHUB_REPO，无法使用 GitHub 存储模式')
+
+        data = None
+        headers = {
+            'Accept': 'application/vnd.github+json',
+            'User-Agent': 'rundex-admin/1.0',
+            'Authorization': f'Bearer {token}',
+            'X-GitHub-Api-Version': '2022-11-28',
+        }
+        if body is not None:
+            raw = json.dumps(body).encode('utf-8')
+            data = raw
+            headers['Content-Type'] = 'application/json'
+
+        req = urllib.request.Request(url, data=data, method=method.upper())
+        for k, v in headers.items():
+            req.add_header(k, v)
+
+        try:
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                b = resp.read()
+                ct = resp.headers.get('Content-Type', '')
+                if b and 'application/json' in ct:
+                    return json.loads(b.decode('utf-8'))
+                if b:
+                    return b
+                return None
+        except urllib.error.HTTPError as e:
+            # surface GitHub error payload for debugging
+            try:
+                payload = e.read().decode('utf-8')
+            except Exception:
+                payload = ''
+            raise RuntimeError(f'GitHub API 失败：HTTP {e.code} {e.reason} {payload}')
+
+    def _gh_get_file(relpath: str):
+        mode, token, repo, branch = _github_cfg()
+        relpath = str(relpath or '').lstrip('/')
+        url = f'https://api.github.com/repos/{repo}/contents/{urllib.parse.quote(relpath)}?ref={urllib.parse.quote(branch)}'
+        try:
+            meta = _gh_api('GET', url)
+        except RuntimeError as e:
+            # Not found -> treat as empty
+            if 'HTTP 404' in str(e):
+                return None, None
+            raise
+
+        if not isinstance(meta, dict):
+            raise RuntimeError('GitHub 返回异常：不是文件对象')
+        if meta.get('type') != 'file':
+            raise RuntimeError('GitHub 路径不是文件')
+
+        import base64
+
+        content_b64 = (meta.get('content') or '').encode('utf-8')
+        content_b64 = content_b64.replace(b'\n', b'')
+        try:
+            content = base64.b64decode(content_b64)
+        except Exception as e:
+            raise RuntimeError(f'GitHub 内容解码失败：{e}')
+        sha = str(meta.get('sha') or '')
+        return content, sha
+
+    def _gh_put_file(relpath: str, content: bytes, message: str):
+        mode, token, repo, branch = _github_cfg()
+        relpath = str(relpath or '').lstrip('/')
+
+        old_content, old_sha = _gh_get_file(relpath)
+
+        import base64
+
+        url = f'https://api.github.com/repos/{repo}/contents/{urllib.parse.quote(relpath)}'
+        body = {
+            'message': message,
+            'content': base64.b64encode(content).decode('utf-8'),
+            'branch': branch,
+        }
+        if old_sha:
+            body['sha'] = old_sha
+
+        _gh_api('PUT', url, body=body)
+
     def load_json(path: Path):
+        if _github_enabled():
+            try:
+                rel = path.relative_to(ROOT).as_posix()
+            except Exception:
+                raise RuntimeError('GitHub 存储模式仅支持读取仓库内文件')
+            content, _sha = _gh_get_file(rel)
+            if not content:
+                return []
+            return json.loads(content.decode('utf-8'))
+
         if not path.exists():
             return []
         return json.loads(path.read_text(encoding='utf-8'))
 
     def write_json(path: Path, data):
+        payload = (json.dumps(data, ensure_ascii=False, indent=2) + '\n').encode('utf-8')
+        if _github_enabled():
+            try:
+                rel = path.relative_to(ROOT).as_posix()
+            except Exception:
+                raise RuntimeError('GitHub 存储模式仅支持写入仓库内文件')
+            _gh_put_file(rel, payload, message=f'更新 {rel}')
+            return
+
         path.parent.mkdir(parents=True, exist_ok=True)
         backup_file(path)
-        path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+        path.write_text(payload.decode('utf-8'), encoding='utf-8')
 
     def _now_iso() -> str:
         return datetime.datetime.now().isoformat(timespec='seconds')
@@ -1001,8 +1128,10 @@ def create_app():
             return jsonify({'ok': False, 'error': 'unsupported image type'}), 400
 
         yyyymm = datetime.datetime.now().strftime('%Y%m')
-        dest_dir = ROOT / 'assets' / 'portal' / yyyymm
-        dest_dir.mkdir(parents=True, exist_ok=True)
+        dest_dir = _PORTAL_ASSETS_ROOT / yyyymm
+        # GitHub 存储模式下无需 mkdir（API 会创建路径），本地模式仍创建目录
+        if not _github_enabled():
+            dest_dir.mkdir(parents=True, exist_ok=True)
 
         safe_base = _safe_filename(Path(orig).stem)
         ts = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -1013,6 +1142,15 @@ def create_app():
             f.stream.seek(0)
         except Exception:
             pass
+
+        if _github_enabled():
+            data = f.stream.read()
+            # 站点里引用路径不带 public 前缀
+            rel = f'assets/portal/{yyyymm}/{name}'
+            repo_path = f'public/{rel}'
+            _gh_put_file(repo_path, data, message=f'上传门户图片 {repo_path}')
+            return jsonify({'ok': True, 'path': rel})
+
         with dest.open('wb') as w:
             shutil.copyfileobj(f.stream, w)
 
@@ -1031,7 +1169,29 @@ def create_app():
         if not (rp.startswith('assets/portal/') or rp == 'assets/portal'):
             return jsonify({'ok': False, 'error': 'forbidden'}), 403
 
-        p = ROOT / rp
+        # GitHub 存储模式：直接从仓库读取并代理返回
+        if _github_enabled():
+            repo_path = f'public/{rp}'.lstrip('/')
+            content, _sha = _gh_get_file(repo_path)
+            if not content:
+                return jsonify({'ok': False, 'error': 'not found'}), 404
+            # naive mimetype
+            suffix = Path(rp).suffix.lower()
+            mimetype = 'application/octet-stream'
+            if suffix in {'.png'}:
+                mimetype = 'image/png'
+            elif suffix in {'.jpg', '.jpeg'}:
+                mimetype = 'image/jpeg'
+            elif suffix in {'.webp'}:
+                mimetype = 'image/webp'
+            return send_file(io.BytesIO(content), mimetype=mimetype)
+
+        # 本地文件模式：public 模式下优先 public/assets/portal
+        if _SITE_MODE in {'public', 'deploy', 'cloud'}:
+            p = ROOT / 'public' / rp
+        else:
+            p = ROOT / rp
+
         if not p.exists() or not p.is_file():
             return jsonify({'ok': False, 'error': 'not found'}), 404
 
@@ -2276,7 +2436,7 @@ def create_app():
 if __name__ == '__main__':
     app = create_app()
     host = os.environ.get('ADMIN_HOST', '127.0.0.1')
-    port = int(os.environ.get('ADMIN_PORT', '5050'))
+    port = int(os.environ.get('PORT') or os.environ.get('ADMIN_PORT') or '5050')
     debug = (os.environ.get('ADMIN_DEBUG') or '').strip() in {'1', 'true', 'True', 'yes', 'YES'}
 
     if (os.environ.get('ADMIN_SECRET_KEY') or '').strip() == '':
