@@ -140,12 +140,16 @@
               <input name="mainRank" value="{{ student.mainRank or '' }}" />
             </div>
             <div>
-              <label>海报张数</label>
-              <select name="posterMode">
-                <option value="1" {{ 'selected' if (student.posterMode|string) == '1' else '' }}>1 张（主项）</option>
-                <option value="2" {{ 'selected' if (student.posterMode|string) == '2' else '' }}>2 张（主项 + 副项）</option>
-                <option value="3" {{ 'selected' if (student.posterMode|string) == '3' else '' }}>3 张（主项 + 副项 + 综合）</option>
-              </select>
+              <label>海报类型</label>
+              <div class="small" style="margin-top:4px">选中哪些，就生成哪些海报</div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+                <label><input type="checkbox" name="posterTypes" value="main" {{ 'checked' if 'main' in (student.posterTypes or []) else '' }} /> 主项</label>
+                <label><input type="checkbox" name="posterTypes" value="sub" {{ 'checked' if 'sub' in (student.posterTypes or []) else '' }} /> 副项</label>
+                <label><input type="checkbox" name="posterTypes" value="ear" {{ 'checked' if 'ear' in (student.posterTypes or []) else '' }} /> 听写</label>
+                <label><input type="checkbox" name="posterTypes" value="theory" {{ 'checked' if 'theory' in (student.posterTypes or []) else '' }} /> 乐理</label>
+                <label><input type="checkbox" name="posterTypes" value="sight" {{ 'checked' if 'sight' in (student.posterTypes or []) else '' }} /> 视唱</label>
+                <label><input type="checkbox" name="posterTypes" value="total" {{ 'checked' if 'total' in (student.posterTypes or []) else '' }} /> 综合</label>
+              </div>
             </div>
           </div>
 
@@ -163,6 +167,16 @@
             <button class="btn" type="submit">保存</button>
             <button id="btnDownload" class="btn2" type="button">下载当前海报</button>
           </div>
+
+          <label style="margin-top:12px">海报类型</label>
+          <select id="posterType" class="btn2" style="width:100%">
+            <option value="main">主项海报</option>
+            <option value="sub">副项海报</option>
+            <option value="ear">听写海报</option>
+            <option value="theory">乐理海报</option>
+            <option value="sight">视唱海报</option>
+            <option value="total">综合海报</option>
+          </select>
 
           <label style="margin-top:12px">清晰度</label>
           <select id="quality" class="btn2" style="width:100%">
@@ -207,7 +221,7 @@
       avatar.style.setProperty('--px', ($('posterPhotoX').value || '0') + 'px');
       avatar.style.setProperty('--py', ($('posterPhotoY').value || '0') + 'px');
 
-      const posterType = type || 'main';
+      const posterType = type || $('posterType').value || 'main';
       if(posterType === 'main'){
         $('typeBadge').textContent = '主项海报';
         $('scoreLabel').textContent = '主项分数';
@@ -219,6 +233,24 @@
         $('scoreLabel').textContent = '副项分数';
         $('rankLabel').textContent = '专业排名';
         $('scoreValue').textContent = s.subScore || '—';
+        $('rankValue').textContent = s.majorRank || '—';
+      }else if(posterType === 'ear'){
+        $('typeBadge').textContent = '听写海报';
+        $('scoreLabel').textContent = '听写分数';
+        $('rankLabel').textContent = '专业排名';
+        $('scoreValue').textContent = s.earTraining || '—';
+        $('rankValue').textContent = s.majorRank || '—';
+      }else if(posterType === 'theory'){
+        $('typeBadge').textContent = '乐理海报';
+        $('scoreLabel').textContent = '乐理分数';
+        $('rankLabel').textContent = '专业排名';
+        $('scoreValue').textContent = s.theory || '—';
+        $('rankValue').textContent = s.majorRank || '—';
+      }else if(posterType === 'sight'){
+        $('typeBadge').textContent = '视唱海报';
+        $('scoreLabel').textContent = '视唱分数';
+        $('rankLabel').textContent = '专业排名';
+        $('scoreValue').textContent = s.sightSinging || '—';
         $('rankValue').textContent = s.majorRank || '—';
       }else{
         $('typeBadge').textContent = '综合海报';
@@ -265,6 +297,7 @@
     });
 
     $('photoInput').addEventListener('change', render);
+    $('posterType').addEventListener('change', ()=> render());
     Array.from($('f').elements).forEach(el=>{
       if(el && el.tagName && (el.tagName === 'INPUT' || el.tagName === 'SELECT')){
         el.addEventListener('input', ()=> render('main'));
@@ -294,14 +327,25 @@
       const node = $('poster');
       const canvas = await html2canvas(node, {scale});
       const link = document.createElement('a');
-      link.download = `${s.name || 'poster'}_single_${scale}x.png`;
+      const type = $('posterType').value || 'main';
+      link.download = `${s.name || 'poster'}_${type}_${scale}x.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
     }
 
     $('btnDownload').addEventListener('click', download);
 
-    render('main');
+    let types = Array.isArray(s.posterTypes) ? s.posterTypes : [];
+    if(!types.length && s.posterMode){
+      const m = String(s.posterMode);
+      if(m === '1') types = ['main'];
+      if(m === '2') types = ['main','sub'];
+      if(m === '3') types = ['main','sub','total'];
+    }
+    if(types.length){
+      $('posterType').value = types[0];
+    }
+    render();
   </script>
 </body>
 </html>

@@ -206,15 +206,29 @@
         </div>
 
         <label>海报张数</label>
-        <select name="posterMode">
-          <option value="0" {{ 'selected' if (student.posterMode|string) in ['', '0'] else '' }}>0 张</option>
-          <option value="1" {{ 'selected' if (student.posterMode|string) == '1' else '' }}>1 张（主项）</option>
-          <option value="2" {{ 'selected' if (student.posterMode|string) == '2' else '' }}>2 张（主项 + 副项）</option>
-          <option value="3" {{ 'selected' if (student.posterMode|string) == '3' else '' }}>3 张（主项 + 副项 + 综合）</option>
-        </select>
+        <div class="checkRow">
+          <label><input type="checkbox" name="posterTypes" value="main" {{ 'checked' if 'main' in (student.posterTypes or []) else '' }} /> 主项海报</label>
+          <label><input type="checkbox" name="posterTypes" value="sub" {{ 'checked' if 'sub' in (student.posterTypes or []) else '' }} /> 副项海报</label>
+          <label><input type="checkbox" name="posterTypes" value="ear" {{ 'checked' if 'ear' in (student.posterTypes or []) else '' }} /> 听写海报</label>
+          <label><input type="checkbox" name="posterTypes" value="theory" {{ 'checked' if 'theory' in (student.posterTypes or []) else '' }} /> 乐理海报</label>
+          <label><input type="checkbox" name="posterTypes" value="sight" {{ 'checked' if 'sight' in (student.posterTypes or []) else '' }} /> 视唱海报</label>
+          <label><input type="checkbox" name="posterTypes" value="total" {{ 'checked' if 'total' in (student.posterTypes or []) else '' }} /> 综合海报</label>
+        </div>
 
-        <label>OCR 原图路径（可空）</label>
-        <input name="ocrImage" value="{{ student.ocrImage or '' }}" placeholder="data/raw_ocr/xxx.jpg" />
+        <label>OCR 原图（拖拽识别，可空）</label>
+        <input id="ocrInput" name="ocrImage" value="{{ student.ocrImage or '' }}" placeholder="data/raw_ocr/xxx.jpg" />
+
+        <div id="ocrDrop" class="drop">
+          <h4>拖拽上传 OCR 原图</h4>
+          <div class="k">把截图拖到这里，或点“选择文件”。上传后会自动写入上面的路径（保存到 <span style="font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace">data/raw_ocr/</span>）。</div>
+          <div class="row2">
+            <input id="ocrFile" type="file" accept=".jpg,.jpeg,.png,.webp" style="display:none" />
+            <button id="ocrPick" class="btnMini" type="button">选择文件</button>
+            <button id="ocrUpload" class="btnMini" type="button">上传</button>
+          </div>
+          <div id="ocrOut" class="dropOut"></div>
+          <div id="ocrPreview" class="preview" style="display:none"></div>
+        </div>
 
         <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px">
           <button class="btn" type="submit">保存</button>
@@ -263,6 +277,65 @@
           if(!resp.ok || !j.ok) throw new Error(j && j.error ? j.error : 'upload failed');
           const rel = String(j.path || '').trim();
           photoInput.value = rel;
+          out.innerHTML = '上传成功：<span style="font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace">'+ rel +'</span>';
+          setPreview(rel);
+        }catch(e){
+          console.error(e);
+          out.textContent = '上传失败：' + (e && e.message ? e.message : String(e));
+        }
+      }
+
+      uploadBtn.addEventListener('click', ()=>{
+        const f = fileEl.files && fileEl.files[0];
+        upload(f);
+      });
+
+      fileEl.addEventListener('change', ()=>{
+        const f = fileEl.files && fileEl.files[0];
+        if(f) out.textContent = '已选择：' + f.name + '（点“上传”开始）';
+      });
+
+      function prevent(e){ e.preventDefault(); e.stopPropagation(); }
+      ;['dragenter','dragover'].forEach(ev=> dz.addEventListener(ev, (e)=>{ prevent(e); dz.classList.add('drag'); }));
+      ;['dragleave','drop'].forEach(ev=> dz.addEventListener(ev, (e)=>{ prevent(e); dz.classList.remove('drag'); }));
+
+      dz.addEventListener('drop', (e)=>{
+        const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+        upload(f);
+      });
+    })();
+
+    (function(){
+      const dz = document.getElementById('ocrDrop');
+      const fileEl = document.getElementById('ocrFile');
+      const pickBtn = document.getElementById('ocrPick');
+      const uploadBtn = document.getElementById('ocrUpload');
+      const out = document.getElementById('ocrOut');
+      const input = document.getElementById('ocrInput');
+      const preview = document.getElementById('ocrPreview');
+      if(!dz || !fileEl || !pickBtn || !uploadBtn || !out || !input || !preview) return;
+
+      function setPreview(rel){
+        if(!rel){ preview.style.display = 'none'; preview.innerHTML = ''; return; }
+        preview.style.display = 'block';
+        preview.innerHTML = '<img src="/site/'+ encodeURI(rel) +'" alt="preview">';
+      }
+
+      try{ setPreview(String(input.value||'').trim()); }catch(e){}
+
+      pickBtn.addEventListener('click', ()=> fileEl.click());
+
+      async function upload(f){
+        if(!f){ out.textContent = '请选择图片文件。'; return; }
+        out.textContent = '上传中…';
+        const fd = new FormData();
+        fd.append('image', f);
+        try{
+          const resp = await fetch('/admin/ocr-upload', {method:'POST', body: fd});
+          const j = await resp.json();
+          if(!resp.ok || !j.ok) throw new Error(j && j.error ? j.error : 'upload failed');
+          const rel = String(j.path || '').trim();
+          input.value = rel;
           out.innerHTML = '上传成功：<span style="font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace">'+ rel +'</span>';
           setPreview(rel);
         }catch(e){

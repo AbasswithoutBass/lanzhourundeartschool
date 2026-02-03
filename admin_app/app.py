@@ -363,6 +363,19 @@ def create_app():
         write_json(DATA_STUDENTS_DB, items)
 
     def _sync_hall_of_fame_from_db(items: list[dict]):
+        def _poster_types(s: dict) -> list[str]:
+            types = list(s.get('posterTypes') or [])
+            if types:
+                return types
+            mode = str(s.get('posterMode') or '').strip()
+            if mode == '1':
+                return ['main']
+            if mode == '2':
+                return ['main', 'sub']
+            if mode == '3':
+                return ['main', 'sub', 'total']
+            return []
+
         out: list[dict] = []
         for s in items:
             if not s.get('joinHall'):
@@ -388,7 +401,7 @@ def create_app():
                 'mainRank': str(s.get('mainRank') or ''),
                 'qualified': bool(s.get('qualified')),
                 'photo': str(s.get('photo') or ''),
-                'posterMode': str(s.get('posterMode') or ''),
+                'posterTypes': _poster_types(s),
                 'updatedAt': str(s.get('updatedAt') or ''),
             })
         write_json(DATA_HALL_OF_FAME, out)
@@ -1433,6 +1446,42 @@ def create_app():
 
         return jsonify({'ok': True, 'path': rel})
 
+    @app.post('/admin/ocr-upload')
+    @login_required
+    def admin_upload_ocr_image():
+        """Upload raw OCR screenshot to data/raw_ocr (admin only)."""
+        f = request.files.get('image')
+        if not f or not getattr(f, 'filename', None):
+            return jsonify({'ok': False, 'error': 'missing image'}), 400
+
+        orig = str(f.filename or '')
+        ext = (Path(orig).suffix or '').lower()
+        if ext not in {'.jpg', '.jpeg', '.png', '.webp'}:
+            return jsonify({'ok': False, 'error': 'unsupported image type'}), 400
+
+        safe_base = _safe_filename(Path(orig).stem)
+        ts = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+        name = f'{ts}_{safe_base}{ext}'
+        rel = f'data/raw_ocr/{name}'
+
+        try:
+            f.stream.seek(0)
+        except Exception:
+            pass
+
+        if _github_enabled():
+            data = f.stream.read()
+            repo_path = rel
+            _gh_put_file(repo_path, data, message=f'上传 OCR 原图 {repo_path}')
+            return jsonify({'ok': True, 'path': rel})
+
+        dest = ROOT / rel
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        with dest.open('wb') as w:
+            shutil.copyfileobj(f.stream, w)
+
+        return jsonify({'ok': True, 'path': rel})
+
     @app.get('/site/<path:relpath>')
     @login_required
     def site_file(relpath: str):
@@ -1447,6 +1496,7 @@ def create_app():
             'photos/',
             'students/photos/',
             'students/admissions/',
+            'data/raw_ocr/',
         )
         allow_exact = {
             'assets/portal',
@@ -1454,6 +1504,7 @@ def create_app():
             'students/photos',
             'students/admissions',
             '润德1.png',
+            'data/raw_ocr',
         }
         if not (rp in allow_exact or any(rp.startswith(pfx) for pfx in allow_prefixes)):
             return jsonify({'ok': False, 'error': 'forbidden'}), 403
@@ -2613,7 +2664,7 @@ def create_app():
             'mainRank': '',
             'qualified': False,
             'joinHall': False,
-            'posterMode': '0',
+            'posterTypes': [],
             'posterStatus': 'pending',
             'posterPhotoScale': '1',
             'posterPhotoX': '0',
@@ -2674,7 +2725,7 @@ def create_app():
         item['mainRank'] = _s('mainRank')
         item['qualified'] = bool(request.form.get('qualified'))
         item['joinHall'] = bool(request.form.get('joinHall'))
-        item['posterMode'] = _s('posterMode') or '0'
+        item['posterTypes'] = request.form.getlist('posterTypes') or []
         item['posterStatus'] = _s('posterStatus') or str(item.get('posterStatus') or 'pending')
         item['posterPhotoScale'] = _s('posterPhotoScale') or str(item.get('posterPhotoScale') or '1')
         item['posterPhotoX'] = _s('posterPhotoX') or str(item.get('posterPhotoX') or '0')
@@ -2711,7 +2762,7 @@ def create_app():
         items = _load_students_db()
         queue = [
             s for s in items
-            if str(s.get('posterMode') or '0') not in {'', '0'}
+            if list(s.get('posterTypes') or [])
         ]
         # pending first
         def _status_rank(s: dict):
@@ -2753,7 +2804,7 @@ def create_app():
         item['mainRank'] = _s('mainRank') or item.get('mainRank', '')
         item['year'] = _s('year') or item.get('year', '')
         item['photo'] = _s('photo') or item.get('photo', '')
-        item['posterMode'] = _s('posterMode') or str(item.get('posterMode') or '0')
+        item['posterTypes'] = request.form.getlist('posterTypes') or list(item.get('posterTypes') or [])
         item['posterPhotoScale'] = _s('posterPhotoScale') or str(item.get('posterPhotoScale') or '1')
         item['posterPhotoX'] = _s('posterPhotoX') or str(item.get('posterPhotoX') or '0')
         item['posterPhotoY'] = _s('posterPhotoY') or str(item.get('posterPhotoY') or '0')

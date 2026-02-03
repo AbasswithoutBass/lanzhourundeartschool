@@ -100,6 +100,9 @@
             <select id="posterType" class="btn2" style="width:100%">
               <option value="main">主项海报</option>
               <option value="sub">副项海报</option>
+              <option value="ear">听写海报</option>
+              <option value="theory">乐理海报</option>
+              <option value="sight">视唱海报</option>
               <option value="total">综合海报</option>
             </select>
           </div>
@@ -140,16 +143,22 @@
       $('empty').style.display = 'none';
       $('shell').style.display = 'grid';
       const s = data[idx];
-      const posterMode = String(s.posterMode || '0');
-      // adjust type selector by posterMode
+      let posterTypes = Array.isArray(s.posterTypes) ? s.posterTypes : [];
+      if(!posterTypes.length && s.posterMode){
+        const m = String(s.posterMode);
+        if(m === '1') posterTypes = ['main'];
+        if(m === '2') posterTypes = ['main','sub'];
+        if(m === '3') posterTypes = ['main','sub','total'];
+      }
+      // adjust type selector by posterTypes
       const typeSel = $('posterType');
-      if(posterMode === '1'){
+      const opts = Array.from(typeSel.options).map(o=>o.value);
+      const available = opts.filter(v => posterTypes.includes(v));
+      if(!available.length){
         typeSel.value = 'main';
         typeSel.disabled = true;
-      }else if(posterMode === '2'){
-        if(typeSel.value === 'total') typeSel.value = 'main';
-        typeSel.disabled = false;
       }else{
+        if(!available.includes(typeSel.value)) typeSel.value = available[0];
         typeSel.disabled = false;
       }
 
@@ -179,6 +188,24 @@
         $('scoreLabel').textContent = '副项分数';
         $('rankLabel').textContent = '专业排名';
         $('scoreValue').textContent = s.subScore || '—';
+        $('rankValue').textContent = s.majorRank || '—';
+      }else if(type === 'ear'){
+        $('typeBadge').textContent = '听写海报';
+        $('scoreLabel').textContent = '听写分数';
+        $('rankLabel').textContent = '专业排名';
+        $('scoreValue').textContent = s.earTraining || '—';
+        $('rankValue').textContent = s.majorRank || '—';
+      }else if(type === 'theory'){
+        $('typeBadge').textContent = '乐理海报';
+        $('scoreLabel').textContent = '乐理分数';
+        $('rankLabel').textContent = '专业排名';
+        $('scoreValue').textContent = s.theory || '—';
+        $('rankValue').textContent = s.majorRank || '—';
+      }else if(type === 'sight'){
+        $('typeBadge').textContent = '视唱海报';
+        $('scoreLabel').textContent = '视唱分数';
+        $('rankLabel').textContent = '专业排名';
+        $('scoreValue').textContent = s.sightSinging || '—';
         $('rankValue').textContent = s.majorRank || '—';
       }else{
         $('typeBadge').textContent = '综合海报';

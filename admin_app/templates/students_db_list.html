@@ -101,7 +101,7 @@
                 {% else %}
                   <span class="badge gray">未同步</span>
                 {% endif %}
-                <div class="k" style="margin-top:6px">海报：{{ s.posterMode or '0' }} 张</div>
+                <div class="k" style="margin-top:6px">海报：{{ (s.posterTypes|length) if s.posterTypes else 0 }} 张</div>
               </td>
               <td>
                 <div class="actions">

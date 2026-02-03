@@ -248,7 +248,13 @@
                     const totalScore = s.totalScore || '';
                     const majorRank = s.majorRank || '';
                     const mainRank = s.mainRank || '';
-                    const posterMode = String(s.posterMode || '0');
+                    let posterTypes = Array.isArray(s.posterTypes) ? s.posterTypes : [];
+                    if(!posterTypes.length && s.posterMode){
+                        const m = String(s.posterMode);
+                        if(m === '1') posterTypes = ['main'];
+                        if(m === '2') posterTypes = ['main','sub'];
+                        if(m === '3') posterTypes = ['main','sub','total'];
+                    }
 
                     box.innerHTML = `
                         <div style="padding:22px 22px 10px">
@@ -285,13 +291,16 @@
                                 </div>
                             </div>
 
-                            ${posterMode !== '0' ? `
+                            ${posterTypes.length ? `
                             <div style="margin-top:16px;color:#111;font-weight:700">海报下载（社交版）</div>
                             <div id="posterBox" style="margin-top:10px"></div>
                             <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
-                                <button class="poster-btn" data-type="main" style="border:none;background:#660874;color:#fff;padding:8px 12px;border-radius:10px;cursor:pointer">下载主项海报</button>
-                                ${posterMode === '1' ? '' : '<button class="poster-btn" data-type="sub" style="border:none;background:#660874;color:#fff;padding:8px 12px;border-radius:10px;cursor:pointer">下载副项海报</button>'}
-                                ${posterMode === '3' ? '<button class="poster-btn" data-type="total" style="border:none;background:#660874;color:#fff;padding:8px 12px;border-radius:10px;cursor:pointer">下载综合海报</button>' : ''}
+                                ${posterTypes.includes('main') ? '<button class="poster-btn" data-type="main" style="border:none;background:#660874;color:#fff;padding:8px 12px;border-radius:10px;cursor:pointer">下载主项海报</button>' : ''}
+                                ${posterTypes.includes('sub') ? '<button class="poster-btn" data-type="sub" style="border:none;background:#660874;color:#fff;padding:8px 12px;border-radius:10px;cursor:pointer">下载副项海报</button>' : ''}
+                                ${posterTypes.includes('ear') ? '<button class="poster-btn" data-type="ear" style="border:none;background:#660874;color:#fff;padding:8px 12px;border-radius:10px;cursor:pointer">下载听写海报</button>' : ''}
+                                ${posterTypes.includes('theory') ? '<button class="poster-btn" data-type="theory" style="border:none;background:#660874;color:#fff;padding:8px 12px;border-radius:10px;cursor:pointer">下载乐理海报</button>' : ''}
+                                ${posterTypes.includes('sight') ? '<button class="poster-btn" data-type="sight" style="border:none;background:#660874;color:#fff;padding:8px 12px;border-radius:10px;cursor:pointer">下载视唱海报</button>' : ''}
+                                ${posterTypes.includes('total') ? '<button class="poster-btn" data-type="total" style="border:none;background:#660874;color:#fff;padding:8px 12px;border-radius:10px;cursor:pointer">下载综合海报</button>' : ''}
                             </div>
                             ` : ''}
                             <div style="margin-top:14px;color:#111;font-weight:700">录取截图</div>
@@ -317,7 +326,7 @@
                     dlg.querySelector('#stuClose').addEventListener('click', ()=> document.body.removeChild(dlg));
                     dlg.addEventListener('click', (e)=>{ if(e.target===dlg) document.body.removeChild(dlg); });
 
-                                        if(posterMode !== '0'){
+                                        if(posterTypes.length){
                                                 const posterBox = dlg.querySelector('#posterBox');
                                                 const btns = dlg.querySelectorAll('.poster-btn');
 
@@ -330,11 +339,11 @@
                                                         el.style.border = '1px solid rgba(0,0,0,0.06)';
                                                         el.style.background = '#fff';
                                                         el.style.boxShadow = '0 14px 36px rgba(0,0,0,0.12)';
-                                                        const typeLabel = type === 'sub' ? '副项海报' : (type === 'total' ? '综合海报' : '主项海报');
-                                                        const scoreLabel = type === 'sub' ? '副项分数' : (type === 'total' ? '专业总分' : '主项分数');
-                                                        const rankLabel = type === 'sub' ? '专业排名' : (type === 'total' ? '专业排名' : '主项排名');
-                                                        const scoreValue = type === 'sub' ? subScore : (type === 'total' ? totalScore : mainScore);
-                                                        const rankValue = type === 'sub' ? majorRank : (type === 'total' ? majorRank : mainRank);
+                                                        const typeLabel = type === 'sub' ? '副项海报' : (type === 'total' ? '综合海报' : (type === 'ear' ? '听写海报' : (type === 'theory' ? '乐理海报' : (type === 'sight' ? '视唱海报' : '主项海报'))));
+                                                        const scoreLabel = type === 'sub' ? '副项分数' : (type === 'total' ? '专业总分' : (type === 'ear' ? '听写分数' : (type === 'theory' ? '乐理分数' : (type === 'sight' ? '视唱分数' : '主项分数'))));
+                                                        const rankLabel = type === 'sub' ? '专业排名' : (type === 'total' ? '专业排名' : (type === 'ear' ? '专业排名' : (type === 'theory' ? '专业排名' : (type === 'sight' ? '专业排名' : '主项排名'))));
+                                                        const scoreValue = type === 'sub' ? subScore : (type === 'total' ? totalScore : (type === 'ear' ? s.earTraining : (type === 'theory' ? s.theory : (type === 'sight' ? s.sightSinging : mainScore))));
+                                                        const rankValue = type === 'sub' ? majorRank : (type === 'total' ? majorRank : (type === 'ear' ? majorRank : (type === 'theory' ? majorRank : (type === 'sight' ? majorRank : mainRank))));
                                                         el.innerHTML = `
                                                             <div style="position:relative;width:100%;height:100%;background:linear-gradient(160deg, rgba(138,66,193,0.08), rgba(138,66,193,0.02))">
                                                                 <div style="position:absolute;left:20px;right:20px;top:18px;display:flex;justify-content:space-between;align-items:center">
@@ -387,7 +396,7 @@
                                                         document.body.removeChild(holder);
                                                 }
 
-                                                showPoster('main');
+                                                showPoster(posterTypes[0] || 'main');
                                                 btns.forEach(btn=>{
                                                         btn.addEventListener('click', ()=> downloadPoster(btn.dataset.type));
                                                 });
