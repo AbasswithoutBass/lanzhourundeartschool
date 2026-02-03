@@ -13,14 +13,5 @@
         "note": "示例：录取截图"
       }
     ]
-  },
-  {
-    "id": "demo_002",
-    "name": "李同学",
-    "school": "上海音乐学院",
-    "major": "钢琴演奏",
-    "year": 2026,
-    "photo": "润德1.png",
-    "admissions": []
   }
 ]
