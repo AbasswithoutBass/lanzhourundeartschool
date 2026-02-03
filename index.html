@@ -243,6 +243,8 @@
                     const major = s.category || s.major || '';
                     const mainSubject = s.mainSubject || '';
                     const subSubject = s.subSubject || '';
+                    const examPlace = [s.examProvince, s.examCity].filter(Boolean).join('');
+                    const promo = [s.year ? (s.year + '届') : '', s.examProvince ? (s.examProvince + '省') : '', '音乐联考'].filter(Boolean).join('');
                     const mainScore = s.mainScore || '';
                     const subScore = s.subScore || '';
                     const totalScore = s.totalScore || '';
@@ -358,6 +360,10 @@
                                                                 <div style="position:absolute;left:20px;right:20px;top:200px">
                                                                     <div style="font-size:26px;font-weight:800;color:#111">${esc(s.name)}</div>
                                                                     <div style="margin-top:6px;color:#666;font-size:13px">${esc(major)} · ${esc(mainSubject || '')}${subSubject ? ' / ' + esc(subSubject) : ''}</div>
+                                                                    <div style="margin-top:6px;color:#666;font-size:12px">考试地：${esc(examPlace || '—')}</div>
+                                                                    <div style="margin-top:8px;color:#6f42c1;font-size:12px;font-weight:700;letter-spacing:.3px">${esc(promo || '润德艺考 · 音乐联考喜报')}</div>
+                                                                    <div style="margin-top:6px;color:#111;font-size:14px;font-weight:800">制霸高分 · 强势上岸</div>
+                                                                    <div style="margin-top:10px;font-size:40px;font-weight:900;color:#6f42c1;line-height:1">${esc(scoreValue || '—')}<span style="font-size:14px;font-weight:700;margin-left:6px">分</span></div>
                                                                     <div style="margin-top:8px"><span style="display:inline-block;font-size:12px;padding:3px 8px;border-radius:999px;background:rgba(138,66,193,0.1);color:#6f42c1;font-weight:700">${typeLabel}</span></div>
                                                                 </div>
                                                                 <div style="position:absolute;left:20px;right:20px;bottom:20px;background:#fff;border:1px solid rgba(0,0,0,0.06);border-radius:16px;padding:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px">

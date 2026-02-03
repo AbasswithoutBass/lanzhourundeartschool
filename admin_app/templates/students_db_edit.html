@@ -126,6 +126,17 @@
           </div>
         </div>
 
+        <div class="row">
+          <div>
+            <label>考试地（省）</label>
+            <input name="examProvince" value="{{ student.examProvince or '' }}" placeholder="宁夏" />
+          </div>
+          <div>
+            <label>考试地（市）</label>
+            <input name="examCity" value="{{ student.examCity or '' }}" placeholder="银川" />
+          </div>
+        </div>
+
         <label>照片路径（相对站点根目录）</label>
         <input id="photoInput" name="photo" value="{{ student.photo or '' }}" placeholder="students/photos/xxx.jpg" />
 

@@ -394,6 +394,8 @@ def create_app():
                 'originSchool': str(s.get('originSchool') or ''),
                 'originCity': str(s.get('originCity') or ''),
                 'originCounty': str(s.get('originCounty') or ''),
+                'examProvince': str(s.get('examProvince') or ''),
+                'examCity': str(s.get('examCity') or ''),
                 'category': str(s.get('category') or ''),
                 'mainSubject': str(s.get('mainSubject') or ''),
                 'subSubject': str(s.get('subSubject') or ''),
@@ -2746,6 +2748,8 @@ def create_app():
             'originSchool': '',
             'originCity': '',
             'originCounty': '',
+            'examProvince': '',
+            'examCity': '',
             'photo': '',
             'category': '',
             'mainSubject': '',
@@ -2808,6 +2812,8 @@ def create_app():
         item['originSchool'] = _s('originSchool')
         item['originCity'] = _s('originCity')
         item['originCounty'] = _s('originCounty')
+        item['examProvince'] = _s('examProvince')
+        item['examCity'] = _s('examCity')
         item['photo'] = _s('photo')
         item['category'] = _s('category')
         item['mainSubject'] = _s('mainSubject')

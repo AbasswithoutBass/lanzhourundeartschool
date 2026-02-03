@@ -28,6 +28,10 @@
     .poster-main{position:absolute;left:24px;right:24px;top:220px}
     .name{font-size:28px;font-weight:800;color:#111}
     .meta{margin-top:8px;color:#666;font-size:14px}
+    .promo{margin-top:8px;font-size:12px;color:#6f42c1;font-weight:700;letter-spacing:.3px}
+    .campaign{margin-top:6px;font-size:14px;color:#111;font-weight:800}
+    .hero-score{margin-top:10px;font-size:40px;font-weight:900;color:#6f42c1;line-height:1}
+    .hero-score .unit{font-size:14px;color:#6f42c1;font-weight:700;margin-left:6px}
     .score-box{position:absolute;left:24px;right:24px;bottom:22px;background:#fff;border:1px solid rgba(0,0,0,.06);border-radius:16px;padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
     .score-box .label{font-size:12px;color:#999}
     .score-box .value{font-size:20px;font-weight:800;color:#111}
@@ -63,6 +67,10 @@
             <div class="poster-main">
               <div class="name" id="nameText">—</div>
               <div class="meta" id="metaText">—</div>
+              <div class="small" id="locationText">—</div>
+              <div class="promo" id="promoText">—</div>
+              <div class="campaign" id="campaignText">—</div>
+              <div class="hero-score"><span id="heroScore">—</span><span class="unit">分</span></div>
               <div style="margin-top:8px"><span class="badge" id="typeBadge">主项海报</span></div>
             </div>
             <div class="score-box">
@@ -215,6 +223,11 @@
       $('nameText').textContent = s.name || '未命名';
       $('yearText').textContent = (s.year || '—') + '届';
       $('metaText').textContent = [s.category, s.mainSubject, s.subSubject].filter(Boolean).join(' · ') || '—';
+      const examPlace = [s.examProvince, s.examCity].filter(Boolean).join('');
+      $('locationText').textContent = examPlace ? ('考试地：' + examPlace) : '—';
+      const promo = [s.year ? (s.year + '届') : '', s.examProvince ? (s.examProvince + '省') : '', '音乐联考'].filter(Boolean).join('');
+      $('promoText').textContent = promo || '润德艺考 · 音乐联考喜报';
+      $('campaignText').textContent = '制霸高分 · 强势上岸';
       const avatar = $('avatarImg');
       avatar.src = pickPhoto();
       avatar.style.setProperty('--ps', $('posterPhotoScale').value || '1');
@@ -228,36 +241,42 @@
         $('rankLabel').textContent = '主项排名';
         $('scoreValue').textContent = s.mainScore || '—';
         $('rankValue').textContent = s.mainRank || '—';
+        $('heroScore').textContent = s.mainScore || '—';
       }else if(posterType === 'sub'){
         $('typeBadge').textContent = '副项海报';
         $('scoreLabel').textContent = '副项分数';
         $('rankLabel').textContent = '专业排名';
         $('scoreValue').textContent = s.subScore || '—';
         $('rankValue').textContent = s.majorRank || '—';
+        $('heroScore').textContent = s.subScore || '—';
       }else if(posterType === 'ear'){
         $('typeBadge').textContent = '听写海报';
         $('scoreLabel').textContent = '听写分数';
         $('rankLabel').textContent = '专业排名';
         $('scoreValue').textContent = s.earTraining || '—';
         $('rankValue').textContent = s.majorRank || '—';
+        $('heroScore').textContent = s.earTraining || '—';
       }else if(posterType === 'theory'){
         $('typeBadge').textContent = '乐理海报';
         $('scoreLabel').textContent = '乐理分数';
         $('rankLabel').textContent = '专业排名';
         $('scoreValue').textContent = s.theory || '—';
         $('rankValue').textContent = s.majorRank || '—';
+        $('heroScore').textContent = s.theory || '—';
       }else if(posterType === 'sight'){
         $('typeBadge').textContent = '视唱海报';
         $('scoreLabel').textContent = '视唱分数';
         $('rankLabel').textContent = '专业排名';
         $('scoreValue').textContent = s.sightSinging || '—';
         $('rankValue').textContent = s.majorRank || '—';
+        $('heroScore').textContent = s.sightSinging || '—';
       }else{
         $('typeBadge').textContent = '综合海报';
         $('scoreLabel').textContent = '专业总分';
         $('rankLabel').textContent = '专业排名';
         $('scoreValue').textContent = s.totalScore || '—';
         $('rankValue').textContent = s.majorRank || '—';
+        $('heroScore').textContent = s.totalScore || '—';
       }
     }
 
