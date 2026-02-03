@@ -1,8 +1,8 @@
 [
   {
     "id": "sd_20260203_075122_2710",
-    "name": "",
-    "gender": "",
+    "name": "周嘉妮",
+    "gender": "女",
     "idCard": "",
     "examNo": "",
     "phone": "",
@@ -13,18 +13,18 @@
     "originCity": "",
     "originCounty": "",
     "photo": "",
-    "category": "",
-    "mainSubject": "",
+    "category": "音乐表演",
+    "mainSubject": "声乐",
     "subSubject": "",
-    "mainScore": "",
+    "mainScore": "214.8",
     "subScore": "",
-    "theory": "",
-    "earTraining": "",
-    "sightSinging": "",
-    "totalScore": "",
+    "theory": "12.3",
+    "earTraining": "20.7",
+    "sightSinging": "11.45",
+    "totalScore": "259",
     "majorRank": "",
     "mainRank": "",
-    "qualified": false,
+    "qualified": true,
     "joinHall": false,
     "posterMode": "0",
     "posterStatus": "pending",
@@ -33,6 +33,10 @@
     "posterPhotoY": "0",
     "ocrImage": "",
     "createdAt": "2026-02-03T07:51:22",
-    "updatedAt": "2026-02-03T07:51:22"
+    "updatedAt": "2026-02-03T08:22:14",
+    "posterTypes": [
+      "total"
+    ],
+    "ocrRawText": ""
   }
 ]
