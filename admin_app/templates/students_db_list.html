@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>学生数据库</title>
+  <style>
+    body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;background:#f5f5f7;margin:0}
+    header{background:#fff;border-bottom:1px solid rgba(0,0,0,.06);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    a{color:#660874;text-decoration:none}
+    .wrap{max-width:1200px;margin:24px auto;padding:0 16px}
+    .bar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:12px}
+    .btn{display:inline-block;padding:10px 12px;border-radius:12px;background:#660874;color:#fff;font-weight:700;border:none;cursor:pointer}
+    .btn2{display:inline-block;padding:10px 12px;border-radius:12px;background:#fff;color:#660874;font-weight:700;border:1px solid rgba(102,8,116,0.25);cursor:pointer}
+    .card{background:#fff;border-radius:16px;padding:16px;box-shadow:0 10px 24px rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.06)}
+    table{width:100%;border-collapse:separate;border-spacing:0}
+    th,td{padding:10px 10px;border-bottom:1px solid rgba(0,0,0,.06);text-align:left;vertical-align:top}
+    th{color:#666;font-size:13px;font-weight:700}
+    .k{color:#666;font-size:13px}
+    .msg{margin:4px 0;font-size:13px;line-height:1.5}
+    .msg.ok{color:#1d6a2b}
+    .msg.error{color:#c21a12}
+    .badge{display:inline-block;font-size:12px;padding:3px 10px;border-radius:999px;background:rgba(102,8,116,0.08);color:#660874;font-weight:800}
+    .badge.gray{background:rgba(0,0,0,0.06);color:#444}
+    .actions{display:flex;gap:8px;flex-wrap:wrap}
+    input,select{padding:10px 12px;border-radius:12px;border:1px solid rgba(0,0,0,0.12);outline:none}
+    .filters{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .small{font-size:12px;color:#666}
+  </style>
+</head>
+<body>
+  <header>
+    <div style="font-weight:800">学生数据库</div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <a href="/admin">返回后台首页</a>
+      <a href="/logout">退出</a>
+    </div>
+  </header>
+
+  <div class="wrap">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="card" style="margin-bottom:12px">
+          {% for category, message in messages %}
+            <div class="msg {{ 'error' if category=='error' else 'ok' }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <div class="bar">
+      <form method="get" action="/admin/students-db" class="filters">
+        <input name="q" value="{{ q or '' }}" placeholder="搜索姓名/考生号/学校…" />
+        <input name="year" value="{{ year or '' }}" placeholder="届数/年份" style="width:120px" />
+        <select name="category">
+          <option value="">全部专业</option>
+          <option value="音乐表演" {{ 'selected' if category=='音乐表演' else '' }}>音乐表演</option>
+          <option value="音乐教育" {{ 'selected' if category=='音乐教育' else '' }}>音乐教育</option>
+        </select>
+        <button class="btn2" type="submit">筛选</button>
+      </form>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <a class="btn" href="/admin/students-db/new">新建学生</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:24%">学生</th>
+            <th>专业/主副项</th>
+            <th>成绩</th>
+            <th>名人堂/海报</th>
+            <th style="width:180px">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in students %}
+            <tr>
+              <td>
+                <div style="font-weight:800;color:#111">{{ s.name or '（未命名）' }}</div>
+                <div class="k" style="margin-top:6px">
+                  {{ s.year or '—' }} 届 · {{ s.gender or '—' }} · {{ s.originSchool or '—' }}
+                </div>
+                <div class="small">考生号：{{ s.examNo or '—' }}</div>
+              </td>
+              <td>
+                <div class="badge">{{ s.category or '—' }}</div>
+                <div class="k" style="margin-top:6px">主项：{{ s.mainSubject or '—' }}</div>
+                <div class="k">副项：{{ s.subSubject or '—' }}</div>
+              </td>
+              <td>
+                <div class="k">总分：{{ s.totalScore or '—' }}</div>
+                <div class="k">专业排名：{{ s.majorRank or '—' }}</div>
+                <div class="k">主项排名：{{ s.mainRank or '—' }}</div>
+              </td>
+              <td>
+                {% if s.joinHall %}
+                  <span class="badge">已同步名人堂</span>
+                {% else %}
+                  <span class="badge gray">未同步</span>
+                {% endif %}
+                <div class="k" style="margin-top:6px">海报：{{ s.posterMode or '0' }} 张</div>
+              </td>
+              <td>
+                <div class="actions">
+                  <a class="btn2" href="/admin/students-db/{{ s.id }}">编辑</a>
+                  <form method="post" action="/admin/students-db/{{ s.id }}/delete" onsubmit="return confirm('确定删除该学生？');" style="display:inline">
+                    <button class="btn2" type="submit">删除</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+          {% if not students %}
+            <tr><td colspan="5" class="k">暂无学生。点击“新建学生”开始录入。</td></tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="k" style="margin-top:10px;line-height:1.6">
+      数据文件：<span style="font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace">data/students_ocr.json</span>
+    </div>
+  </div>
+</body>
+</html>

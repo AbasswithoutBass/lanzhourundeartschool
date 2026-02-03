@@ -30,9 +30,15 @@
         <a class="btn" href="/admin/teachers">教师管理 / 拖拽排序</a>
       </div>
       <div class="card">
-        <div class="k">名人堂</div>
-        <div class="v">{{ student_count }}</div>
-        <a class="btn" href="/admin/students">管理优秀考生</a>
+        <div class="k">学生数据库</div>
+        <div class="v">{{ student_db_count }}</div>
+        <a class="btn" href="/admin/students-db">学生数据库管理</a>
+        <div class="k" style="margin-top:10px;line-height:1.5">名人堂从学生数据库同步生成。</div>
+      </div>
+      <div class="card">
+        <div class="k">名人堂（同步）</div>
+        <div class="v">{{ hall_count }}</div>
+        <a class="btn" href="/admin/students">查看名人堂数据</a>
       </div>
       <div class="card">
         <div class="k">批量导入</div>

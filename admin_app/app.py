@@ -46,6 +46,8 @@ _PORTAL_ASSETS_ROOT = (ROOT / 'public' / 'assets' / 'portal') if _SITE_MODE in {
 DATA_TEACHERS = _DATA_ROOT / 'teachers.json'
 DATA_STUDENTS = _DATA_ROOT / 'students.json'
 DATA_PORTAL = _DATA_ROOT / 'portal_posts.json'
+DATA_STUDENTS_DB = _DATA_ROOT / 'students_ocr.json'
+DATA_HALL_OF_FAME = _DATA_ROOT / 'hall_of_fame_students.json'
 
 _TEACHERS_MANAGE = None
 _STUDENTS_MANAGE = None
@@ -352,6 +354,42 @@ def create_app():
 
     def _save_portal_posts(posts: list[dict]):
         write_json(DATA_PORTAL, posts)
+
+    def _load_students_db() -> list[dict]:
+        data = load_json(DATA_STUDENTS_DB)
+        return data if isinstance(data, list) else []
+
+    def _save_students_db(items: list[dict]):
+        write_json(DATA_STUDENTS_DB, items)
+
+    def _sync_hall_of_fame_from_db(items: list[dict]):
+        out: list[dict] = []
+        for s in items:
+            if not s.get('joinHall'):
+                continue
+            out.append({
+                'id': str(s.get('id') or ''),
+                'name': str(s.get('name') or ''),
+                'gender': str(s.get('gender') or ''),
+                'year': str(s.get('year') or ''),
+                'originSchool': str(s.get('originSchool') or ''),
+                'originCity': str(s.get('originCity') or ''),
+                'originCounty': str(s.get('originCounty') or ''),
+                'category': str(s.get('category') or ''),
+                'mainSubject': str(s.get('mainSubject') or ''),
+                'subSubject': str(s.get('subSubject') or ''),
+                'theory': str(s.get('theory') or ''),
+                'earTraining': str(s.get('earTraining') or ''),
+                'sightSinging': str(s.get('sightSinging') or ''),
+                'totalScore': str(s.get('totalScore') or ''),
+                'majorRank': str(s.get('majorRank') or ''),
+                'mainRank': str(s.get('mainRank') or ''),
+                'qualified': bool(s.get('qualified')),
+                'photo': str(s.get('photo') or ''),
+                'posterMode': str(s.get('posterMode') or ''),
+                'updatedAt': str(s.get('updatedAt') or ''),
+            })
+        write_json(DATA_HALL_OF_FAME, out)
 
     def _find_post(posts: list[dict], pid: str) -> dict | None:
         pid = str(pid or '').strip()
@@ -806,11 +844,15 @@ def create_app():
     def admin_home():
         teachers = load_json(DATA_TEACHERS)
         students = load_json(DATA_STUDENTS)
+        students_db = load_json(DATA_STUDENTS_DB)
+        hall_students = load_json(DATA_HALL_OF_FAME)
         portal_posts = _load_portal_posts()
         return render_template(
             'home.html',
             teacher_count=len(teachers),
             student_count=len(students),
+            student_db_count=len(students_db),
+            hall_count=len(hall_students),
             portal_count=len(portal_posts),
         )
 
@@ -845,6 +887,8 @@ def create_app():
         files = [
             {'key': 'teachers', 'title': '教师库', 'repo_path': _repo_path(DATA_TEACHERS)},
             {'key': 'students', 'title': '名人堂（学生）', 'repo_path': _repo_path(DATA_STUDENTS)},
+            {'key': 'students_db', 'title': '学生数据库', 'repo_path': _repo_path(DATA_STUDENTS_DB)},
+            {'key': 'hall_students', 'title': '名人堂同步库', 'repo_path': _repo_path(DATA_HALL_OF_FAME)},
             {'key': 'portal', 'title': '信息门户', 'repo_path': _repo_path(DATA_PORTAL)},
         ]
         for it in files:
@@ -2500,6 +2544,151 @@ def create_app():
         students = load_json(DATA_STUDENTS)
         students = sorted(students, key=lambda x: (-(int(x.get('year') or 0)), str(x.get('name') or '')))
         return render_template('students_list.html', students=students)
+    @app.get('/admin/students-db')
+    @login_required
+    def students_db_list_page():
+        items = _load_students_db()
+        q = str(request.args.get('q') or '').strip().lower()
+        year = str(request.args.get('year') or '').strip()
+        category = str(request.args.get('category') or '').strip()
+
+        def hit(s: dict) -> bool:
+            if year and str(s.get('year') or '') != year:
+                return False
+            if category and str(s.get('category') or '') != category:
+                return False
+            if not q:
+                return True
+            hay = ' '.join([
+                str(s.get('name') or ''),
+                str(s.get('examNo') or ''),
+                str(s.get('originSchool') or ''),
+                str(s.get('originCity') or ''),
+                str(s.get('originCounty') or ''),
+            ]).lower()
+            return q in hay
+
+        filtered = [s for s in items if hit(s)]
+
+        def sort_key(s: dict):
+            dt = s.get('updatedAt') or s.get('createdAt') or ''
+            return str(dt)
+
+        filtered = sorted(filtered, key=sort_key, reverse=True)
+        return render_template('students_db_list.html', students=filtered, q=q, year=year, category=category)
+
+    @app.get('/admin/students-db/new')
+    @login_required
+    def students_db_new_page():
+        items = _load_students_db()
+        pid = _make_id('sd')
+        now = _now_iso()
+        item = {
+            'id': pid,
+            'name': '',
+            'gender': '',
+            'idCard': '',
+            'examNo': '',
+            'phone': '',
+            'parentPhone': '',
+            'examBackendPassword': '',
+            'year': '',
+            'originSchool': '',
+            'originCity': '',
+            'originCounty': '',
+            'photo': '',
+            'category': '',
+            'mainSubject': '',
+            'subSubject': '',
+            'theory': '',
+            'earTraining': '',
+            'sightSinging': '',
+            'totalScore': '',
+            'majorRank': '',
+            'mainRank': '',
+            'qualified': False,
+            'joinHall': False,
+            'posterMode': '0',
+            'ocrImage': '',
+            'createdAt': now,
+            'updatedAt': now,
+        }
+        items.append(item)
+        _save_students_db(items)
+        _sync_hall_of_fame_from_db(items)
+        return redirect(url_for('students_db_edit_page', sid=pid))
+
+    @app.get('/admin/students-db/<sid>')
+    @login_required
+    def students_db_edit_page(sid: str):
+        items = _load_students_db()
+        item = next((x for x in items if str(x.get('id') or '') == str(sid)), None)
+        if not item:
+            flash('学生不存在', 'error')
+            return redirect(url_for('students_db_list_page'))
+        return render_template('students_db_edit.html', student=item)
+
+    @app.post('/admin/students-db/<sid>')
+    @login_required
+    def students_db_update_page(sid: str):
+        items = _load_students_db()
+        item = next((x for x in items if str(x.get('id') or '') == str(sid)), None)
+        if not item:
+            flash('学生不存在', 'error')
+            return redirect(url_for('students_db_list_page'))
+
+        def _s(name: str) -> str:
+            return str(request.form.get(name) or '').strip()
+
+        item['name'] = _s('name')
+        item['gender'] = _s('gender')
+        item['idCard'] = _s('idCard')
+        item['examNo'] = _s('examNo')
+        item['phone'] = _s('phone')
+        item['parentPhone'] = _s('parentPhone')
+        item['examBackendPassword'] = _s('examBackendPassword')
+        item['year'] = _s('year')
+        item['originSchool'] = _s('originSchool')
+        item['originCity'] = _s('originCity')
+        item['originCounty'] = _s('originCounty')
+        item['photo'] = _s('photo')
+        item['category'] = _s('category')
+        item['mainSubject'] = _s('mainSubject')
+        item['subSubject'] = _s('subSubject')
+        item['theory'] = _s('theory')
+        item['earTraining'] = _s('earTraining')
+        item['sightSinging'] = _s('sightSinging')
+        item['totalScore'] = _s('totalScore')
+        item['majorRank'] = _s('majorRank')
+        item['mainRank'] = _s('mainRank')
+        item['qualified'] = bool(request.form.get('qualified'))
+        item['joinHall'] = bool(request.form.get('joinHall'))
+        item['posterMode'] = _s('posterMode') or '0'
+        item['ocrImage'] = _s('ocrImage')
+        item['updatedAt'] = _now_iso()
+
+        if not item['name']:
+            flash('姓名不能为空', 'error')
+            return redirect(url_for('students_db_edit_page', sid=sid))
+
+        _save_students_db(items)
+        _sync_hall_of_fame_from_db(items)
+        flash('已保存', 'ok')
+        return redirect(url_for('students_db_edit_page', sid=sid))
+
+    @app.post('/admin/students-db/<sid>/delete')
+    @login_required
+    def students_db_delete_page(sid: str):
+        items = _load_students_db()
+        before = len(items)
+        items = [x for x in items if str(x.get('id') or '') != str(sid)]
+        if len(items) == before:
+            flash('学生不存在', 'error')
+            return redirect(url_for('students_db_list_page'))
+        _save_students_db(items)
+        _sync_hall_of_fame_from_db(items)
+        flash('已删除', 'ok')
+        return redirect(url_for('students_db_list_page'))
 
     @app.post('/admin/students/apply-rules')
     @login_required

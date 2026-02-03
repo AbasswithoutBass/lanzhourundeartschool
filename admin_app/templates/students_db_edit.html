@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>编辑学生数据库</title>
+  <style>
+    body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;background:#f5f5f7;margin:0}
+    header{background:#fff;border-bottom:1px solid rgba(0,0,0,.06);padding:14px 18px;display:flex;align-items:center;justify-content:space-between}
+    a{color:#660874;text-decoration:none}
+    .wrap{max-width:1100px;margin:22px auto;padding:0 16px}
+    .card{background:#fff;border-radius:16px;padding:16px;box-shadow:0 10px 24px rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.06)}
+    .card + .card{margin-top:14px}
+    label{display:block;margin-top:12px;color:#444;font-size:13px}
+    input[type="text"],
+    input[type="number"],
+    input[type="password"],
+    input[type="search"],
+    input[type="tel"],
+    input[type="url"],
+    input:not([type]),
+    textarea,select{width:100%;padding:10px 12px;border:1px solid rgba(0,0,0,.12);border-radius:12px;font-size:14px}
+    textarea{min-height:90px;resize:vertical}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+    @media(max-width:900px){.row3{grid-template-columns:1fr}}
+    .btn{display:inline-block;margin-top:14px;padding:10px 14px;border-radius:12px;background:#660874;color:#fff;font-weight:700;border:none;cursor:pointer}
+    .btn2{display:inline-block;margin-top:14px;padding:10px 14px;border-radius:12px;background:#111827;color:#fff;font-weight:700;border:none;cursor:pointer}
+    .btnDanger{display:inline-block;margin-top:14px;padding:10px 14px;border-radius:12px;background:#b91c1c;color:#fff;font-weight:700;border:none;cursor:pointer}
+    .flash{margin:10px 0 0;padding:10px 12px;border-radius:12px;font-size:13px}
+    .flash.error{background:#fff1f2;color:#9f1239;border:1px solid rgba(159,18,57,.15)}
+    .flash.ok{background:#ecfeff;color:#155e75;border:1px solid rgba(21,94,117,.15)}
+    .small{font-size:12px;color:#666}
+    .checkRow{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:10px}
+    .checkRow label{margin:0;display:flex;gap:8px;align-items:center}
+    .drop{margin-top:10px;border:2px dashed rgba(102,8,116,0.32);border-radius:14px;padding:12px;background:rgba(102,8,116,0.04)}
+    .drop.drag{background:rgba(102,8,116,0.10);border-color:rgba(102,8,116,0.55)}
+    .drop h4{margin:0 0 6px 0;font-size:13px;color:#660874}
+    .drop .k{font-size:12px;color:#666;line-height:1.6}
+    .drop .row2{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
+    .drop .btnMini{padding:9px 12px;border-radius:12px;background:#fff;color:#660874;font-weight:800;border:1px solid rgba(102,8,116,0.25);cursor:pointer}
+    .dropOut{margin-top:10px;font-size:12px;color:#374151;line-height:1.6}
+    .preview{margin-top:10px;border:1px solid rgba(0,0,0,0.08);border-radius:12px;overflow:hidden;background:#fff}
+    .preview img{width:100%;height:220px;object-fit:cover;display:block}
+  </style>
+</head>
+<body>
+  <header>
+    <div><a href="/admin/students-db">← 返回学生数据库</a></div>
+    <div style="font-weight:700">编辑学生：{{ student.name or '未命名' }}</div>
+    <div><a href="/logout">退出</a></div>
+  </header>
+
+  <div class="wrap">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for cat, msg in messages %}
+          <div class="flash {{cat}}">{{msg}}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="card">
+      <div class="small">id: {{ student.id }}</div>
+
+      <form id="f" method="post" action="">
+        <div class="row">
+          <div>
+            <label>姓名</label>
+            <input name="name" value="{{ student.name or '' }}" required />
+          </div>
+          <div>
+            <label>性别</label>
+            <select name="gender">
+              <option value="">—</option>
+              <option value="男" {{ 'selected' if student.gender=='男' else '' }}>男</option>
+              <option value="女" {{ 'selected' if student.gender=='女' else '' }}>女</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>证件号</label>
+            <input name="idCard" value="{{ student.idCard or '' }}" />
+          </div>
+          <div>
+            <label>考生号</label>
+            <input name="examNo" value="{{ student.examNo or '' }}" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>手机号</label>
+            <input name="phone" value="{{ student.phone or '' }}" />
+          </div>
+          <div>
+            <label>家长手机号</label>
+            <input name="parentPhone" value="{{ student.parentPhone or '' }}" />
+          </div>
+        </div>
+
+        <label>艺考后台密码（明文，仅后台可见）</label>
+        <input name="examBackendPassword" value="{{ student.examBackendPassword or '' }}" />
+
+        <div class="row">
+          <div>
+            <label>届数/年份</label>
+            <input name="year" value="{{ student.year or '' }}" placeholder="2026" />
+          </div>
+          <div>
+            <label>原高中学校</label>
+            <input name="originSchool" value="{{ student.originSchool or '' }}" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>生源地（市）</label>
+            <input name="originCity" value="{{ student.originCity or '' }}" />
+          </div>
+          <div>
+            <label>生源地（县）</label>
+            <input name="originCounty" value="{{ student.originCounty or '' }}" />
+          </div>
+        </div>
+
+        <label>照片路径（相对站点根目录）</label>
+        <input id="photoInput" name="photo" value="{{ student.photo or '' }}" placeholder="students/photos/xxx.jpg" />
+
+        <div id="dropZone" class="drop">
+          <h4>拖拽上传学生照片</h4>
+          <div class="k">把照片直接拖到这里，或点“选择文件”。上传后会自动填入上面的照片路径（写入 <span style="font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace">students/photos/</span>）。</div>
+          <div class="row2">
+            <input id="photoFile" type="file" accept=".jpg,.jpeg,.png,.webp" style="display:none" />
+            <button id="pickBtn" class="btnMini" type="button">选择文件</button>
+            <button id="uploadBtn" class="btnMini" type="button">上传</button>
+          </div>
+          <div id="dropOut" class="dropOut"></div>
+          <div id="preview" class="preview" style="display:none"></div>
+        </div>
+
+        <label>专业类别</label>
+        <select name="category">
+          <option value="">—</option>
+          <option value="音乐表演" {{ 'selected' if student.category=='音乐表演' else '' }}>音乐表演</option>
+          <option value="音乐教育" {{ 'selected' if student.category=='音乐教育' else '' }}>音乐教育</option>
+        </select>
+
+        <div class="row">
+          <div>
+            <label>主项</label>
+            <input name="mainSubject" value="{{ student.mainSubject or '' }}" />
+          </div>
+          <div>
+            <label>副项</label>
+            <input name="subSubject" value="{{ student.subSubject or '' }}" />
+          </div>
+        </div>
+
+        <div class="row3">
+          <div>
+            <label>乐理</label>
+            <input name="theory" value="{{ student.theory or '' }}" />
+          </div>
+          <div>
+            <label>听写/练耳</label>
+            <input name="earTraining" value="{{ student.earTraining or '' }}" />
+          </div>
+          <div>
+            <label>视唱</label>
+            <input name="sightSinging" value="{{ student.sightSinging or '' }}" />
+          </div>
+        </div>
+
+        <div class="row3">
+          <div>
+            <label>专业总分</label>
+            <input name="totalScore" value="{{ student.totalScore or '' }}" />
+          </div>
+          <div>
+            <label>专业排名</label>
+            <input name="majorRank" value="{{ student.majorRank or '' }}" />
+          </div>
+          <div>
+            <label>主项排名</label>
+            <input name="mainRank" value="{{ student.mainRank or '' }}" />
+          </div>
+        </div>
+
+        <div class="checkRow">
+          <label><input type="checkbox" name="qualified" value="1" {{ 'checked' if student.qualified else '' }} /> 合格标记</label>
+          <label><input type="checkbox" name="joinHall" value="1" {{ 'checked' if student.joinHall else '' }} /> 加入名人堂</label>
+        </div>
+
+        <label>海报张数</label>
+        <select name="posterMode">
+          <option value="0" {{ 'selected' if (student.posterMode|string) in ['', '0'] else '' }}>0 张</option>
+          <option value="1" {{ 'selected' if (student.posterMode|string) == '1' else '' }}>1 张（主项）</option>
+          <option value="2" {{ 'selected' if (student.posterMode|string) == '2' else '' }}>2 张（主项 + 副项）</option>
+          <option value="3" {{ 'selected' if (student.posterMode|string) == '3' else '' }}>3 张（主项 + 副项 + 综合）</option>
+        </select>
+
+        <label>OCR 原图路径（可空）</label>
+        <input name="ocrImage" value="{{ student.ocrImage or '' }}" placeholder="data/raw_ocr/xxx.jpg" />
+
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px">
+          <button class="btn" type="submit">保存</button>
+          <a class="btn2" href="/admin/students-db">返回列表</a>
+        </div>
+      </form>
+    </div>
+
+    <div class="card">
+      <form method="post" action="/admin/students-db/{{ student.id }}/delete" onsubmit="return confirm('确认删除该学生？');">
+        <button class="btnDanger" type="submit">删除该学生</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const dz = document.getElementById('dropZone');
+      const fileEl = document.getElementById('photoFile');
+      const pickBtn = document.getElementById('pickBtn');
+      const uploadBtn = document.getElementById('uploadBtn');
+      const out = document.getElementById('dropOut');
+      const photoInput = document.getElementById('photoInput');
+      const preview = document.getElementById('preview');
+      if(!dz || !fileEl || !pickBtn || !uploadBtn || !out || !photoInput || !preview) return;
+
+      function setPreview(rel){
+        if(!rel){ preview.style.display = 'none'; preview.innerHTML = ''; return; }
+        preview.style.display = 'block';
+        preview.innerHTML = '<img src="/site/'+ encodeURI(rel) +'" alt="preview">';
+      }
+
+      try{ setPreview(String(photoInput.value||'').trim()); }catch(e){}
+
+      pickBtn.addEventListener('click', ()=> fileEl.click());
+
+      async function upload(f){
+        if(!f){ out.textContent = '请选择图片文件。'; return; }
+        out.textContent = '上传中…';
+        const fd = new FormData();
+        fd.append('image', f);
+        fd.append('kind', 'student');
+        try{
+          const resp = await fetch('/admin/upload-photo', {method:'POST', body: fd});
+          const j = await resp.json();
+          if(!resp.ok || !j.ok) throw new Error(j && j.error ? j.error : 'upload failed');
+          const rel = String(j.path || '').trim();
+          photoInput.value = rel;
+          out.innerHTML = '上传成功：<span style="font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace">'+ rel +'</span>';
+          setPreview(rel);
+        }catch(e){
+          console.error(e);
+          out.textContent = '上传失败：' + (e && e.message ? e.message : String(e));
+        }
+      }
+
+      uploadBtn.addEventListener('click', ()=>{
+        const f = fileEl.files && fileEl.files[0];
+        upload(f);
+      });
+
+      fileEl.addEventListener('change', ()=>{
+        const f = fileEl.files && fileEl.files[0];
+        if(f) out.textContent = '已选择：' + f.name + '（点“上传”开始）';
+      });
+
+      function prevent(e){ e.preventDefault(); e.stopPropagation(); }
+      ;['dragenter','dragover'].forEach(ev=> dz.addEventListener(ev, (e)=>{ prevent(e); dz.classList.add('drag'); }));
+      ;['dragleave','drop'].forEach(ev=> dz.addEventListener(ev, (e)=>{ prevent(e); dz.classList.remove('drag'); }));
+
+      dz.addEventListener('drop', (e)=>{
+        const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+        upload(f);
+      });
+    })();
+  </script>
+</body>
+</html>
