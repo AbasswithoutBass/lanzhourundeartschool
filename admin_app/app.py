@@ -30,6 +30,11 @@ try:
 except Exception:  # pragma: no cover
     load_workbook = None
 
+try:
+    from paddleocr import PaddleOCR
+except Exception:  # pragma: no cover
+    PaddleOCR = None
+
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify, send_file
 
 
@@ -51,6 +56,7 @@ DATA_HALL_OF_FAME = _DATA_ROOT / 'hall_of_fame_students.json'
 
 _TEACHERS_MANAGE = None
 _STUDENTS_MANAGE = None
+_OCR_ENGINE = None
 
 
 def _load_teachers_manage_module():
@@ -405,6 +411,48 @@ def create_app():
                 'updatedAt': str(s.get('updatedAt') or ''),
             })
         write_json(DATA_HALL_OF_FAME, out)
+
+    def _get_ocr_engine():
+        global _OCR_ENGINE
+        if _OCR_ENGINE is not None:
+            return _OCR_ENGINE
+        if PaddleOCR is None:
+            return None
+        # Chinese OCR, angle classifier enabled
+        _OCR_ENGINE = PaddleOCR(use_angle_cls=True, lang='ch')
+        return _OCR_ENGINE
+
+    def _ocr_extract_fields(lines: list[str]) -> dict:
+        """Extract structured fields from OCR lines (best-effort)."""
+        text = '\n'.join([str(x or '') for x in lines])
+        text = text.replace(' ', '')
+
+        def _find(pat: str):
+            m = re.search(pat, text)
+            return m.group(1).strip() if m else ''
+
+        out = {
+            'category': _find(r'(音乐表演|音乐教育)'),
+            'examNo': _find(r'考生号[:：]?([0-9A-Za-z]+)'),
+            'name': _find(r'姓名[:：]?([\u4e00-\u9fa5·]{2,6})'),
+            'idCard': _find(r'(证件号|身份证号)[:：]?([0-9Xx]{6,})'),
+            'mainSubject': _find(r'主项[:：]?([\u4e00-\u9fa5A-Za-z0-9]+)'),
+            'subSubject': _find(r'副项[:：]?([\u4e00-\u9fa5A-Za-z0-9]+)'),
+            'theory': _find(r'乐理[:：]?([0-9.]+)'),
+            'earTraining': _find(r'(听写|练耳)[:：]?([0-9.]+)'),
+            'sightSinging': _find(r'视唱[:：]?([0-9.]+)'),
+            'totalScore': _find(r'专业总分[:：]?([0-9.]+)') or _find(r'总分[:：]?([0-9.]+)'),
+            'majorRank': _find(r'专业排名[:：]?([0-9]+)'),
+            'mainRank': _find(r'主项排名[:：]?([0-9]+)'),
+            'qualified': '合格' in text and '不合格' not in text,
+        }
+        # fix idCard if group captured by label
+        if out['idCard'] and out['idCard'].startswith(('证件号', '身份证号')):
+            out['idCard'] = out['idCard'][-18:]
+        # earTraining captured group 2
+        if out['earTraining'] and out['earTraining'] in {'听写', '练耳'}:
+            out['earTraining'] = _find(r'(听写|练耳)[:：]?([0-9.]+)')
+        return out
 
     def _find_post(posts: list[dict], pid: str) -> dict | None:
         pid = str(pid or '').strip()
@@ -1481,6 +1529,54 @@ def create_app():
             shutil.copyfileobj(f.stream, w)
 
         return jsonify({'ok': True, 'path': rel})
+
+    @app.post('/admin/ocr-recognize')
+    @login_required
+    def admin_ocr_recognize():
+        """Run OCR on a raw image path and return extracted fields."""
+        rel = str(request.form.get('path') or '').strip().lstrip('/')
+        if not rel:
+            return jsonify({'ok': False, 'error': 'missing path'}), 400
+
+        ocr = _get_ocr_engine()
+        if ocr is None:
+            return jsonify({'ok': False, 'error': 'OCR 依赖未安装（PaddleOCR）'}), 500
+
+        # load image bytes
+        img_bytes = None
+        if _github_enabled():
+            try:
+                content, _sha = _gh_get_file(rel)
+                img_bytes = content
+            except Exception:
+                img_bytes = None
+        if img_bytes is None:
+            p = ROOT / rel
+            if not p.exists() or not p.is_file():
+                return jsonify({'ok': False, 'error': 'image not found'}), 404
+            img_bytes = p.read_bytes()
+
+        try:
+            import numpy as np
+            from PIL import Image as PILImage
+            im = PILImage.open(io.BytesIO(img_bytes)).convert('RGB')
+            arr = np.array(im)
+            result = ocr.ocr(arr, cls=True)
+        except Exception as e:
+            return jsonify({'ok': False, 'error': f'OCR 失败: {e}'}), 500
+
+        lines: list[str] = []
+        try:
+            for row in result:
+                for it in row:
+                    txt = it[1][0] if it and len(it) > 1 else ''
+                    if txt:
+                        lines.append(str(txt))
+        except Exception:
+            lines = []
+
+        fields = _ocr_extract_fields(lines)
+        return jsonify({'ok': True, 'lines': lines, 'fields': fields})
 
     @app.get('/site/<path:relpath>')
     @login_required
@@ -2670,6 +2766,7 @@ def create_app():
             'posterPhotoX': '0',
             'posterPhotoY': '0',
             'ocrImage': '',
+            'ocrRawText': '',
             'createdAt': now,
             'updatedAt': now,
         }
@@ -2731,6 +2828,7 @@ def create_app():
         item['posterPhotoX'] = _s('posterPhotoX') or str(item.get('posterPhotoX') or '0')
         item['posterPhotoY'] = _s('posterPhotoY') or str(item.get('posterPhotoY') or '0')
         item['ocrImage'] = _s('ocrImage')
+        item['ocrRawText'] = _s('ocrRawText') or str(item.get('ocrRawText') or '')
         item['updatedAt'] = _now_iso()
 
         if not item['name']:

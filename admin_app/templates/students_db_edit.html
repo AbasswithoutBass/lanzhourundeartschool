@@ -230,6 +230,14 @@
           <div id="ocrPreview" class="preview" style="display:none"></div>
         </div>
 
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px">
+          <button id="ocrRecognize" class="btnMini" type="button">OCR 识别并填入</button>
+          <div id="ocrMsg" class="small"></div>
+        </div>
+
+        <label>OCR 原始文本（自动填入，可手动修改）</label>
+        <textarea name="ocrRawText" id="ocrRawText">{{ student.ocrRawText or '' }}</textarea>
+
         <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px">
           <button class="btn" type="submit">保存</button>
           <a class="btn2" href="/admin/students-db">返回列表</a>
@@ -361,6 +369,56 @@
       dz.addEventListener('drop', (e)=>{
         const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
         upload(f);
+      });
+    })();
+
+    (function(){
+      const btn = document.getElementById('ocrRecognize');
+      const msg = document.getElementById('ocrMsg');
+      const ocrInput = document.getElementById('ocrInput');
+      const rawText = document.getElementById('ocrRawText');
+      if(!btn || !msg || !ocrInput || !rawText) return;
+
+      function setField(name, value){
+        const el = document.querySelector(`[name="${name}"]`);
+        if(el && value){ el.value = value; }
+      }
+
+      btn.addEventListener('click', async ()=>{
+        const path = String(ocrInput.value || '').trim();
+        if(!path){ msg.textContent = '请先上传 OCR 原图。'; return; }
+        msg.textContent = '识别中…';
+        const fd = new FormData();
+        fd.append('path', path);
+        try{
+          const resp = await fetch('/admin/ocr-recognize', {method:'POST', body: fd});
+          const j = await resp.json();
+          if(!resp.ok || !j.ok) throw new Error(j && j.error ? j.error : 'ocr failed');
+
+          const f = j.fields || {};
+          setField('name', f.name);
+          setField('examNo', f.examNo);
+          setField('idCard', f.idCard);
+          setField('category', f.category);
+          setField('mainSubject', f.mainSubject);
+          setField('subSubject', f.subSubject);
+          setField('theory', f.theory);
+          setField('earTraining', f.earTraining);
+          setField('sightSinging', f.sightSinging);
+          setField('totalScore', f.totalScore);
+          setField('majorRank', f.majorRank);
+          setField('mainRank', f.mainRank);
+          if(typeof f.qualified !== 'undefined'){
+            const q = document.querySelector('[name="qualified"]');
+            if(q) q.checked = !!f.qualified;
+          }
+
+          rawText.value = (j.lines || []).join('\n');
+          msg.textContent = '识别完成，已填入字段。请核对后保存。';
+        }catch(e){
+          console.error(e);
+          msg.textContent = '识别失败：' + (e && e.message ? e.message : String(e));
+        }
       });
     })();
   </script>
