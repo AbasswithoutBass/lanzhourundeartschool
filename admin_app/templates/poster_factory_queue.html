@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>海报工厂 - 审核队列</title>
+  <style>
+    body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;background:#f5f5f7;margin:0}
+    header{background:#fff;border-bottom:1px solid rgba(0,0,0,.06);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    a{color:#660874;text-decoration:none}
+    .wrap{max-width:1100px;margin:22px auto;padding:0 16px}
+    .card{background:#fff;border-radius:16px;padding:16px;box-shadow:0 10px 24px rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.06)}
+    .poster-shell{display:grid;grid-template-columns:1fr 320px;gap:16px}
+    @media(max-width:980px){.poster-shell{grid-template-columns:1fr}}
+    .poster-frame{background:#fff;border-radius:18px;overflow:hidden;border:1px solid rgba(0,0,0,.06);box-shadow:0 20px 48px rgba(0,0,0,0.12)}
+    .poster{width:100%;aspect-ratio:9/16;background:#fff;position:relative;overflow:hidden}
+    .poster-bg{position:absolute;inset:0;background:linear-gradient(160deg, rgba(138,66,193,0.08), rgba(138,66,193,0.02))}
+    .poster-header{position:absolute;left:24px;right:24px;top:20px;display:flex;align-items:center;justify-content:space-between}
+    .brand{font-weight:800;color:#6f42c1;font-size:16px}
+    .year{color:#999;font-size:13px}
+    .avatar-wrap{position:absolute;left:24px;top:70px;width:128px;height:128px;border-radius:999px;background:conic-gradient(from 0deg,#d7b56d,#f0d28c,#d7b56d);padding:4px}
+    .avatar{width:100%;height:100%;border-radius:999px;background:#fff;overflow:hidden;position:relative}
+    .avatar img{width:100%;height:100%;object-fit:cover;display:block;transform:translate(var(--px,0),var(--py,0)) scale(var(--ps,1))}
+    .poster-main{position:absolute;left:24px;right:24px;top:220px}
+    .name{font-size:28px;font-weight:800;color:#111}
+    .meta{margin-top:8px;color:#666;font-size:14px}
+    .score-box{position:absolute;left:24px;right:24px;bottom:22px;background:#fff;border:1px solid rgba(0,0,0,.06);border-radius:16px;padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .score-box .label{font-size:12px;color:#999}
+    .score-box .value{font-size:20px;font-weight:800;color:#111}
+    .badge{display:inline-block;font-size:12px;padding:3px 8px;border-radius:999px;background:rgba(138,66,193,0.1);color:#6f42c1;font-weight:700}
+    .side{display:flex;flex-direction:column;gap:10px}
+    .btn{display:inline-block;padding:10px 12px;border-radius:12px;background:#6f42c1;color:#fff;font-weight:700;border:none;cursor:pointer}
+    .btn2{display:inline-block;padding:10px 12px;border-radius:12px;background:#fff;color:#6f42c1;font-weight:700;border:1px solid rgba(111,66,193,0.25);cursor:pointer}
+    .btnGood{background:#16a34a;color:#fff}
+    .btnBad{background:#ef4444;color:#fff}
+    .k{font-size:12px;color:#666;line-height:1.6}
+    .status{font-size:12px;padding:4px 10px;border-radius:999px;background:rgba(0,0,0,0.06);color:#444;font-weight:700}
+  </style>
+</head>
+<body>
+  <header>
+    <div style="font-weight:800">海报工厂 · 审核队列</div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <a href="/admin">返回后台首页</a>
+      <a href="/admin/students-db">学生数据库</a>
+      <a href="/logout">退出</a>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="card">
+      <div id="empty" class="k" style="display:none">暂无需要生成的海报。请在学生数据库设置海报张数。</div>
+      <div id="shell" class="poster-shell" style="display:none">
+        <div class="poster-frame">
+          <div id="poster" class="poster">
+            <div class="poster-bg"></div>
+            <div class="poster-header">
+              <div class="brand">润德艺考</div>
+              <div class="year" id="yearText">—</div>
+            </div>
+            <div class="avatar-wrap">
+              <div class="avatar">
+                <img id="avatarImg" src="" alt="avatar">
+              </div>
+            </div>
+            <div class="poster-main">
+              <div class="name" id="nameText">—</div>
+              <div class="meta" id="metaText">—</div>
+              <div style="margin-top:8px"><span class="badge" id="typeBadge">主项海报</span></div>
+            </div>
+            <div class="score-box">
+              <div>
+                <div class="label" id="scoreLabel">主项分数</div>
+                <div class="value" id="scoreValue">—</div>
+              </div>
+              <div>
+                <div class="label" id="rankLabel">主项排名</div>
+                <div class="value" id="rankValue">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="side">
+          <div class="k">快捷键：Enter=合格，Backspace=不合格</div>
+          <div class="k">当前状态：<span id="statusTag" class="status">pending</span></div>
+          <div class="k">当前学生：<span id="studentId">—</span></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button id="btnGood" class="btn btnGood" type="button">合格</button>
+            <button id="btnBad" class="btn btnBad" type="button">不合格</button>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button id="btnPrev" class="btn2" type="button">上一张</button>
+            <button id="btnNext" class="btn2" type="button">下一张</button>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <a id="btnEdit" class="btn2" href="#">单张精修页</a>
+          </div>
+          <div>
+            <label class="k">海报类型</label>
+            <select id="posterType" class="btn2" style="width:100%">
+              <option value="main">主项海报</option>
+              <option value="sub">副项海报</option>
+              <option value="total">综合海报</option>
+            </select>
+          </div>
+          <div>
+            <label class="k">清晰度</label>
+            <select id="quality" class="btn2" style="width:100%">
+              <option value="1">社交版 1080×1920</option>
+              <option value="1.33">高清 1440×2560</option>
+              <option value="2">超清 2160×3840</option>
+            </select>
+          </div>
+          <button id="btnDownload" class="btn" type="button">下载当前海报</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script id="posterData" type="application/json">{{ students|tojson }}</script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script>
+    const data = JSON.parse(document.getElementById('posterData').textContent || '[]');
+    const typeCycle = ['main','sub','total'];
+    let idx = 0;
+
+    const $ = (id)=>document.getElementById(id);
+
+    function pickPhoto(s){
+      const p = s.photo || '';
+      return p ? ('/site/' + encodeURI(p)) : '/site/润德1.png';
+    }
+
+    function render(){
+      if(!data.length){
+        $('empty').style.display = 'block';
+        $('shell').style.display = 'none';
+        return;
+      }
+      $('empty').style.display = 'none';
+      $('shell').style.display = 'grid';
+      const s = data[idx];
+      const posterMode = String(s.posterMode || '0');
+      // adjust type selector by posterMode
+      const typeSel = $('posterType');
+      if(posterMode === '1'){
+        typeSel.value = 'main';
+        typeSel.disabled = true;
+      }else if(posterMode === '2'){
+        if(typeSel.value === 'total') typeSel.value = 'main';
+        typeSel.disabled = false;
+      }else{
+        typeSel.disabled = false;
+      }
+
+      const type = typeSel.value;
+
+      $('nameText').textContent = s.name || '未命名';
+      $('yearText').textContent = (s.year || '—') + '届';
+      $('metaText').textContent = [s.category, s.mainSubject, s.subSubject].filter(Boolean).join(' · ') || '—';
+      $('studentId').textContent = s.id || '—';
+      $('statusTag').textContent = s.posterStatus || 'pending';
+      $('btnEdit').href = '/admin/poster-factory/' + s.id;
+
+      const avatar = $('avatarImg');
+      avatar.src = pickPhoto(s);
+      avatar.style.setProperty('--ps', s.posterPhotoScale || '1');
+      avatar.style.setProperty('--px', (s.posterPhotoX || '0') + 'px');
+      avatar.style.setProperty('--py', (s.posterPhotoY || '0') + 'px');
+
+      if(type === 'main'){
+        $('typeBadge').textContent = '主项海报';
+        $('scoreLabel').textContent = '主项分数';
+        $('rankLabel').textContent = '主项排名';
+        $('scoreValue').textContent = s.mainScore || '—';
+        $('rankValue').textContent = s.mainRank || '—';
+      }else if(type === 'sub'){
+        $('typeBadge').textContent = '副项海报';
+        $('scoreLabel').textContent = '副项分数';
+        $('rankLabel').textContent = '专业排名';
+        $('scoreValue').textContent = s.subScore || '—';
+        $('rankValue').textContent = s.majorRank || '—';
+      }else{
+        $('typeBadge').textContent = '综合海报';
+        $('scoreLabel').textContent = '专业总分';
+        $('rankLabel').textContent = '专业排名';
+        $('scoreValue').textContent = s.totalScore || '—';
+        $('rankValue').textContent = s.majorRank || '—';
+      }
+    }
+
+    async function setStatus(status){
+      const s = data[idx];
+      const fd = new FormData();
+      fd.append('status', status);
+      const resp = await fetch('/admin/poster-factory/' + s.id + '/status', {method:'POST', body: fd});
+      if(resp.ok){
+        s.posterStatus = status;
+        $('statusTag').textContent = status;
+      }
+    }
+
+    function next(){
+      idx = (idx + 1) % data.length;
+      render();
+    }
+
+    function prev(){
+      idx = (idx - 1 + data.length) % data.length;
+      render();
+    }
+
+    async function download(){
+      const scale = parseFloat($('quality').value || '1');
+      const node = $('poster');
+      const canvas = await html2canvas(node, {scale});
+      const link = document.createElement('a');
+      const s = data[idx];
+      const type = $('posterType').value;
+      link.download = `${s.name || 'poster'}_${type}_${scale}x.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+
+    $('btnGood').addEventListener('click', ()=> setStatus('approved'));
+    $('btnBad').addEventListener('click', ()=> setStatus('rejected'));
+    $('btnNext').addEventListener('click', next);
+    $('btnPrev').addEventListener('click', prev);
+    $('btnDownload').addEventListener('click', download);
+    $('posterType').addEventListener('change', render);
+
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter'){ setStatus('approved'); }
+      if(e.key === 'Backspace'){ e.preventDefault(); setStatus('rejected'); }
+      if(e.key === 'ArrowRight'){ next(); }
+      if(e.key === 'ArrowLeft'){ prev(); }
+    });
+
+    render();
+  </script>
+</body>
+</html>

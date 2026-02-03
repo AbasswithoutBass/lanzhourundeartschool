@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>海报工厂 - 单张精修</title>
+  <style>
+    body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;background:#f5f5f7;margin:0}
+    header{background:#fff;border-bottom:1px solid rgba(0,0,0,.06);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    a{color:#660874;text-decoration:none}
+    .wrap{max-width:1200px;margin:22px auto;padding:0 16px}
+    .card{background:#fff;border-radius:16px;padding:16px;box-shadow:0 10px 24px rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.06)}
+    .grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:16px}
+    @media(max-width:980px){.grid{grid-template-columns:1fr}}
+    label{display:block;margin-top:12px;color:#444;font-size:13px}
+    input,select{width:100%;padding:10px 12px;border:1px solid rgba(0,0,0,.12);border-radius:12px;font-size:14px}
+    .btn{display:inline-block;margin-top:14px;padding:10px 14px;border-radius:12px;background:#6f42c1;color:#fff;font-weight:700;border:none;cursor:pointer}
+    .btn2{display:inline-block;margin-top:14px;padding:10px 14px;border-radius:12px;background:#fff;color:#6f42c1;font-weight:700;border:1px solid rgba(111,66,193,0.25);cursor:pointer}
+    .poster-frame{background:#fff;border-radius:18px;overflow:hidden;border:1px solid rgba(0,0,0,.06);box-shadow:0 20px 48px rgba(0,0,0,0.12)}
+    .poster{width:100%;aspect-ratio:9/16;background:#fff;position:relative;overflow:hidden}
+    .poster-bg{position:absolute;inset:0;background:linear-gradient(160deg, rgba(138,66,193,0.08), rgba(138,66,193,0.02))}
+    .poster-header{position:absolute;left:24px;right:24px;top:20px;display:flex;align-items:center;justify-content:space-between}
+    .brand{font-weight:800;color:#6f42c1;font-size:16px}
+    .year{color:#999;font-size:13px}
+    .avatar-wrap{position:absolute;left:24px;top:70px;width:128px;height:128px;border-radius:999px;background:conic-gradient(from 0deg,#d7b56d,#f0d28c,#d7b56d);padding:4px;cursor:grab}
+    .avatar{width:100%;height:100%;border-radius:999px;background:#fff;overflow:hidden;position:relative}
+    .avatar img{width:100%;height:100%;object-fit:cover;display:block;transform:translate(var(--px,0),var(--py,0)) scale(var(--ps,1))}
+    .poster-main{position:absolute;left:24px;right:24px;top:220px}
+    .name{font-size:28px;font-weight:800;color:#111}
+    .meta{margin-top:8px;color:#666;font-size:14px}
+    .score-box{position:absolute;left:24px;right:24px;bottom:22px;background:#fff;border:1px solid rgba(0,0,0,.06);border-radius:16px;padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .score-box .label{font-size:12px;color:#999}
+    .score-box .value{font-size:20px;font-weight:800;color:#111}
+    .badge{display:inline-block;font-size:12px;padding:3px 8px;border-radius:999px;background:rgba(138,66,193,0.1);color:#6f42c1;font-weight:700}
+    .small{font-size:12px;color:#666;line-height:1.6}
+  </style>
+</head>
+<body>
+  <header>
+    <div style="font-weight:800">海报工厂 · 单张精修</div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <a href="/admin/poster-factory">返回审核队列</a>
+      <a href="/admin/students-db/{{ student.id }}">学生数据库</a>
+      <a href="/logout">退出</a>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="grid">
+      <div class="card">
+        <div class="poster-frame">
+          <div id="poster" class="poster">
+            <div class="poster-bg"></div>
+            <div class="poster-header">
+              <div class="brand">润德艺考</div>
+              <div class="year" id="yearText">—</div>
+            </div>
+            <div id="avatarWrap" class="avatar-wrap" title="拖拽调整头像位置">
+              <div class="avatar">
+                <img id="avatarImg" src="" alt="avatar">
+              </div>
+            </div>
+            <div class="poster-main">
+              <div class="name" id="nameText">—</div>
+              <div class="meta" id="metaText">—</div>
+              <div style="margin-top:8px"><span class="badge" id="typeBadge">主项海报</span></div>
+            </div>
+            <div class="score-box">
+              <div>
+                <div class="label" id="scoreLabel">主项分数</div>
+                <div class="value" id="scoreValue">—</div>
+              </div>
+              <div>
+                <div class="label" id="rankLabel">主项排名</div>
+                <div class="value" id="rankValue">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="small" style="margin-top:10px">拖拽头像位置，或调整缩放。保存后刷新队列预览。</div>
+      </div>
+
+      <div class="card">
+        <div id="saveMsg" class="small" style="display:none"></div>
+        <form id="f" method="post" action="/admin/poster-factory/{{ student.id }}/save">
+          <label>姓名</label>
+          <input name="name" value="{{ student.name or '' }}" />
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div>
+              <label>专业类别</label>
+              <select name="category">
+                <option value="">—</option>
+                <option value="音乐表演" {{ 'selected' if student.category=='音乐表演' else '' }}>音乐表演</option>
+                <option value="音乐教育" {{ 'selected' if student.category=='音乐教育' else '' }}>音乐教育</option>
+              </select>
+            </div>
+            <div>
+              <label>年份</label>
+              <input name="year" value="{{ student.year or '' }}" />
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div>
+              <label>主项</label>
+              <input name="mainSubject" value="{{ student.mainSubject or '' }}" />
+            </div>
+            <div>
+              <label>副项</label>
+              <input name="subSubject" value="{{ student.subSubject or '' }}" />
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div>
+              <label>主项分数</label>
+              <input name="mainScore" value="{{ student.mainScore or '' }}" />
+            </div>
+            <div>
+              <label>副项分数</label>
+              <input name="subScore" value="{{ student.subScore or '' }}" />
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div>
+              <label>专业总分</label>
+              <input name="totalScore" value="{{ student.totalScore or '' }}" />
+            </div>
+            <div>
+              <label>专业排名</label>
+              <input name="majorRank" value="{{ student.majorRank or '' }}" />
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div>
+              <label>主项排名</label>
+              <input name="mainRank" value="{{ student.mainRank or '' }}" />
+            </div>
+            <div>
+              <label>海报张数</label>
+              <select name="posterMode">
+                <option value="1" {{ 'selected' if (student.posterMode|string) == '1' else '' }}>1 张（主项）</option>
+                <option value="2" {{ 'selected' if (student.posterMode|string) == '2' else '' }}>2 张（主项 + 副项）</option>
+                <option value="3" {{ 'selected' if (student.posterMode|string) == '3' else '' }}>3 张（主项 + 副项 + 综合）</option>
+              </select>
+            </div>
+          </div>
+
+          <label>照片路径</label>
+          <input name="photo" id="photoInput" value="{{ student.photo or '' }}" />
+
+          <div class="small" style="margin-top:6px">头像缩放</div>
+          <input id="scale" type="range" min="0.8" max="2" step="0.01" value="{{ student.posterPhotoScale or '1' }}" />
+
+          <input type="hidden" name="posterPhotoScale" id="posterPhotoScale" value="{{ student.posterPhotoScale or '1' }}" />
+          <input type="hidden" name="posterPhotoX" id="posterPhotoX" value="{{ student.posterPhotoX or '0' }}" />
+          <input type="hidden" name="posterPhotoY" id="posterPhotoY" value="{{ student.posterPhotoY or '0' }}" />
+
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px">
+            <button class="btn" type="submit">保存</button>
+            <button id="btnDownload" class="btn2" type="button">下载当前海报</button>
+          </div>
+
+          <label style="margin-top:12px">清晰度</label>
+          <select id="quality" class="btn2" style="width:100%">
+            <option value="1">社交版 1080×1920</option>
+            <option value="1.33">高清 1440×2560</option>
+            <option value="2">超清 2160×3840</option>
+          </select>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script id="posterItem" type="application/json">{{ student|tojson }}</script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script>
+    const s = JSON.parse(document.getElementById('posterItem').textContent || '{}');
+    const $ = (id)=>document.getElementById(id);
+
+    function pickPhoto(){
+      const p = $('photoInput').value || '';
+      return p ? ('/site/' + encodeURI(p)) : '/site/润德1.png';
+    }
+
+    function render(type){
+      s.name = $('f').elements['name'].value || s.name;
+      s.category = $('f').elements['category'].value || s.category;
+      s.year = $('f').elements['year'].value || s.year;
+      s.mainSubject = $('f').elements['mainSubject'].value || s.mainSubject;
+      s.subSubject = $('f').elements['subSubject'].value || s.subSubject;
+      s.mainScore = $('f').elements['mainScore'].value || s.mainScore;
+      s.subScore = $('f').elements['subScore'].value || s.subScore;
+      s.totalScore = $('f').elements['totalScore'].value || s.totalScore;
+      s.majorRank = $('f').elements['majorRank'].value || s.majorRank;
+      s.mainRank = $('f').elements['mainRank'].value || s.mainRank;
+
+      $('nameText').textContent = s.name || '未命名';
+      $('yearText').textContent = (s.year || '—') + '届';
+      $('metaText').textContent = [s.category, s.mainSubject, s.subSubject].filter(Boolean).join(' · ') || '—';
+      const avatar = $('avatarImg');
+      avatar.src = pickPhoto();
+      avatar.style.setProperty('--ps', $('posterPhotoScale').value || '1');
+      avatar.style.setProperty('--px', ($('posterPhotoX').value || '0') + 'px');
+      avatar.style.setProperty('--py', ($('posterPhotoY').value || '0') + 'px');
+
+      const posterType = type || 'main';
+      if(posterType === 'main'){
+        $('typeBadge').textContent = '主项海报';
+        $('scoreLabel').textContent = '主项分数';
+        $('rankLabel').textContent = '主项排名';
+        $('scoreValue').textContent = s.mainScore || '—';
+        $('rankValue').textContent = s.mainRank || '—';
+      }else if(posterType === 'sub'){
+        $('typeBadge').textContent = '副项海报';
+        $('scoreLabel').textContent = '副项分数';
+        $('rankLabel').textContent = '专业排名';
+        $('scoreValue').textContent = s.subScore || '—';
+        $('rankValue').textContent = s.majorRank || '—';
+      }else{
+        $('typeBadge').textContent = '综合海报';
+        $('scoreLabel').textContent = '专业总分';
+        $('rankLabel').textContent = '专业排名';
+        $('scoreValue').textContent = s.totalScore || '—';
+        $('rankValue').textContent = s.majorRank || '—';
+      }
+    }
+
+    // drag to move avatar
+    const avatarWrap = $('avatarWrap');
+    let dragging = false;
+    let startX = 0, startY = 0;
+    let baseX = parseFloat($('posterPhotoX').value || '0');
+    let baseY = parseFloat($('posterPhotoY').value || '0');
+
+    avatarWrap.addEventListener('pointerdown', (e)=>{
+      dragging = true;
+      avatarWrap.setPointerCapture(e.pointerId);
+      startX = e.clientX;
+      startY = e.clientY;
+      baseX = parseFloat($('posterPhotoX').value || '0');
+      baseY = parseFloat($('posterPhotoY').value || '0');
+    });
+
+    avatarWrap.addEventListener('pointermove', (e)=>{
+      if(!dragging) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      const nx = baseX + dx;
+      const ny = baseY + dy;
+      $('posterPhotoX').value = String(Math.round(nx));
+      $('posterPhotoY').value = String(Math.round(ny));
+      render();
+    });
+
+    avatarWrap.addEventListener('pointerup', ()=>{ dragging = false; });
+    avatarWrap.addEventListener('pointercancel', ()=>{ dragging = false; });
+
+    $('scale').addEventListener('input', ()=>{
+      $('posterPhotoScale').value = $('scale').value;
+      render();
+    });
+
+    $('photoInput').addEventListener('change', render);
+    Array.from($('f').elements).forEach(el=>{
+      if(el && el.tagName && (el.tagName === 'INPUT' || el.tagName === 'SELECT')){
+        el.addEventListener('input', ()=> render('main'));
+        el.addEventListener('change', ()=> render('main'));
+      }
+    });
+
+    $('f').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const fd = new FormData($('f'));
+      const resp = await fetch($('f').action, {method:'POST', body: fd});
+      const msg = $('saveMsg');
+      if(resp.ok){
+        msg.textContent = '已保存';
+        msg.style.display = 'block';
+        msg.style.color = '#1d6a2b';
+      }else{
+        msg.textContent = '保存失败';
+        msg.style.display = 'block';
+        msg.style.color = '#c21a12';
+      }
+      setTimeout(()=>{ msg.style.display = 'none'; }, 1200);
+    });
+
+    async function download(){
+      const scale = parseFloat($('quality').value || '1');
+      const node = $('poster');
+      const canvas = await html2canvas(node, {scale});
+      const link = document.createElement('a');
+      link.download = `${s.name || 'poster'}_single_${scale}x.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+
+    $('btnDownload').addEventListener('click', download);
+
+    render('main');
+  </script>
+</body>
+</html>

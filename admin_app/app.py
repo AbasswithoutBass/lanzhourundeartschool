@@ -378,6 +378,8 @@ def create_app():
                 'category': str(s.get('category') or ''),
                 'mainSubject': str(s.get('mainSubject') or ''),
                 'subSubject': str(s.get('subSubject') or ''),
+                'mainScore': str(s.get('mainScore') or ''),
+                'subScore': str(s.get('subScore') or ''),
                 'theory': str(s.get('theory') or ''),
                 'earTraining': str(s.get('earTraining') or ''),
                 'sightSinging': str(s.get('sightSinging') or ''),
@@ -1451,6 +1453,7 @@ def create_app():
             'photos',
             'students/photos',
             'students/admissions',
+            '润德1.png',
         }
         if not (rp in allow_exact or any(rp.startswith(pfx) for pfx in allow_prefixes)):
             return jsonify({'ok': False, 'error': 'forbidden'}), 403
@@ -2600,6 +2603,8 @@ def create_app():
             'category': '',
             'mainSubject': '',
             'subSubject': '',
+            'mainScore': '',
+            'subScore': '',
             'theory': '',
             'earTraining': '',
             'sightSinging': '',
@@ -2609,6 +2614,10 @@ def create_app():
             'qualified': False,
             'joinHall': False,
             'posterMode': '0',
+            'posterStatus': 'pending',
+            'posterPhotoScale': '1',
+            'posterPhotoX': '0',
+            'posterPhotoY': '0',
             'ocrImage': '',
             'createdAt': now,
             'updatedAt': now,
@@ -2655,6 +2664,8 @@ def create_app():
         item['category'] = _s('category')
         item['mainSubject'] = _s('mainSubject')
         item['subSubject'] = _s('subSubject')
+        item['mainScore'] = _s('mainScore')
+        item['subScore'] = _s('subScore')
         item['theory'] = _s('theory')
         item['earTraining'] = _s('earTraining')
         item['sightSinging'] = _s('sightSinging')
@@ -2664,6 +2675,10 @@ def create_app():
         item['qualified'] = bool(request.form.get('qualified'))
         item['joinHall'] = bool(request.form.get('joinHall'))
         item['posterMode'] = _s('posterMode') or '0'
+        item['posterStatus'] = _s('posterStatus') or str(item.get('posterStatus') or 'pending')
+        item['posterPhotoScale'] = _s('posterPhotoScale') or str(item.get('posterPhotoScale') or '1')
+        item['posterPhotoX'] = _s('posterPhotoX') or str(item.get('posterPhotoX') or '0')
+        item['posterPhotoY'] = _s('posterPhotoY') or str(item.get('posterPhotoY') or '0')
         item['ocrImage'] = _s('ocrImage')
         item['updatedAt'] = _now_iso()
 
@@ -2689,6 +2704,80 @@ def create_app():
         _sync_hall_of_fame_from_db(items)
         flash('已删除', 'ok')
         return redirect(url_for('students_db_list_page'))
+
+    @app.get('/admin/poster-factory')
+    @login_required
+    def poster_factory_queue():
+        items = _load_students_db()
+        queue = [
+            s for s in items
+            if str(s.get('posterMode') or '0') not in {'', '0'}
+        ]
+        # pending first
+        def _status_rank(s: dict):
+            st = str(s.get('posterStatus') or 'pending')
+            return 0 if st == 'pending' else (1 if st == 'rejected' else 2)
+        queue = sorted(queue, key=_status_rank)
+        return render_template('poster_factory_queue.html', students=queue)
+
+    @app.get('/admin/poster-factory/<sid>')
+    @login_required
+    def poster_factory_edit(sid: str):
+        items = _load_students_db()
+        item = next((x for x in items if str(x.get('id') or '') == str(sid)), None)
+        if not item:
+            flash('学生不存在', 'error')
+            return redirect(url_for('poster_factory_queue'))
+        return render_template('poster_factory_edit.html', student=item)
+
+    @app.post('/admin/poster-factory/<sid>/save')
+    @login_required
+    def poster_factory_save(sid: str):
+        items = _load_students_db()
+        item = next((x for x in items if str(x.get('id') or '') == str(sid)), None)
+        if not item:
+            return jsonify({'ok': False, 'error': 'not found'}), 404
+
+        def _s(name: str) -> str:
+            return str(request.form.get(name) or '').strip()
+
+        # allow updating key fields for poster rendering
+        item['name'] = _s('name') or item.get('name', '')
+        item['category'] = _s('category') or item.get('category', '')
+        item['mainSubject'] = _s('mainSubject') or item.get('mainSubject', '')
+        item['subSubject'] = _s('subSubject') or item.get('subSubject', '')
+        item['mainScore'] = _s('mainScore') or item.get('mainScore', '')
+        item['subScore'] = _s('subScore') or item.get('subScore', '')
+        item['totalScore'] = _s('totalScore') or item.get('totalScore', '')
+        item['majorRank'] = _s('majorRank') or item.get('majorRank', '')
+        item['mainRank'] = _s('mainRank') or item.get('mainRank', '')
+        item['year'] = _s('year') or item.get('year', '')
+        item['photo'] = _s('photo') or item.get('photo', '')
+        item['posterMode'] = _s('posterMode') or str(item.get('posterMode') or '0')
+        item['posterPhotoScale'] = _s('posterPhotoScale') or str(item.get('posterPhotoScale') or '1')
+        item['posterPhotoX'] = _s('posterPhotoX') or str(item.get('posterPhotoX') or '0')
+        item['posterPhotoY'] = _s('posterPhotoY') or str(item.get('posterPhotoY') or '0')
+        item['updatedAt'] = _now_iso()
+
+        _save_students_db(items)
+        _sync_hall_of_fame_from_db(items)
+        return jsonify({'ok': True})
+
+    @app.post('/admin/poster-factory/<sid>/status')
+    @login_required
+    def poster_factory_status(sid: str):
+        items = _load_students_db()
+        item = next((x for x in items if str(x.get('id') or '') == str(sid)), None)
+        if not item:
+            return jsonify({'ok': False, 'error': 'not found'}), 404
+        status = str(request.form.get('status') or '').strip().lower()
+        if status not in {'pending', 'approved', 'rejected'}:
+            return jsonify({'ok': False, 'error': 'invalid status'}), 400
+        item['posterStatus'] = status
+        item['updatedAt'] = _now_iso()
+        _save_students_db(items)
+        _sync_hall_of_fame_from_db(items)
+        return jsonify({'ok': True})
 
     @app.post('/admin/students/apply-rules')
     @login_required
