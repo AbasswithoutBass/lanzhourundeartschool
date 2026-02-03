@@ -1,17 +1,1 @@
-[
-  {
-    "id": "demo_001",
-    "name": "张同学",
-    "school": "中央音乐学院",
-    "major": "声乐表演（美声）",
-    "year": 2026,
-    "photo": "润德1.png",
-    "admissions": [
-      {
-        "image": "润德1.png",
-        "watermarked": true,
-        "note": "示例：录取截图"
-      }
-    ]
-  }
-]
+[]
