@@ -78,9 +78,10 @@
     /* Content Layers */
     .layer-top {position:absolute;top:40px;left:40px;right:40px;z-index:10;}
     .top-row{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:12px;}
-    .brand-logo-big{width:46px;height:46px;object-fit:contain;opacity:0.96;filter:drop-shadow(0 12px 20px rgba(0,0,0,0.40));}
+    .brand-logo-big{width:58px;height:58px;object-fit:contain;opacity:0.96;filter:drop-shadow(0 12px 20px rgba(0,0,0,0.40));}
+    .year-pill{display:inline-flex;align-items:center;padding:6px 14px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,215,0,0.26);border-radius:999px;}
     /* Removed backdrop-filter as requested, increased opacity for readability */
-    .brand-pill {display:inline-flex;align-items:center;padding:6px 14px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);border-radius:99px;font-size:12px;font-weight:700;letter-spacing:1px;margin:0;color:#fff;}
+    .brand-pill {display:inline-flex;align-items:center;padding:6px 14px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,215,0,0.26);border-radius:99px;font-size:12px;font-weight:800;letter-spacing:1px;margin:0;color:rgba(255,255,255,0.88);}
     .brand-logo{width:18px;height:18px;object-fit:contain;margin-right:10px;opacity:0.92;border-radius:6px;filter:drop-shadow(0 10px 18px rgba(0,0,0,0.35));}
     .brand-pill span {color:#FFD700;margin-right:6px;}
 
@@ -192,7 +193,7 @@
     .poster-footer .id{color:rgba(255,255,255,0.75);font-weight:700;}
 
     /* Top title typesetting */
-    .year-line{font-size:11px;color:rgba(255,255,255,0.62);letter-spacing:2px;white-space:nowrap;text-align:right;}
+    .year-line{font-size:11px;color:rgba(255,255,255,0.78);letter-spacing:2px;white-space:nowrap;text-align:right;font-weight:800;}
     .report-title{font-size:18px;font-weight:600;margin-top:4px;letter-spacing:5px;color:rgba(255,255,255,0.92);text-transform:uppercase;}
 
     /* Export mode: keep html2canvas output close to what user sees */
@@ -246,7 +247,7 @@
             <div class="layer-top">
               <div class="top-row">
                 <img class="brand-logo-big" src="/site/assets/portal/runde_logo_1.jpg" alt="润德">
-                <div class="year-line" id="yearText">2026 OFFICIAL REPORT —</div>
+                <div class="year-pill"><div class="year-line" id="yearText">2026 OFFICIAL REPORT —</div></div>
               </div>
               <div class="brand-pill"><span>RUNDE</span> ART SCHOOL</div>
               <div class="report-title">润德艺考 · 喜报</div>
