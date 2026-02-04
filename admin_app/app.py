@@ -2912,6 +2912,11 @@ def create_app():
         item['posterPhotoScale'] = _s('posterPhotoScale') or str(item.get('posterPhotoScale') or '1')
         item['posterPhotoX'] = _s('posterPhotoX') or str(item.get('posterPhotoX') or '0')
         item['posterPhotoY'] = _s('posterPhotoY') or str(item.get('posterPhotoY') or '0')
+        psr = _s('posterShowRank')
+        if psr in {'0', '1'}:
+            item['posterShowRank'] = psr
+        else:
+            item['posterShowRank'] = str(item.get('posterShowRank') or '1')
         item['updatedAt'] = _now_iso()
 
         _save_students_db(items)

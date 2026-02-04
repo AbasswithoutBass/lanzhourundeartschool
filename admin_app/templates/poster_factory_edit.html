@@ -50,7 +50,7 @@
     }
     .avatar-ring:active {cursor:grabbing;}
     .avatar-inner {width:100%;height:100%;border-radius:50%;background:#000;overflow:hidden;border:4px solid #fff;position:relative;}
-    .avatar img {width:100%;height:100%;object-fit:cover;display:block;transform:translate(var(--px,0),var(--py,0)) scale(var(--ps,1)); pointer-events:none;}
+    .avatar-inner img {width:100%;height:100%;object-fit:cover;display:block;transform:translate(var(--px,0),var(--py,0)) scale(var(--ps,1)); pointer-events:none;}
     
     /* Name & Title */
     .student-name {font-size:36px;font-weight:900;margin-top:20px;letter-spacing:4px;text-shadow:0 4px 12px rgba(0,0,0,0.5);}
@@ -136,12 +136,12 @@
             </div>
 
             <div class="glass-deck" id="rankDeck">
-                <div class="glass-card">
+              <div class="glass-card" id="scoreCard">
                     <div class="lbl" id="scoreLabel">主项分数</div>
                     <div class="val" id="scoreValue">—</div>
                     <div class="sub">超过98%考生</div>
                 </div>
-                <div class="glass-card">
+              <div class="glass-card" id="rankCard">
                     <div class="lbl" id="rankLabel">主项排名</div>
                     <div class="val" id="rankValue">—</div>
                     <div class="sub">全省前列</div>
@@ -229,8 +229,9 @@
           <input name="photo" id="photoInput" value="{{ student.photo or '' }}" />
           
           <div style="display:flex;align-items:center;margin-top:12px;gap:8px">
-             <input type="checkbox" id="showRank" checked style="width:auto"> 
-             <span style="font-size:13px;color:#444">显示排名/分数卡片</span>
+             <input type="hidden" name="posterShowRank" id="posterShowRank" value="{{ student.posterShowRank if student.posterShowRank is not none else '1' }}" />
+             <input type="checkbox" id="showRank" style="width:auto" {{ 'checked' if (student.posterShowRank is none or student.posterShowRank != '0') else '' }}>
+             <span style="font-size:13px;color:#444">显示排名</span>
           </div>
 
           <div class="small" style="margin-top:6px">头像缩放</div>
@@ -301,9 +302,10 @@
       // Update Transform directly
       updateAvatarTransform();
 
-      const posterType = type || $('posterType').value || 'main'; // Use passed type OR current select value
+      const posterType = type || $('posterType').value || 'main';
       const showRank = $('showRank').checked;
-      $('rankDeck').style.display = showRank ? 'flex' : 'none';
+      $('posterShowRank').value = showRank ? '1' : '0';
+      $('rankCard').style.display = showRank ? '' : 'none';
       
       // --- Logic Differentiation ---
       let slogan = '制霸高分 · 强势上岸';
@@ -387,37 +389,63 @@
     let startX = 0, startY = 0;
     let baseX = 0, baseY = 0;
 
-    avatarWrap.addEventListener('pointerdown', (e)=>{
+    function startDrag(clientX, clientY) {
       dragging = true;
-      avatarWrap.setPointerCapture(e.pointerId);
-      startX = e.clientX;
-      startY = e.clientY;
+      startX = clientX;
+      startY = clientY;
       baseX = parseFloat($('posterPhotoX').value || '0');
       baseY = parseFloat($('posterPhotoY').value || '0');
-    });
+    }
 
-    avatarWrap.addEventListener('pointermove', (e)=>{
+    function moveDrag(clientX, clientY) {
       if(!dragging) return;
-      const dx = e.clientX - startX;
-      const dy = e.clientY - startY;
+      const dx = clientX - startX;
+      const dy = clientY - startY;
       const nx = baseX + dx;
       const ny = baseY + dy;
       $('posterPhotoX').value = String(Math.round(nx));
       $('posterPhotoY').value = String(Math.round(ny));
-      updateAvatarTransform(); // Call lightweight update
-    });
+      updateAvatarTransform();
+    }
 
-    avatarWrap.addEventListener('pointerup', ()=>{ dragging = false; });
-    avatarWrap.addEventListener('pointercancel', ()=>{ dragging = false; });
+    function endDrag() {
+      dragging = false;
+    }
+
+    if (window.PointerEvent) {
+      avatarWrap.addEventListener('pointerdown', (e)=>{
+        startDrag(e.clientX, e.clientY);
+        try { avatarWrap.setPointerCapture(e.pointerId); } catch {}
+      });
+      avatarWrap.addEventListener('pointermove', (e)=> moveDrag(e.clientX, e.clientY));
+      avatarWrap.addEventListener('pointerup', endDrag);
+      avatarWrap.addEventListener('pointercancel', endDrag);
+    } else {
+      avatarWrap.addEventListener('mousedown', (e)=> startDrag(e.clientX, e.clientY));
+      window.addEventListener('mousemove', (e)=> moveDrag(e.clientX, e.clientY));
+      window.addEventListener('mouseup', endDrag);
+      avatarWrap.addEventListener('touchstart', (e)=>{
+        if(!e.touches || !e.touches[0]) return;
+        e.preventDefault();
+        startDrag(e.touches[0].clientX, e.touches[0].clientY);
+      }, {passive:false});
+      window.addEventListener('touchmove', (e)=>{
+        if(!e.touches || !e.touches[0]) return;
+        e.preventDefault();
+        moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+      }, {passive:false});
+      window.addEventListener('touchend', endDrag);
+      window.addEventListener('touchcancel', endDrag);
+    }
 
     $('scale').addEventListener('input', ()=>{
       $('posterPhotoScale').value = $('scale').value;
       updateAvatarTransform(); // Call lightweight update instead of full render
     });
 
-    $('photoInput').addEventListener('change', ()=> render());
-    $('posterType').addEventListener('change', ()=> render());
-    $('showRank').addEventListener('change', ()=> render());
+    $('photoInput').addEventListener('change', () => render());
+    $('posterType').addEventListener('change', () => render());
+    $('showRank').addEventListener('change', () => render());
 
     Array.from($('f').elements).forEach(el=>{
       if(el && el.tagName && (el.tagName === 'INPUT' || el.tagName === 'SELECT')){
@@ -469,6 +497,8 @@
     if(types.length){
       $('posterType').value = types[0];
     }
+    // Ensure checkbox is consistent with persisted value
+    if($('posterShowRank').value === '0') $('showRank').checked = false;
     render();
   </script>
 </body>
