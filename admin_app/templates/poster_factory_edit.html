@@ -24,6 +24,39 @@
     .poster-bg-grad {position:absolute;inset:0;background:radial-gradient(circle at 100% 0%, #4a0e69 0%, #1a0b2e 50%, #000 100%); z-index:0;}
     /* Stable CSS pattern noise (no SVG) */
     .poster-noise {position:absolute;inset:0;opacity:0.12;background:repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 10px);pointer-events:none;z-index:0;}
+    /* Particles + haze + vignette + light leaks (no backdrop-filter; export-friendly) */
+    .poster-particles{position:absolute;inset:0;opacity:0.18;pointer-events:none;z-index:0;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(255,215,0,0.25) 0 2px, transparent 3px),
+        radial-gradient(circle at 70% 20%, rgba(120,70,255,0.18) 0 2px, transparent 3px),
+        radial-gradient(circle at 60% 65%, rgba(255,255,255,0.12) 0 1px, transparent 2px),
+        radial-gradient(circle at 35% 75%, rgba(255,215,0,0.18) 0 1px, transparent 2px),
+        radial-gradient(circle at 85% 55%, rgba(255,255,255,0.10) 0 1px, transparent 2px);
+    }
+    .poster-haze{position:absolute;inset:0;pointer-events:none;z-index:0;opacity:0.55;
+      background:radial-gradient(circle at 50% 52%, rgba(120,70,255,0.22) 0%, rgba(255,215,0,0.10) 22%, transparent 55%);
+    }
+    .poster-vignette{position:absolute;inset:0;pointer-events:none;z-index:2;opacity:0.9;
+      background:radial-gradient(circle at 50% 45%, transparent 38%, rgba(0,0,0,0.25) 62%, rgba(0,0,0,0.55) 100%);
+    }
+    .light-leak{position:absolute;inset:0;pointer-events:none;z-index:1;opacity:0.55;}
+    .light-leak.tl{background:radial-gradient(circle at 0% 0%, rgba(90,160,255,0.35) 0%, rgba(90,160,255,0.10) 24%, transparent 52%);} 
+    .light-leak.tr{background:radial-gradient(circle at 100% 0%, rgba(140,90,255,0.30) 0%, rgba(140,90,255,0.08) 24%, transparent 54%);} 
+    .light-leak.bl{background:radial-gradient(circle at 0% 100%, rgba(90,160,255,0.22) 0%, rgba(90,160,255,0.06) 24%, transparent 58%);} 
+    .light-leak.br{background:radial-gradient(circle at 100% 100%, rgba(255,215,0,0.22) 0%, rgba(255,215,0,0.06) 26%, transparent 60%);} 
+
+    /* Abstract middle elements: ribbon + waveform geometry */
+    .mid-ribbon{position:absolute;left:-20%;top:48%;width:140%;height:120px;border-radius:999px;transform:rotate(-12deg);
+      background:linear-gradient(90deg, transparent 0%, rgba(255,215,0,0.10) 18%, rgba(255,255,255,0.10) 40%, rgba(255,215,0,0.18) 52%, rgba(140,90,255,0.14) 72%, transparent 100%);
+      opacity:0.85;pointer-events:none;z-index:1;
+      box-shadow:0 18px 80px rgba(255,215,0,0.12);
+    }
+    .mid-wave{position:absolute;left:-10%;top:56%;width:120%;height:180px;transform:rotate(8deg);
+      background:
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.06) 0 2px, transparent 2px 10px),
+        radial-gradient(circle at 50% 50%, rgba(120,70,255,0.16) 0%, transparent 55%);
+      border-radius:28px;opacity:0.55;pointer-events:none;z-index:1;
+    }
     .poster-blob {position:absolute;width:400px;height:400px;background:#8b2a9b;filter:blur(80px);border-radius:50%;opacity:0.4;top:-100px;left:-100px;z-index:0;}
     .poster-blob2 {position:absolute;width:300px;height:300px;background:#d4af37;filter:blur(90px);border-radius:50%;opacity:0.2;bottom:0;right:-50px;z-index:0;}
 
@@ -45,12 +78,22 @@
       width:140px;height:140px;margin:0 auto;
       border-radius:50%;padding:4px;
       cursor:grab; touch-action:none;
-      background:conic-gradient(#FFD700, #FFF, #FFD700, #B8860B, #FFD700);
-      box-shadow:0 20px 50px rgba(0,0,0,0.5);
+      background:conic-gradient(from 0deg, rgba(255,215,0,1), rgba(255,255,255,0.85), rgba(255,215,0,1), rgba(184,134,11,1), rgba(255,215,0,1));
+      box-shadow:0 20px 50px rgba(0,0,0,0.5), 0 0 22px rgba(140,90,255,0.22);
       position:relative;
     }
+    /* Multi glowing rings */
+    .avatar-ring::before{content:"";position:absolute;inset:-10px;border-radius:50%;
+      background:conic-gradient(from 90deg, rgba(140,90,255,0.55), rgba(255,215,0,0.50), rgba(255,255,255,0.35), rgba(140,90,255,0.55));
+      opacity:0.65;filter:blur(0.2px);pointer-events:none;
+      box-shadow:0 0 28px rgba(140,90,255,0.35), 0 0 36px rgba(255,215,0,0.22);
+    }
+    .avatar-ring::after{content:"";position:absolute;inset:-18px;border-radius:50%;
+      background:radial-gradient(circle at 50% 50%, rgba(255,215,0,0.14) 0%, rgba(140,90,255,0.10) 34%, transparent 64%);
+      opacity:0.9;pointer-events:none;
+    }
     .avatar-ring:active {cursor:grabbing;}
-    .avatar-inner {width:100%;height:100%;border-radius:50%;background:#000;overflow:hidden;border:4px solid #fff;position:relative;}
+    .avatar-inner {width:100%;height:100%;border-radius:50%;background:#000;overflow:hidden;border:3px solid rgba(255,255,255,0.95);position:relative;box-shadow:0 0 18px rgba(90,160,255,0.18), 0 0 10px rgba(255,215,0,0.12);}
     .avatar-inner img {width:100%;height:100%;object-fit:cover;display:block;transform:translate(var(--px,0),var(--py,0)) scale(var(--ps,1)); pointer-events:none;}
     
     /* Name & Title */
@@ -60,17 +103,21 @@
 
     /* The BIG Score Section - Moved down to allow space */
     .big-stat-box {position:absolute;top:400px;left:0;right:0;text-align:center;z-index:10;}
-    .marketing-text {font-size:32px;font-weight:900;font-style:italic;line-height:1.2;background:linear-gradient(180deg, #fff 40%, #ccc 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 10px 20px rgba(0,0,0,0.5); padding:0 20px;}
+    .marketing-text {font-size:30px;font-weight:900;font-style:italic;line-height:1.2;background:linear-gradient(180deg, #fff 40%, #ccc 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 12px 26px rgba(0,0,0,0.55); padding:0 20px;}
+    .score-caption{margin-top:8px;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.55);}
     .score-hero {
       font-family:Impact, sans-serif;
       font-size:100px;
       line-height:1.0;
-      background:linear-gradient(180deg, #FFD700 20%, #B8860B 80%);
+      background:linear-gradient(180deg, #FFF2B0 0%, #FFD700 24%, #B8860B 74%, #FFD700 100%);
+      background-size:200% 200%;
       -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-      filter:drop-shadow(0 4px 0px rgba(255,255,255,0.1));
+      filter:drop-shadow(0 6px 0px rgba(255,255,255,0.10)) drop-shadow(0 14px 28px rgba(0,0,0,0.55)) drop-shadow(0 0 18px rgba(255,215,0,0.18));
       margin-top:10px;
       display:flex;align-items:baseline;justify-content:center;
     }
+    @keyframes goldShine{0%{background-position:0% 30%}50%{background-position:90% 60%}100%{background-position:0% 30%}}
+    .score-hero{animation:goldShine 5s ease-in-out infinite;}
     .score-hero .unit {font-size:24px;font-family:sans-serif;font-weight:700;color:rgba(255,255,255,0.8);-webkit-text-fill-color:rgba(255,255,255,0.8);margin-left:6px;}
 
     /* Glass Panels for Meta Data - Removed blur */
@@ -82,6 +129,20 @@
 
     /* Floating Badges */
     .float-badge {position:absolute;right:30px;top:380px;background:#FF4500;color:#fff;font-weight:bold;padding:6px 12px;border-radius:8px;font-size:12px;box-shadow:0 8px 16px rgba(255,69,0,0.4);transform:rotate(10deg);z-index:20;}
+
+    /* Extra metrics to reduce empty space */
+    .mini-row{position:absolute;left:24px;right:24px;bottom:140px;display:flex;gap:10px;z-index:10;}
+    .mini-pill{flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.18);border-radius:12px;padding:10px 12px;}
+    .mini-pill .k{font-size:11px;color:rgba(255,255,255,0.55);letter-spacing:1px;}
+    .mini-pill .v{margin-top:3px;font-size:16px;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .tag-row{position:absolute;left:24px;right:24px;bottom:220px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;z-index:10;}
+    .tag-chip{padding:6px 10px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.85);background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);}
+    .poster-footer{position:absolute;left:24px;right:24px;bottom:14px;display:flex;justify-content:space-between;gap:10px;z-index:10;color:rgba(255,255,255,0.55);font-size:11px;letter-spacing:1px;}
+    .poster-footer .id{color:rgba(255,255,255,0.75);font-weight:700;}
+
+    /* Top title typesetting */
+    .year-line{font-size:11px;color:rgba(255,255,255,0.62);letter-spacing:2px;}
+    .report-title{font-size:18px;font-weight:600;margin-top:4px;letter-spacing:5px;color:rgba(255,255,255,0.92);text-transform:uppercase;}
   </style>
 </head>
 <body>
@@ -101,8 +162,16 @@
           <div id="poster" class="poster">
             <div class="poster-bg-grad"></div>
             <div class="poster-noise"></div>
+            <div class="poster-particles"></div>
+            <div class="poster-haze"></div>
+            <div class="mid-ribbon"></div>
+            <div class="mid-wave"></div>
             <div class="poster-blob"></div>
             <div class="poster-blob2"></div>
+            <div class="light-leak tl"></div>
+            <div class="light-leak tr"></div>
+            <div class="light-leak bl"></div>
+            <div class="light-leak br"></div>
             
             <div class="deco-line"></div>
             <div class="deco-cross">+</div>
@@ -110,8 +179,8 @@
             
             <div class="layer-top">
                 <div class="brand-pill"><span>RUNDE</span> ART SCHOOL</div>
-                <div style="font-size:12px;color:rgba(255,255,255,0.6);letter-spacing:1px" id="yearText">2026 OFFICIAL REPORT —</div>
-                <div style="font-size:20px;font-weight:900;margin-top:2px;letter-spacing:2px">润德艺考 · 喜报</div>
+              <div class="year-line" id="yearText">2026 OFFICIAL REPORT —</div>
+              <div class="report-title">润德艺考 · 喜报</div>
             </div>
 
             <div class="layer-hero">
@@ -130,10 +199,28 @@
 
             <div class="big-stat-box">
                 <div class="marketing-text" id="campaignText">制霸高分 · 强势上岸</div>
+              <div class="score-caption" id="scoreCaption">ACADEMIC PERFORMANCE</div>
                 <div class="score-hero">
                     <span id="heroScore">—</span>
                     <span class="unit" id="heroUnit">分</span>
                 </div>
+            </div>
+
+            <div class="tag-row" id="tagRow"></div>
+
+            <div class="mini-row" id="miniRow">
+              <div class="mini-pill">
+                <div class="k" id="mini1Label">—</div>
+                <div class="v" id="mini1Value">—</div>
+              </div>
+              <div class="mini-pill">
+                <div class="k" id="mini2Label">—</div>
+                <div class="v" id="mini2Value">—</div>
+              </div>
+              <div class="mini-pill">
+                <div class="k" id="mini3Label">—</div>
+                <div class="v" id="mini3Value">—</div>
+              </div>
             </div>
 
             <div class="glass-deck" id="rankDeck">
@@ -148,6 +235,13 @@
                     <div class="sub">全省前列</div>
                 </div>
             </div>
+
+            <div class="poster-footer">
+              <div id="footerLeft">RUNDE ART SCHOOL · POSTER FACTORY</div>
+              <div class="id" id="footerRight">ID —</div>
+            </div>
+
+            <div class="poster-vignette"></div>
           </div>
         </div>
         <div class="small" style="margin-top:10px">拖拽头像位置，或调整缩放。保存后刷新队列预览。</div>
@@ -296,6 +390,8 @@
       $('metaText').textContent = [s.category, s.mainSubject, s.subSubject].filter(Boolean).join(' / ') || '—';
       const examPlace = [s.examProvince, s.examCity].filter(Boolean).join(' · ');
       $('locationText').textContent = examPlace || '—';
+
+      $('footerRight').textContent = 'ID ' + (s.id || '—');
       
       const avatar = $('avatarImg');
       avatar.src = pickPhoto();
@@ -311,6 +407,15 @@
       // --- Logic Differentiation ---
       let slogan = '制霸高分 · 强势上岸';
       let floatText = 'TOP 5%';
+      let caption = 'ACADEMIC PERFORMANCE';
+
+      // Defaults for mini metrics
+      let m1l = '专业';
+      let m1v = (s.category || '—');
+      let m2l = '地区';
+      let m2v = (examPlace || '—');
+      let m3l = '总分';
+      let m3v = (s.totalScore || '—');
       
       if(posterType === 'main'){
         $('scoreLabel').textContent = '主项分数';
@@ -321,6 +426,14 @@
         $('heroUnit').textContent = '分';
         slogan = '主项强基 · 技压群雄';
         floatText = '单科状元';
+        caption = 'ACADEMIC PERFORMANCE';
+
+        m1l = '主项';
+        m1v = s.mainSubject || '—';
+        m2l = '主项分数';
+        m2v = s.mainScore || '—';
+        m3l = '主项排名';
+        m3v = s.mainRank || '—';
       }else if(posterType === 'sub'){
         $('scoreLabel').textContent = '副项分数';
         $('rankLabel').textContent = '专业排名';
@@ -330,6 +443,14 @@
         $('heroUnit').textContent = '分';
         slogan = '多才多艺 · 全面开花';
         floatText = '全能发展';
+        caption = 'SUBJECT PERFORMANCE';
+
+        m1l = '副项';
+        m1v = s.subSubject || '—';
+        m2l = '副项分数';
+        m2v = s.subScore || '—';
+        m3l = '专业排名';
+        m3v = s.majorRank || '—';
       }else if(posterType === 'ear'){
         $('scoreLabel').textContent = '听写分数';
         $('rankLabel').textContent = '专业排名';
@@ -337,8 +458,16 @@
         $('rankValue').textContent = s.majorRank || '—';
         $('heroScore').textContent = s.earTraining || '—';
         $('heroUnit').textContent = '分';
-        slogan = '听音辨位 · 满分实力';
+        slogan = '听音辨位 · 稳定高分';
         floatText = '基本功';
+        caption = 'SKILL PERFORMANCE';
+
+        m1l = '主项';
+        m1v = s.mainSubject || '—';
+        m2l = '听写';
+        m2v = s.earTraining || '—';
+        m3l = '专业排名';
+        m3v = s.majorRank || '—';
       }else if(posterType === 'theory'){
         $('scoreLabel').textContent = '乐理分数';
         $('rankLabel').textContent = '专业排名';
@@ -346,8 +475,16 @@
         $('rankValue').textContent = s.majorRank || '—';
         $('heroScore').textContent = s.theory || '—';
         $('heroUnit').textContent = '分';
-        slogan = '乐理满分 · 基础扎实';
-        floatText = '理论满分';
+        slogan = '乐理高分 · 基础扎实';
+        floatText = '理论扎实';
+        caption = 'THEORY PERFORMANCE';
+
+        m1l = '主项';
+        m1v = s.mainSubject || '—';
+        m2l = '乐理';
+        m2v = s.theory || '—';
+        m3l = '专业排名';
+        m3v = s.majorRank || '—';
       }else if(posterType === 'sight'){
         $('scoreLabel').textContent = '视唱分数';
         $('rankLabel').textContent = '专业排名';
@@ -356,7 +493,15 @@
         $('heroScore').textContent = s.sightSinging || '—';
         $('heroUnit').textContent = '分';
         slogan = '视唱练耳 · 唯快不破';
-        floatText = '视唱满分';
+        floatText = '视唱强项';
+        caption = 'SIGHT-SINGING PERFORMANCE';
+
+        m1l = '主项';
+        m1v = s.mainSubject || '—';
+        m2l = '视唱';
+        m2v = s.sightSinging || '—';
+        m3l = '专业排名';
+        m3v = s.majorRank || '—';
       }else{
         // Total
         $('scoreLabel').textContent = '专业总分';
@@ -368,10 +513,80 @@
         $('heroUnit').textContent = '分';
         slogan = '制霸考场 · 综合王者';
         floatText = '全省前茅';
+        caption = 'OVERALL PERFORMANCE';
+
+        m1l = '专业总分';
+        m1v = s.totalScore || '—';
+        m2l = '专业排名';
+        m2v = s.majorRank || '—';
+        m3l = '主项分数';
+        m3v = s.mainScore || '—';
       }
       
       $('campaignText').textContent = slogan;
       $('floatBadge').textContent = floatText;
+      $('scoreCaption').textContent = caption;
+
+      // Tags (can be many; never show "满分")
+      const tagRow = $('tagRow');
+      const uniq = (arr)=>{
+        const seen = new Set();
+        return arr.filter(x=>{
+          const k = String(x || '').trim();
+          if(!k) return false;
+          if(seen.has(k)) return false;
+          seen.add(k);
+          return true;
+        });
+      };
+      const safeTag = (t)=>String(t || '').replace(/满分/g, '高分').trim();
+      const arrify = (v)=>Array.isArray(v) ? v : (v ? [v] : []);
+      const parseTags = (v)=>{
+        if(Array.isArray(v)) return v;
+        const s = String(v || '').trim();
+        if(!s) return [];
+        return s.split(/[\n,，;；|\/]+/g).map(x=>x.trim()).filter(Boolean);
+      };
+      const typeTag = {
+        main: '主项突击',
+        sub: '副项提升',
+        ear: '听写训练',
+        theory: '乐理强化',
+        sight: '视唱训练',
+        total: '综合实力'
+      }[posterType] || '综合实力';
+
+      const extraTags = uniq([
+        ...parseTags(s.posterTags),
+        ...parseTags(s.tags),
+        ...arrify(s.posterTagsArr),
+        safeTag(s.campus),
+        safeTag(s.className),
+        safeTag(s.teacher),
+        safeTag(s.targetSchool),
+        safeTag(s.admitSchool)
+      ].filter(Boolean).map(safeTag));
+
+      const tags = uniq([
+        safeTag((s.year || '2026') + '届'),
+        safeTag(s.category),
+        safeTag(s.mainSubject),
+        safeTag(s.subSubject),
+        safeTag(examPlace),
+        typeTag,
+        '润德艺考',
+        '官方报告',
+        ...extraTags
+      ]).slice(0, 12);
+
+      tagRow.innerHTML = tags.map(t=>`<span class="tag-chip">${t}</span>`).join('');
+
+      $('mini1Label').textContent = m1l;
+      $('mini1Value').textContent = m1v;
+      $('mini2Label').textContent = m2l;
+      $('mini2Value').textContent = m2v;
+      $('mini3Label').textContent = m3l;
+      $('mini3Value').textContent = m3v;
     }
 
     function updateAvatarTransform() {
