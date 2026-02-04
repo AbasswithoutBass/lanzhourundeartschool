@@ -26,39 +26,44 @@
     .poster-blob {position:absolute;width:400px;height:400px;background:#8b2a9b;filter:blur(80px);border-radius:50%;opacity:0.4;top:-100px;left:-100px;z-index:0;}
     .poster-blob2 {position:absolute;width:300px;height:300px;background:#d4af37;filter:blur(90px);border-radius:50%;opacity:0.2;bottom:0;right:-50px;z-index:0;}
 
+
     /* Decorations */
     .deco-line {position:absolute;left:24px;top:24px;bottom:24px;width:1px;background:rgba(255,255,255,0.15);z-index:1;}
     .deco-cross {position:absolute;right:24px;top:24px;font-size:24px;font-weight:100;color:rgba(255,255,255,0.3);z-index:1;}
+    .deco-circle-line {position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:500px;border:1px dashed rgba(255,255,255,0.1);border-radius:50%;pointer-events:none;z-index:0;}
 
     /* Content Layers */
     .layer-top {position:absolute;top:40px;left:40px;right:24px;z-index:10;}
-    .brand-pill {display:inline-flex;align-items:center;padding:6px 14px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);backdrop-filter:blur(10px);border-radius:99px;font-size:12px;font-weight:700;letter-spacing:1px;margin-bottom:14px;color:#fff;}
+    /* Removed backdrop-filter as requested, increased opacity for readability */
+    .brand-pill {display:inline-flex;align-items:center;padding:6px 14px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);border-radius:99px;font-size:12px;font-weight:700;letter-spacing:1px;margin-bottom:14px;color:#fff;}
     .brand-pill span {color:#FFD700;margin-right:6px;}
 
-    .layer-hero {position:absolute;top:130px;left:0;right:0;text-align:center;z-index:5;}
+    .layer-hero {position:absolute;top:120px;left:0;right:0;text-align:center;z-index:5;}
     /* Avatar with Golden Ring */
     .avatar-ring {
       width:140px;height:140px;margin:0 auto;
       border-radius:50%;padding:4px;
+      cursor:grab; touch-action:none;
       background:conic-gradient(#FFD700, #FFF, #FFD700, #B8860B, #FFD700);
       box-shadow:0 20px 50px rgba(0,0,0,0.5);
       position:relative;
     }
+    .avatar-ring:active {cursor:grabbing;}
     .avatar-inner {width:100%;height:100%;border-radius:50%;background:#000;overflow:hidden;border:4px solid #fff;position:relative;}
-    .avatar img {width:100%;height:100%;object-fit:cover;display:block;transform:translate(var(--px,0),var(--py,0)) scale(var(--ps,1))}
+    .avatar img {width:100%;height:100%;object-fit:cover;display:block;transform:translate(var(--px,0),var(--py,0)) scale(var(--ps,1)); pointer-events:none;}
     
     /* Name & Title */
     .student-name {font-size:36px;font-weight:900;margin-top:20px;letter-spacing:4px;text-shadow:0 4px 12px rgba(0,0,0,0.5);}
     .category-tag {display:inline-block;margin-top:8px;padding:4px 12px;background:#FFD700;color:#000;font-weight:800;font-size:12px;border-radius:4px;transform:skewX(-10deg);}
     .location-line {margin-top:8px;font-size:13px;color:rgba(255,255,255,0.6);font-weight:400;letter-spacing:2px;}
 
-    /* The BIG Score Section */
-    .big-stat-box {position:absolute;top:380px;left:0;right:0;text-align:center;z-index:10;}
-    .marketing-text {font-size:32px;font-weight:900;font-style:italic;line-height:1.1;background:linear-gradient(180deg, #fff 40%, #ccc 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 10px 20px rgba(0,0,0,0.5);}
+    /* The BIG Score Section - Moved down to allow space */
+    .big-stat-box {position:absolute;top:400px;left:0;right:0;text-align:center;z-index:10;}
+    .marketing-text {font-size:32px;font-weight:900;font-style:italic;line-height:1.2;background:linear-gradient(180deg, #fff 40%, #ccc 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 10px 20px rgba(0,0,0,0.5); padding:0 20px;}
     .score-hero {
       font-family:Impact, sans-serif;
       font-size:100px;
-      line-height:0.9;
+      line-height:1.0;
       background:linear-gradient(180deg, #FFD700 20%, #B8860B 80%);
       -webkit-background-clip:text;-webkit-text-fill-color:transparent;
       filter:drop-shadow(0 4px 0px rgba(255,255,255,0.1));
@@ -67,15 +72,15 @@
     }
     .score-hero .unit {font-size:24px;font-family:sans-serif;font-weight:700;color:rgba(255,255,255,0.8);-webkit-text-fill-color:rgba(255,255,255,0.8);margin-left:6px;}
 
-    /* Glass Panels for Meta Data */
-    .glass-deck {position:absolute;bottom:30px;left:24px;right:24px;display:flex;gap:10px;z-index:10;}
-    .glass-card {flex:1;background:rgba(255,255,255,0.06);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:14px;text-align:left;}
+    /* Glass Panels for Meta Data - Removed blur */
+    .glass-deck {position:absolute;bottom:40px;left:24px;right:24px;display:flex;gap:10px;z-index:10;}
+    .glass-card {flex:1;background:rgba(20, 10, 30, 0.7);border:1px solid rgba(255,255,255,0.3);border-radius:12px;padding:14px;text-align:left;}
     .glass-card .lbl {font-size:11px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
     .glass-card .val {font-size:20px;font-weight:700;color:#fff;}
     .glass-card .sub {font-size:11px;color:#FFD700;margin-top:2px;}
 
     /* Floating Badges */
-    .float-badge {position:absolute;right:30px;top:400px;background:#FF4500;color:#fff;font-weight:bold;padding:6px 12px;border-radius:8px;font-size:12px;box-shadow:0 8px 16px rgba(255,69,0,0.4);transform:rotate(10deg);z-index:20;}
+    .float-badge {position:absolute;right:30px;top:380px;background:#FF4500;color:#fff;font-weight:bold;padding:6px 12px;border-radius:8px;font-size:12px;box-shadow:0 8px 16px rgba(255,69,0,0.4);transform:rotate(10deg);z-index:20;}
   </style>
 </head>
 <body>
@@ -100,6 +105,7 @@
             
             <div class="deco-line"></div>
             <div class="deco-cross">+</div>
+            <div class="deco-circle-line"></div>
             
             <div class="layer-top">
                 <div class="brand-pill"><span>RUNDE</span> ART SCHOOL</div>
@@ -129,7 +135,7 @@
                 </div>
             </div>
 
-            <div class="glass-deck">
+            <div class="glass-deck" id="rankDeck">
                 <div class="glass-card">
                     <div class="lbl" id="scoreLabel">主项分数</div>
                     <div class="val" id="scoreValue">—</div>
@@ -221,6 +227,11 @@
 
           <label>照片路径</label>
           <input name="photo" id="photoInput" value="{{ student.photo or '' }}" />
+          
+          <div style="display:flex;align-items:center;margin-top:12px;gap:8px">
+             <input type="checkbox" id="showRank" checked style="width:auto"> 
+             <span style="font-size:13px;color:#444">显示排名/分数卡片</span>
+          </div>
 
           <div class="small" style="margin-top:6px">头像缩放</div>
           <input id="scale" type="range" min="0.8" max="2" step="0.01" value="{{ student.posterPhotoScale or '1' }}" />
@@ -284,15 +295,15 @@
       const examPlace = [s.examProvince, s.examCity].filter(Boolean).join(' · ');
       $('locationText').textContent = examPlace || '—';
       
-      // promo logic moved to render function per type
-      
       const avatar = $('avatarImg');
       avatar.src = pickPhoto();
-      avatar.style.setProperty('--ps', $('posterPhotoScale').value || '1');
-      avatar.style.setProperty('--px', ($('posterPhotoX').value || '0') + 'px');
-      avatar.style.setProperty('--py', ($('posterPhotoY').value || '0') + 'px');
+      
+      // Update Transform directly
+      updateAvatarTransform();
 
-      const posterType = type || $('posterType').value || 'main';
+      const posterType = type || $('posterType').value || 'main'; // Use passed type OR current select value
+      const showRank = $('showRank').checked;
+      $('rankDeck').style.display = showRank ? 'flex' : 'none';
       
       // --- Logic Differentiation ---
       let slogan = '制霸高分 · 强势上岸';
@@ -349,11 +360,6 @@
         $('rankLabel').textContent = '全省排名';
         $('scoreValue').textContent = s.totalScore || '—';
         $('rankValue').textContent = s.majorRank || '—';
-        $('heroScore').textContent = s.majorRank || '—'; // Highlight Rank for Total? Or Score? Usually Rank is more impressive if high.
-        // Let's stick to Score for consistency, or maybe Rank if user wants "Ranking". 
-        // User asked for "commercial publicity". "第1名" is better than "280分".
-        // But for safe side, let's show Score as Hero, Rank as sub.
-        // Actually, let's keep Score as hero to avoid "null" rank issues being ugly.
         $('heroScore').textContent = s.totalScore || '—';
         
         $('heroUnit').textContent = '分';
@@ -365,12 +371,21 @@
       $('floatBadge').textContent = floatText;
     }
 
+    function updateAvatarTransform() {
+        const ps = $('posterPhotoScale').value || '1';
+        const px = $('posterPhotoX').value || '0';
+        const py = $('posterPhotoY').value || '0';
+        const avatar = $('avatarImg');
+        avatar.style.setProperty('--ps', ps);
+        avatar.style.setProperty('--px', px + 'px');
+        avatar.style.setProperty('--py', py + 'px');
+    }
+
     // drag to move avatar
     const avatarWrap = $('avatarWrap');
     let dragging = false;
     let startX = 0, startY = 0;
-    let baseX = parseFloat($('posterPhotoX').value || '0');
-    let baseY = parseFloat($('posterPhotoY').value || '0');
+    let baseX = 0, baseY = 0;
 
     avatarWrap.addEventListener('pointerdown', (e)=>{
       dragging = true;
@@ -389,7 +404,7 @@
       const ny = baseY + dy;
       $('posterPhotoX').value = String(Math.round(nx));
       $('posterPhotoY').value = String(Math.round(ny));
-      render();
+      updateAvatarTransform(); // Call lightweight update
     });
 
     avatarWrap.addEventListener('pointerup', ()=>{ dragging = false; });
@@ -397,15 +412,20 @@
 
     $('scale').addEventListener('input', ()=>{
       $('posterPhotoScale').value = $('scale').value;
-      render();
+      updateAvatarTransform(); // Call lightweight update instead of full render
     });
 
-    $('photoInput').addEventListener('change', render);
+    $('photoInput').addEventListener('change', ()=> render());
     $('posterType').addEventListener('change', ()=> render());
+    $('showRank').addEventListener('change', ()=> render());
+
     Array.from($('f').elements).forEach(el=>{
       if(el && el.tagName && (el.tagName === 'INPUT' || el.tagName === 'SELECT')){
-        el.addEventListener('input', ()=> render('main'));
-        el.addEventListener('change', ()=> render('main'));
+         // Avoid recursive loops or overwriting, just general update
+         // Only trigger full render if it's NOT one of the photo controls (handled separately)
+         if(!['scale','posterPhotoX','posterPhotoY','posterPhotoScale'].includes(el.id)) {
+            el.addEventListener('input', ()=> render()); // Remove 'main' arg to allow auto-detection
+         }
       }
     });
 
