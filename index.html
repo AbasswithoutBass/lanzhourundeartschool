@@ -334,72 +334,120 @@
 
                                                 function buildPoster(type){
                                                         const el = document.createElement('div');
-                                                        el.style.width = '360px';
+                                                        el.style.width = '360px'; // 9:16 aspect ratio relative
                                                         el.style.height = '640px';
                                                         el.style.borderRadius = '18px';
                                                         el.style.overflow = 'hidden';
-                                                        el.style.border = '1px solid rgba(0,0,0,0.06)';
-                                                        el.style.background = '#fff';
-                                                        el.style.boxShadow = '0 14px 36px rgba(0,0,0,0.12)';
-                                                        const typeLabel = type === 'sub' ? '副项海报' : (type === 'total' ? '综合海报' : (type === 'ear' ? '听写海报' : (type === 'theory' ? '乐理海报' : (type === 'sight' ? '视唱海报' : '主项海报'))));
-                                                        const scoreLabel = type === 'sub' ? '副项分数' : (type === 'total' ? '专业总分' : (type === 'ear' ? '听写分数' : (type === 'theory' ? '乐理分数' : (type === 'sight' ? '视唱分数' : '主项分数'))));
-                                                        const rankLabel = type === 'sub' ? '专业排名' : (type === 'total' ? '专业排名' : (type === 'ear' ? '专业排名' : (type === 'theory' ? '专业排名' : (type === 'sight' ? '专业排名' : '主项排名'))));
-                                                        const scoreValue = type === 'sub' ? subScore : (type === 'total' ? totalScore : (type === 'ear' ? s.earTraining : (type === 'theory' ? s.theory : (type === 'sight' ? s.sightSinging : mainScore))));
-                                                        const rankValue = type === 'sub' ? majorRank : (type === 'total' ? majorRank : (type === 'ear' ? majorRank : (type === 'theory' ? majorRank : (type === 'sight' ? majorRank : mainRank))));
+                                                        el.style.position = 'relative';
+                                                        el.style.background = '#1a0b2e';
+                                                        el.style.color = '#fff';
+                                                        el.style.fontFamily = '"PingFang SC", sans-serif';
+
+                                                        // Logic Diff
+                                                        let scoreLabel = '主项分数', rankLabel = '主项排名';
+                                                        let scoreValue = s.mainScore || '—', rankValue = s.mainRank || '—';
+                                                        let heroScore = s.mainScore || '—', heroUnit = '分';
+                                                        let slogan = '主项强基 · 技压群雄';
+                                                        let floatText = '单科状元';
+
+                                                        if(type === 'sub'){
+                                                            scoreLabel = '副项分数'; rankLabel = '专业排名';
+                                                            scoreValue = s.subScore || '—'; rankValue = s.majorRank || '—';
+                                                            heroScore = s.subScore || '—';
+                                                            slogan = '多才多艺 · 全面开花'; floatText = '全能发展';
+                                                        }else if(type === 'ear'){
+                                                            scoreLabel = '听写分数'; rankLabel = '专业排名';
+                                                            scoreValue = s.earTraining || '—'; rankValue = s.majorRank || '—';
+                                                            heroScore = s.earTraining || '—';
+                                                            slogan = '听音辨位 · 满分实力'; floatText = '基本功';
+                                                        }else if(type === 'theory'){
+                                                            scoreLabel = '乐理分数'; rankLabel = '专业排名';
+                                                            scoreValue = s.theory || '—'; rankValue = s.majorRank || '—';
+                                                            heroScore = s.theory || '—';
+                                                            slogan = '乐理满分 · 基础扎实'; floatText = '理论满分';
+                                                        }else if(type === 'sight'){
+                                                            scoreLabel = '视唱分数'; rankLabel = '专业排名';
+                                                            scoreValue = s.sightSinging || '—'; rankValue = s.majorRank || '—';
+                                                            heroScore = s.sightSinging || '—';
+                                                            slogan = '视唱练耳 · 唯快不破'; floatText = '视唱满分';
+                                                        }else if(type === 'total'){
+                                                            scoreLabel = '专业总分'; rankLabel = '全省排名';
+                                                            scoreValue = s.totalScore || '—'; rankValue = s.majorRank || '—';
+                                                            heroScore = s.totalScore || '—';
+                                                            slogan = '制霸考场 · 综合王者'; floatText = '全省前茅';
+                                                        }
+
+                                                        const photoSrc = esc(photo || '润德1.png');
+                                                        const scale = s.posterPhotoScale || 1;
+                                                        const pX = (s.posterPhotoX || 0) + 'px';
+                                                        const pY = (s.posterPhotoY || 0) + 'px';
+
                                                         el.innerHTML = `
-                                                            <div style="position:relative;width:100%;height:100%;background:radial-gradient(circle at 50% 25%, #6a0b7d 0%, #2a0333 100%);overflow:hidden;font-family:'PingFang SC',system-ui,sans-serif">
-                                                                <div style="position:absolute;inset:0;background:repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 10px);pointer-events:none"></div>
+                                                            <!-- Background Layers -->
+                                                            <div style="position:absolute;inset:0;background:radial-gradient(circle at 100% 0%, #4a0e69 0%, #1a0b2e 50%, #000 100%);z-index:0"></div>
+                                                            <div style="position:absolute;inset:0;opacity:0.04;background:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScyMDAlJyBoZWlnaHQ9JzIwMCUnPjxmaWx0ZXIgaWQ9J24nPjxmZVR1cmJ1bGVuY2UgdHlwZT0nZnJhY3RhbE5vaXNlJyBiYXNlRnJlcXVlbmN5PScwLjYnIHN0aXRjaFRpbGVzPSdzdGl0Y2gnLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0nMTAwJScgaGVpZ2h0PScxMDAlJyBmaWxsPSd0cmFuc3BhcmVudCcvPjxyZWN0IHdpZHRoPScxMDAlJyBoZWlnaHQ9JzEwMCUnIGZpbHRlcj0idXJsKCNuKSIgb3BhY2l0eT0iMC41Ii8+PC9zdmc+');z-index:0"></div>
+                                                            <div style="position:absolute;width:400px;height:400px;background:#8b2a9b;filter:blur(80px);border-radius:50%;opacity:0.4;top:-100px;left:-100px;z-index:0"></div>
+                                                            <div style="position:absolute;width:300px;height:300px;background:#d4af37;filter:blur(90px);border-radius:50%;opacity:0.2;bottom:0;right:-50px;z-index:0"></div>
+
+                                                            <!-- Deco -->
+                                                            <div style="position:absolute;left:24px;top:24px;bottom:24px;width:1px;background:rgba(255,255,255,0.15);z-index:1"></div>
+                                                            <div style="position:absolute;right:24px;top:24px;font-size:24px;font-weight:100;color:rgba(255,255,255,0.3);z-index:1">+</div>
+
+                                                            <!-- Top Layer -->
+                                                            <div style="position:absolute;top:40px;left:40px;right:24px;z-index:10">
+                                                                <div style="display:inline-flex;align-items:center;padding:6px 14px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);backdrop-filter:blur(10px);border-radius:99px;font-size:12px;font-weight:700;letter-spacing:1px;margin-bottom:14px;color:#fff">
+                                                                    <span style="color:#FFD700;margin-right:6px">RUNDE</span> ART SCHOOL
+                                                                </div>
+                                                                <div style="font-size:12px;color:rgba(255,255,255,0.6);letter-spacing:1px">${esc(s.year || '2026')} OFFICIAL REPORT —</div>
+                                                                <div style="font-size:20px;font-weight:900;margin-top:2px;letter-spacing:2px">润德艺考 · 喜报</div>
+                                                            </div>
+
+                                                            <!-- Hero Layer -->
+                                                            <div style="position:absolute;top:130px;left:0;right:0;text-align:center;z-index:5">
+                                                                <div style="width:140px;height:140px;margin:0 auto;border-radius:50%;padding:4px;background:conic-gradient(#FFD700, #FFF, #FFD700, #B8860B, #FFD700);box-shadow:0 20px 50px rgba(0,0,0,0.5);position:relative">
+                                                                    <div style="width:100%;height:100%;border-radius:50%;background:#000;overflow:hidden;border:4px solid #fff;position:relative">
+                                                                        <img src="${photoSrc}" style="width:100%;height:100%;object-fit:cover;transform:translate(${pX},${pY}) scale(${scale})">
+                                                                    </div>
+                                                                </div>
                                                                 
-                                                                <div style="position:absolute;left:0;right:0;top:30px;text-align:center;z-index:2">
-                                                                    <div style="font-weight:900;color:#d4af37;font-size:16px;letter-spacing:6px;margin-bottom:4px;text-transform:uppercase;text-shadow:0 2px 4px rgba(0,0,0,0.3)">润德艺考</div>
-                                                                    <div style="color:rgba(255,255,255,0.8);font-size:13px;letter-spacing:2px">${esc(s.year || '—')}届</div>
+                                                                <div style="font-size:36px;font-weight:900;margin-top:20px;letter-spacing:4px;text-shadow:0 4px 12px rgba(0,0,0,0.5)">${esc(s.name)}</div>
+                                                                <div style="margin-top:8px;font-size:13px;color:rgba(255,255,255,0.6);font-weight:400;letter-spacing:2px">${esc(examPlace || '—')}</div>
+                                                                <div style="display:inline-block;margin-top:8px;padding:4px 12px;background:#FFD700;color:#000;font-weight:800;font-size:12px;border-radius:4px;transform:skewX(-10deg)">
+                                                                    ${esc(major)} · ${esc(mainSubject || '')}${subSubject ? ' / ' + esc(subSubject) : ''}
                                                                 </div>
+                                                            </div>
 
-                                                                <div style="position:absolute;left:50%;top:95px;transform:translateX(-50%);width:130px;height:130px;border-radius:50%;padding:4px;background:linear-gradient(180deg,#d4af37,#fbf5d5,#d4af37);box-shadow:0 12px 30px rgba(0,0,0,0.4);z-index:3">
-                                                                    <div style="width:100%;height:100%;border-radius:50%;background:#eee;overflow:hidden;position:relative;border:4px solid #fff">
-                                                                        <img src="${esc(photo || '润德1.png')}" style="width:100%;height:100%;object-fit:cover" alt="avatar">
-                                                                    </div>
+                                                            <!-- Badge -->
+                                                            <div style="position:absolute;right:30px;top:400px;background:#FF4500;color:#fff;font-weight:bold;padding:6px 12px;border-radius:8px;font-size:12px;box-shadow:0 8px 16px rgba(255,69,0,0.4);transform:rotate(10deg);z-index:20">${floatText}</div>
+
+                                                            <!-- Big Stat -->
+                                                            <div style="position:absolute;top:380px;left:0;right:0;text-align:center;z-index:10">
+                                                                <div style="font-size:32px;font-weight:900;font-style:italic;line-height:1.1;background:linear-gradient(180deg, #fff 40%, #ccc 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 10px 20px rgba(0,0,0,0.5)">
+                                                                    ${slogan}
                                                                 </div>
-
-                                                                <div style="position:absolute;left:20px;right:20px;top:245px;text-align:center;z-index:2">
-                                                                    <div style="font-size:36px;font-weight:900;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,0.4);letter-spacing:2px">${esc(s.name)}</div>
-                                                                    
-                                                                    <div style="margin-top:8px;color:rgba(255,255,255,0.9);font-size:14px;font-weight:500;display:inline-block;padding:4px 14px;border-radius:20px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2)">
-                                                                        ${esc(major)} · ${esc(mainSubject || '')}${subSubject ? ' / ' + esc(subSubject) : ''}
-                                                                    </div>
-                                                                    
-                                                                    ${examPlace ? `<div style="margin-top:6px;color:rgba(255,255,255,0.7);font-size:13px;font-weight:500">考试地：${esc(examPlace)}</div>` : ''}
-
-                                                                    <div style="margin-top:16px;font-size:14px;color:#d4af37;font-weight:700;letter-spacing:1px;opacity:0.9">
-                                                                        ${esc(promo || '润德艺考 · 音乐联考喜报')}
-                                                                    </div>
-                                                                    
-                                                                    <div style="margin-top:2px;font-size:24px;font-weight:900;font-style:italic;text-shadow:0 4px 10px rgba(0,0,0,0.3);background:linear-gradient(180deg,#fff 20%,#e0e0e0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;color:#fff">
-                                                                        制霸高分 · 强势上岸
-                                                                    </div>
-
-                                                                    <div style="margin-top:12px;font-size:76px;font-weight:900;line-height:1;text-shadow:0 4px 0 rgba(0,0,0,0.3);font-family:Impact,sans-serif;background:linear-gradient(180deg,#fbf5d5 0%, #d4af37 60%, #a17f1a 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;color:#d4af37">
-                                                                        ${esc(scoreValue || '—')}<span style="font-size:18px;font-weight:500;margin-left:4px;font-style:normal;font-family:sans-serif;text-shadow:none;-webkit-background-clip:border-box;-webkit-text-fill-color:#ffeeb0;color:#ffeeb0">分</span>
-                                                                    </div>
+                                                                <div style="font-family:Impact,sans-serif;font-size:100px;line-height:0.9;background:linear-gradient(180deg, #FFD700 20%, #B8860B 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 4px 0px rgba(255,255,255,0.1));margin-top:10px;display:flex;align-items:baseline;justify-content:center">
+                                                                    ${esc(heroScore)}<span style="font-size:24px;font-family:sans-serif;font-weight:700;color:rgba(255,255,255,0.8);-webkit-text-fill-color:rgba(255,255,255,0.8);margin-left:6px">${heroUnit}</span>
                                                                 </div>
+                                                            </div>
 
-                                                                <div style="position:absolute;left:24px;right:24px;bottom:34px;background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.2);border-radius:18px;padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:0;text-align:center;box-shadow:0 8px 20px rgba(0,0,0,0.2)">
-                                                                    <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:#d4af37;color:#2a0333;font-size:12px;font-weight:800;padding:3px 10px;border-radius:4px;box-shadow:0 4px 8px rgba(0,0,0,0.2)">${typeLabel}</div>
-                                                                    <div style="border-right:1px solid rgba(255,255,255,0.15)">
-                                                                        <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:4px">${scoreLabel}</div>
-                                                                        <div style="font-size:24px;font-weight:700;color:#fff">${esc(scoreValue || '—')}</div>
-                                                                    </div>
-                                                                    <div>
-                                                                        <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:4px">${rankLabel}</div>
-                                                                        <div style="font-size:24px;font-weight:700;color:#fff">${esc(rankValue || '—')}</div>
-                                                                    </div>
+                                                            <!-- Glass Deck -->
+                                                            <div style="position:absolute;bottom:30px;left:24px;right:24px;display:flex;gap:10px;z-index:10">
+                                                                <div style="flex:1;background:rgba(255,255,255,0.06);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:14px;text-align:left">
+                                                                    <div style="font-size:11px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">${scoreLabel}</div>
+                                                                    <div style="font-size:20px;font-weight:700;color:#fff">${esc(scoreValue)}</div>
+                                                                    <div style="font-size:11px;color:#FFD700;margin-top:2px">超过98%考生</div>
+                                                                </div>
+                                                                <div style="flex:1;background:rgba(255,255,255,0.06);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:14px;text-align:left">
+                                                                    <div style="font-size:11px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">${rankLabel}</div>
+                                                                    <div style="font-size:20px;font-weight:700;color:#fff">${esc(rankValue)}</div>
+                                                                    <div style="font-size:11px;color:#FFD700;margin-top:2px">全省前列</div>
                                                                 </div>
                                                             </div>
                                                         `;
                                                         return el;
                                                 }
-
-                                                function showPoster(type){
+                                                
+function showPoster(type){
                                                         posterBox.innerHTML = '';
                                                         posterBox.appendChild(buildPoster(type));
                                                 }

@@ -71,34 +71,53 @@
       <div id="shell" class="poster-shell" style="display:none">
         <div class="poster-frame">
           <div id="poster" class="poster">
-            <div class="poster-bg"></div>
-            <div class="poster-header">
-              <div class="brand">润德艺考</div>
-              <div class="year" id="yearText">—</div>
+            <div class="poster-bg-grad"></div>
+            <div class="poster-noise"></div>
+            <div class="poster-blob"></div>
+            <div class="poster-blob2"></div>
+            
+            <div class="deco-line"></div>
+            <div class="deco-cross">+</div>
+            
+            <div class="layer-top">
+                <div class="brand-pill"><span>RUNDE</span> ART SCHOOL</div>
+                <div style="font-size:12px;color:rgba(255,255,255,0.6);letter-spacing:1px" id="yearText">2026 OFFICIAL REPORT —</div>
+                <div style="font-size:20px;font-weight:900;margin-top:2px;letter-spacing:2px">润德艺考 · 喜报</div>
             </div>
-            <div class="avatar-wrap">
-              <div class="avatar">
-                <img id="avatarImg" src="" alt="avatar">
-              </div>
+
+            <div class="layer-hero">
+                <div class="avatar-ring">
+                    <div class="avatar-inner">
+                        <img id="avatarImg" src="" alt="avatar">
+                    </div>
+                </div>
+                
+                <div class="student-name" id="nameText">—</div>
+                <div class="location-line" id="locationText">—</div>
+                <div id="metaText" class="category-tag">—</div>
             </div>
-            <div class="poster-main">
-              <div class="name" id="nameText">—</div>
-              <div class="meta" id="metaText">—</div>
-              <div id="locationText" style="margin-top:6px;color:rgba(255,255,255,0.7);font-size:13px;font-weight:500">—</div>
-              <div class="promo" id="promoText">—</div>
-              <div class="campaign" id="campaignText">制霸高分 · 强势上岸</div>
-              <div class="hero-score"><span id="heroScore">—</span><span class="unit">分</span></div>
+
+            <div class="float-badge" id="floatBadge">TOP 1%</div>
+
+            <div class="big-stat-box">
+                <div class="marketing-text" id="campaignText">制霸高分 · 强势上岸</div>
+                <div class="score-hero">
+                    <span id="heroScore">—</span>
+                    <span class="unit" id="heroUnit">分</span>
+                </div>
             </div>
-            <div class="score-box">
-              <div class="type-label" id="typeBadge">主项海报</div>
-              <div>
-                <div class="label" id="scoreLabel">主项分数</div>
-                <div class="value" id="scoreValue">—</div>
-              </div>
-              <div>
-                <div class="label" id="rankLabel">主项排名</div>
-                <div class="value" id="rankValue">—</div>
-              </div>
+
+            <div class="glass-deck">
+                <div class="glass-card">
+                    <div class="lbl" id="scoreLabel">主项分数</div>
+                    <div class="val" id="scoreValue">—</div>
+                    <div class="sub">超过98%考生</div>
+                </div>
+                <div class="glass-card">
+                    <div class="lbl" id="rankLabel">主项排名</div>
+                    <div class="val" id="rankValue">—</div>
+                    <div class="sub">全省前列</div>
+                </div>
             </div>
           </div>
         </div>
@@ -201,13 +220,11 @@
 
     function updatePosterInfo(s, type){
       $('nameText').textContent = s.name || '未命名';
-      $('yearText').textContent = (s.year || '—') + '届';
-      $('metaText').textContent = [s.category, s.mainSubject, s.subSubject].filter(Boolean).join(' · ') || '—';
-      const examPlace = [s.examProvince, s.examCity].filter(Boolean).join('');
-      $('locationText').textContent = examPlace ? ('考试地：' + examPlace) : '';
-      const promo = [s.year ? (s.year + '届') : '', s.examProvince ? (s.examProvince + '省') : '', '音乐联考'].filter(Boolean).join('');
-      $('promoText').textContent = promo || '润德艺考 · 音乐联考喜报';
-      $('campaignText').textContent = '制霸高分 · 强势上岸';
+      $('yearText').textContent = (s.year || '2026') + ' OFFICIAL REPORT —';
+      $('metaText').textContent = [s.category, s.mainSubject, s.subSubject].filter(Boolean).join(' / ') || '—';
+      const examPlace = [s.examProvince, s.examCity].filter(Boolean).join(' · ');
+      $('locationText').textContent = examPlace || '—';
+      
       $('studentId').textContent = s.id || '—';
       $('statusTag').textContent = s.posterStatus || 'pending';
       $('btnEdit').href = '/admin/poster-factory/' + s.id;
@@ -218,49 +235,67 @@
       avatar.style.setProperty('--px', (s.posterPhotoX || '0') + 'px');
       avatar.style.setProperty('--py', (s.posterPhotoY || '0') + 'px');
 
+      let slogan = '制霸高分 · 强势上岸';
+      let floatText = 'TOP 5%';
+
       if(type === 'main'){
-        $('typeBadge').textContent = '主项海报';
         $('scoreLabel').textContent = '主项分数';
         $('rankLabel').textContent = '主项排名';
         $('scoreValue').textContent = s.mainScore || '—';
         $('rankValue').textContent = s.mainRank || '—';
         $('heroScore').textContent = s.mainScore || '—';
+        $('heroUnit').textContent = '分';
+        slogan = '主项强基 · 技压群雄';
+        floatText = '单科状元';
       }else if(type === 'sub'){
-        $('typeBadge').textContent = '副项海报';
         $('scoreLabel').textContent = '副项分数';
         $('rankLabel').textContent = '专业排名';
         $('scoreValue').textContent = s.subScore || '—';
         $('rankValue').textContent = s.majorRank || '—';
         $('heroScore').textContent = s.subScore || '—';
+        $('heroUnit').textContent = '分';
+        slogan = '多才多艺 · 全面开花';
+        floatText = '全能发展';
       }else if(type === 'ear'){
-        $('typeBadge').textContent = '听写海报';
         $('scoreLabel').textContent = '听写分数';
         $('rankLabel').textContent = '专业排名';
         $('scoreValue').textContent = s.earTraining || '—';
         $('rankValue').textContent = s.majorRank || '—';
         $('heroScore').textContent = s.earTraining || '—';
+        $('heroUnit').textContent = '分';
+        slogan = '听音辨位 · 满分实力';
+        floatText = '基本功';
       }else if(type === 'theory'){
-        $('typeBadge').textContent = '乐理海报';
         $('scoreLabel').textContent = '乐理分数';
         $('rankLabel').textContent = '专业排名';
         $('scoreValue').textContent = s.theory || '—';
         $('rankValue').textContent = s.majorRank || '—';
         $('heroScore').textContent = s.theory || '—';
+        $('heroUnit').textContent = '分';
+        slogan = '乐理满分 · 基础扎实';
+        floatText = '理论满分';
       }else if(type === 'sight'){
-        $('typeBadge').textContent = '视唱海报';
         $('scoreLabel').textContent = '视唱分数';
         $('rankLabel').textContent = '专业排名';
         $('scoreValue').textContent = s.sightSinging || '—';
         $('rankValue').textContent = s.majorRank || '—';
         $('heroScore').textContent = s.sightSinging || '—';
+        $('heroUnit').textContent = '分';
+        slogan = '视唱练耳 · 唯快不破';
+        floatText = '视唱满分';
       }else{
-        $('typeBadge').textContent = '综合海报';
         $('scoreLabel').textContent = '专业总分';
-        $('rankLabel').textContent = '专业排名';
+        $('rankLabel').textContent = '全省排名';
         $('scoreValue').textContent = s.totalScore || '—';
         $('rankValue').textContent = s.majorRank || '—';
         $('heroScore').textContent = s.totalScore || '—';
+        $('heroUnit').textContent = '分';
+        slogan = '制霸考场 · 综合王者';
+        floatText = '全省前茅';
       }
+      
+      $('campaignText').textContent = slogan;
+      $('floatBadge').textContent = floatText;
     }
 
     const wait = (ms) => new Promise(r => setTimeout(r, ms));
