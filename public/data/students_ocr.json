@@ -29,11 +29,11 @@
     "posterMode": "0",
     "posterStatus": "rejected",
     "posterPhotoScale": "1.07",
-    "posterPhotoX": "-2",
-    "posterPhotoY": "-2",
+    "posterPhotoX": "0",
+    "posterPhotoY": "-4",
     "ocrImage": "",
     "createdAt": "2026-02-03T07:51:22",
-    "updatedAt": "2026-02-04T14:01:51",
+    "updatedAt": "2026-02-04T14:34:29",
     "posterTypes": [
       "total"
     ],
@@ -41,6 +41,6 @@
     "examProvince": "宁夏",
     "examCity": "",
     "posterShowRank": "1",
-    "posterLayers": "{\"brand\":{\"x\":-9,\"y\":-37,\"s\":0.8883},\"year\":{\"x\":55,\"y\":121,\"s\":0.8961},\"hero\":{\"x\":-3,\"y\":-72,\"s\":1}}"
+    "posterLayers": "{\"v\":2,\"layers\":{\"brand\":{\"x\":-9,\"y\":-37,\"s\":0.8883},\"year\":{\"x\":13,\"y\":166,\"s\":0.8961},\"hero\":{\"x\":-3,\"y\":-72,\"s\":1},\"brandLogo\":{\"x\":2,\"y\":37,\"s\":0.8883},\"brandPill\":{\"x\":36,\"y\":111,\"s\":0.8883},\"brandTitle\":{\"x\":20,\"y\":-9,\"s\":0.8883},\"avatar\":{\"x\":3,\"y\":-39,\"s\":1},\"name\":{\"x\":5,\"y\":1,\"s\":1},\"location\":{\"x\":3,\"y\":25,\"s\":1},\"meta\":{\"x\":4,\"y\":48,\"s\":1},\"badge\":{\"x\":-182,\"y\":250,\"s\":1}},\"groups\":{},\"groupOrder\":[]}"
   }
 ]
