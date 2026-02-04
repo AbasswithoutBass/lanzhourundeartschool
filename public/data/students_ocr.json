@@ -28,12 +28,12 @@
     "joinHall": false,
     "posterMode": "0",
     "posterStatus": "rejected",
-    "posterPhotoScale": "1",
-    "posterPhotoX": "0",
-    "posterPhotoY": "0",
+    "posterPhotoScale": "0.9",
+    "posterPhotoX": "-41",
+    "posterPhotoY": "-49",
     "ocrImage": "",
     "createdAt": "2026-02-03T07:51:22",
-    "updatedAt": "2026-02-04T06:31:27",
+    "updatedAt": "2026-02-04T06:49:14",
     "posterTypes": [
       "total"
     ],
