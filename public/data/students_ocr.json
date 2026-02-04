@@ -12,7 +12,7 @@
     "originSchool": "",
     "originCity": "",
     "originCounty": "",
-    "photo": "",
+    "photo": "students/photos/20260204_060423_image.jpeg",
     "category": "音乐表演",
     "mainSubject": "声乐",
     "subSubject": "",
@@ -33,7 +33,7 @@
     "posterPhotoY": "0",
     "ocrImage": "",
     "createdAt": "2026-02-03T07:51:22",
-    "updatedAt": "2026-02-04T06:03:36",
+    "updatedAt": "2026-02-04T06:04:30",
     "posterTypes": [
       "total"
     ],
