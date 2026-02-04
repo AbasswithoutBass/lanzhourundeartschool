@@ -99,38 +99,40 @@
     .avatar-inner img {width:100%;height:100%;object-fit:cover;display:block;transform:translate(var(--px,0),var(--py,0)) scale(var(--ps,1))}
     
     /* Name & Title */
-    .student-name {font-size:40px;font-weight:900;margin-top:18px;letter-spacing:1.5px;line-height:1.05;text-shadow:0 6px 16px rgba(0,0,0,0.55);}
+    .student-name {font-size:44px;font-weight:950;margin-top:18px;letter-spacing:1px;line-height:1.05;text-shadow:0 8px 18px rgba(0,0,0,0.58);}
     .category-tag {display:inline-block;margin-top:10px;padding:6px 12px;background:rgba(255,215,0,0.95);color:#1a0b2e;font-weight:900;font-size:12px;border-radius:999px;letter-spacing:1px;}
     .location-line {margin-top:8px;font-size:12px;color:rgba(255,255,255,0.62);font-weight:500;letter-spacing:1.4px;}
 
     /* The BIG Score Section */
-    .big-stat-box {position:absolute;top:392px;left:0;right:0;text-align:center;z-index:10;padding:0 28px;}
-    .marketing-text {font-size:28px;font-weight:900;font-style:normal;line-height:1.18;letter-spacing:1px;background:linear-gradient(180deg, rgba(255,255,255,0.98) 40%, rgba(210,210,210,0.92) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 14px 28px rgba(0,0,0,0.55);}
-    .score-caption{margin-top:10px;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.52);}
+    .big-stat-box {position:absolute;top:388px;left:0;right:0;text-align:center;z-index:10;padding:0 28px;}
+    .marketing-text {font-size:32px;font-weight:950;font-style:normal;line-height:1.16;letter-spacing:1.2px;background:linear-gradient(180deg, rgba(255,255,255,0.98) 40%, rgba(210,210,210,0.92) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 16px 30px rgba(0,0,0,0.58);}
+    .score-caption{margin-top:12px;font-size:11px;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.52);}
     .score-hero {
-      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","PingFang SC",sans-serif;
-      font-size:112px;
+      font-family:"DIN Condensed","Avenir Next Condensed",Impact,-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","PingFang SC",sans-serif;
+      font-size:142px;
       font-weight:950;
       line-height:0.92;
       font-variant-numeric: tabular-nums;
+      letter-spacing:-1px;
       background:linear-gradient(180deg, #FFF2B0 0%, #FFD700 24%, #B8860B 74%, #FFD700 100%);
       background-size:200% 200%;
       -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-      filter:drop-shadow(0 6px 0px rgba(255,255,255,0.10)) drop-shadow(0 14px 28px rgba(0,0,0,0.55)) drop-shadow(0 0 18px rgba(255,215,0,0.18));
+      -webkit-text-stroke: 1.2px rgba(255,255,255,0.22);
+      filter:drop-shadow(0 5px 0 rgba(0,0,0,0.22)) drop-shadow(0 14px 32px rgba(0,0,0,0.60)) drop-shadow(0 0 26px rgba(255,215,0,0.22)) drop-shadow(0 0 42px rgba(140,90,255,0.12));
       margin-top:10px;
       display:flex;align-items:baseline;justify-content:center;
     }
     @keyframes goldShine{0%{background-position:0% 30%}50%{background-position:90% 60%}100%{background-position:0% 30%}}
     .score-hero{animation:goldShine 5s ease-in-out infinite;}
-    .score-hero .unit {font-size:20px;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC",sans-serif;font-weight:800;color:rgba(255,255,255,0.82);-webkit-text-fill-color:rgba(255,255,255,0.82);margin-left:8px;letter-spacing:1px;}
+    .score-hero .unit {font-size:22px;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC",sans-serif;font-weight:900;color:rgba(255,255,255,0.86);-webkit-text-fill-color:rgba(255,255,255,0.86);margin-left:10px;letter-spacing:1.6px;}
 
     /* Glass Panels for Meta Data */
     .glass-deck {position:absolute;left:24px;right:24px;top:72%;display:flex;gap:10px;z-index:10;}
     /* Removed backdrop-filter to keep preview & download consistent */
-    .glass-card {flex:1;background:rgba(20, 10, 30, 0.7);border:1px solid rgba(255,255,255,0.3);border-radius:12px;padding:14px;text-align:left;}
-    .glass-card .lbl {font-size:11px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
-    .glass-card .val {font-size:20px;font-weight:700;color:#fff;}
-    .glass-card .sub {font-size:11px;color:#FFD700;margin-top:2px;}
+    .glass-card {flex:1;background:rgba(20, 10, 30, 0.7);border:1px solid rgba(255,255,255,0.3);border-radius:14px;padding:16px 16px;text-align:left;}
+    .glass-card .lbl {font-size:12px;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;}
+    .glass-card .val {font-size:26px;font-weight:900;color:#fff;letter-spacing:0.2px;}
+    .glass-card .sub {font-size:12px;color:#FFD700;margin-top:4px;letter-spacing:1px;}
 
     /* Floating Badges */
     .float-badge {position:absolute;right:30px;top:368px;background:#FF4500;color:#fff;font-weight:900;padding:6px 12px;border-radius:10px;font-size:12px;letter-spacing:1px;box-shadow:0 10px 20px rgba(255,69,0,0.35);transform:rotate(9deg);z-index:20;}
@@ -138,10 +140,10 @@
     /* Extra metrics to reduce empty space */
     .mini-row{position:absolute;left:24px;right:24px;top:54%;display:flex;gap:10px;z-index:10;}
     .mini-pill{flex:1;background:rgba(255,255,255,0.055);border:1px solid rgba(255,255,255,0.16);border-radius:16px;padding:12px 12px;}
-    .mini-pill .k{font-size:10px;color:rgba(255,255,255,0.50);letter-spacing:2px;text-transform:uppercase;}
-    .mini-pill .v{margin-top:6px;font-size:16px;font-weight:900;color:rgba(255,255,255,0.95);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0.2px;}
+    .mini-pill .k{font-size:11px;color:rgba(255,255,255,0.52);letter-spacing:2px;text-transform:uppercase;}
+    .mini-pill .v{margin-top:6px;font-size:18px;font-weight:950;color:rgba(255,255,255,0.96);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0.2px;}
     .tag-row{position:absolute;left:24px;right:24px;top:60%;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;z-index:10;padding:0 28px;}
-    .tag-chip{padding:6px 10px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.85);background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);}
+    .tag-chip{padding:7px 12px;border-radius:999px;font-size:12px;font-weight:900;letter-spacing:1.2px;color:rgba(255,255,255,0.88);background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.20);}
     .poster-footer{position:absolute;left:24px;right:24px;bottom:14px;display:flex;justify-content:space-between;gap:10px;z-index:10;color:rgba(255,255,255,0.55);font-size:11px;letter-spacing:1px;}
     .poster-footer .id{color:rgba(255,255,255,0.75);font-weight:700;}
 
