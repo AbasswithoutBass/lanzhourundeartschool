@@ -75,7 +75,7 @@
     .layer-top {position:absolute;top:24px;left:40px;right:40px;z-index:10;}
     .top-row{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;}
     .top-left{display:flex;flex-direction:column;align-items:flex-start;gap:10px;min-width:0;}
-    .brand-logo-big{width:200px;height:200px;object-fit:contain;opacity:0.96;margin-top:-22px;filter:drop-shadow(0 12px 20px rgba(0,0,0,0.40));}
+    .brand-logo-big{width:200px;max-width:200px;height:auto;max-height:200px;object-fit:contain;display:block;opacity:0.96;margin-top:-22px;filter:drop-shadow(0 12px 20px rgba(0,0,0,0.40));}
     .year-pill{display:inline-flex;align-items:center;padding:8px 14px;margin-top:10px;background:rgba(var(--brand-purple-rgb),0.30);border:1px solid rgba(255,255,255,0.22);border-radius:999px;}
     .xform{--tx:0px;--ty:0px;--ts:1;}
     .xform-move{transform:translate(var(--tx),var(--ty)) scale(var(--ts));transform-origin:top left;}
@@ -262,25 +262,27 @@
             
             <div class="layer-top">
               <div class="top-row">
-                <div class="top-left xform xform-move" data-layer="brand">
-                  <img class="brand-logo-big" src="/site/assets/portal/runde_logo_transparent.png?v=20260204" alt="润德">
-                  <div class="brand-pill"><span>RUNDE</span> ART SCHOOL</div>
-                  <div class="report-title">润德艺考 · 喜报</div>
+                <div class="top-left">
+                  <div class="xform xform-move" data-layer="brandLogo"><img class="brand-logo-big" src="/site/assets/portal/runde_logo_transparent.png?v=20260204" alt="润德"></div>
+                  <div class="brand-pill xform xform-move" data-layer="brandPill"><span>RUNDE</span> ART SCHOOL</div>
+                  <div class="report-title xform xform-move" data-layer="brandTitle">润德艺考 · 喜报</div>
                 </div>
                 <div class="year-pill xform xform-move" data-layer="year"><div class="year-line" id="yearText">2026 OFFICIAL REPORT —</div></div>
               </div>
             </div>
 
-            <div class="layer-hero xform xform-move" data-layer="hero">
-                <div class="avatar-ring">
-                    <div class="avatar-inner">
-                        <img id="avatarImg" src="" alt="avatar">
-                    </div>
+            <div class="layer-hero">
+                <div class="xform xform-move" data-layer="avatar">
+                  <div class="avatar-ring">
+                      <div class="avatar-inner">
+                          <img id="avatarImg" src="" alt="avatar">
+                      </div>
+                  </div>
                 </div>
-                
-                <div class="student-name" id="nameText">—</div>
-                <div class="location-line" id="locationText">—</div>
-                <div id="metaText" class="category-tag">—</div>
+
+                <div class="student-name xform xform-move" data-layer="name" id="nameText">—</div>
+                <div class="location-line xform xform-move" data-layer="location" id="locationText">—</div>
+                <div id="metaText" class="category-tag xform xform-move" data-layer="meta">—</div>
             </div>
 
             <div class="float-badge xform" data-layer="badge" id="floatBadge">TOP 1%</div>
@@ -398,14 +400,39 @@
     }
 
     function applyPosterLayers(stu){
-      const raw = safeJsonParse(stu && stu.posterLayers, {});
+      const raw0 = safeJsonParse(stu && stu.posterLayers, {});
+      // accept legacy {id:{x,y,s}} and v2 {v:2,layers:{...},groups:{...}}
+      let layers = {};
+      if(raw0 && typeof raw0 === 'object'){
+        if(raw0.v === 2 && raw0.layers && typeof raw0.layers === 'object'){
+          layers = raw0.layers;
+        }else{
+          layers = raw0;
+        }
+      }
+      // migrate legacy containers -> split layers
+      if(layers && typeof layers === 'object'){
+        const brand = layers.brand;
+        if(brand){
+          if(!layers.brandLogo) layers.brandLogo = brand;
+          if(!layers.brandPill) layers.brandPill = brand;
+          if(!layers.brandTitle) layers.brandTitle = brand;
+        }
+        const hero = layers.hero;
+        if(hero){
+          if(!layers.avatar) layers.avatar = hero;
+          if(!layers.name) layers.name = hero;
+          if(!layers.location) layers.location = hero;
+          if(!layers.meta) layers.meta = hero;
+        }
+      }
       const node = document.getElementById('poster');
       if(!node) return;
       const els = node.querySelectorAll('[data-layer]');
       els.forEach((el)=>{
         const id = el.getAttribute('data-layer');
         if(!id) return;
-        const st = (raw && typeof raw === 'object') ? (raw[id] || {}) : {};
+        const st = (layers && typeof layers === 'object') ? (layers[id] || {}) : {};
         const x = Number(st.x || 0);
         const y = Number(st.y || 0);
         const s = Number(st.s || 1);

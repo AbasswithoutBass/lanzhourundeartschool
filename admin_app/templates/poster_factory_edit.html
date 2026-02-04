@@ -79,7 +79,7 @@
     .layer-top {position:absolute;top:24px;left:40px;right:40px;z-index:10;}
     .top-row{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;}
     .top-left{display:flex;flex-direction:column;align-items:flex-start;gap:10px;min-width:0;}
-    .brand-logo-big{width:200px;height:200px;object-fit:contain;opacity:0.96;margin-top:-22px;filter:drop-shadow(0 12px 20px rgba(0,0,0,0.40));}
+    .brand-logo-big{width:200px;max-width:200px;height:auto;max-height:200px;object-fit:contain;display:block;opacity:0.96;margin-top:-22px;filter:drop-shadow(0 12px 20px rgba(0,0,0,0.40));}
     .year-pill{display:inline-flex;align-items:center;padding:8px 14px;margin-top:10px;background:rgba(var(--brand-purple-rgb),0.30);border:1px solid rgba(255,255,255,0.22);border-radius:999px;}
     .xform{--tx:0px;--ty:0px;--ts:1;}
     .xform-move{transform:translate(var(--tx),var(--ty)) scale(var(--ts));transform-origin:top left;}
@@ -87,6 +87,17 @@
     .export-mode .layer-selected{outline:none !important;}
     .poster.layer-mode .xform{cursor:move;}
     .poster:not(.layer-mode) .xform{cursor:default;}
+
+    .layer-panel{margin-top:10px;padding:10px 12px;border:1px solid rgba(0,0,0,.06);border-radius:14px;background:rgba(0,0,0,0.02)}
+    .layer-list{margin-top:10px;max-height:220px;overflow:auto;border:1px solid rgba(0,0,0,.08);border-radius:12px;background:#fff}
+    .layer-item{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:8px 10px;border-bottom:1px solid rgba(0,0,0,.06);cursor:pointer;user-select:none}
+    .layer-item:last-child{border-bottom:none}
+    .layer-item .nm{font-size:13px;font-weight:800;color:#333;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .layer-item .xy{font-size:12px;color:#666;font-variant-numeric:tabular-nums;white-space:nowrap}
+    .layer-item.selected{background:rgba(111,66,193,0.08)}
+    .layer-item.group{background:rgba(0,0,0,0.02)}
+    .layer-item.group .nm{color:#3a2a55}
+    .layer-item.sub{padding-left:22px}
     /* Removed backdrop-filter as requested, increased opacity for readability */
     .brand-pill {display:inline-flex;align-items:center;padding:8px 14px;margin-top:0;background:rgba(var(--brand-purple-rgb),0.30);border:1px solid rgba(255,255,255,0.22);border-radius:99px;font-size:12px;font-weight:800;letter-spacing:1px;margin-left:0;margin-right:0;color:rgba(255,255,255,0.92);white-space:nowrap;}
     .brand-logo{width:18px;height:18px;object-fit:contain;margin-right:10px;opacity:0.92;border-radius:6px;filter:drop-shadow(0 10px 18px rgba(0,0,0,0.35));}
@@ -256,25 +267,27 @@
             
             <div class="layer-top">
               <div class="top-row">
-                <div class="top-left xform xform-move" data-layer="brand">
-                  <img class="brand-logo-big" src="/site/assets/portal/runde_logo_transparent.png?v=20260204" alt="润德">
-                  <div class="brand-pill"><span>RUNDE</span> ART SCHOOL</div>
-                  <div class="report-title">润德艺考 · 喜报</div>
+                <div class="top-left">
+                  <div class="xform xform-move" data-layer="brandLogo"><img class="brand-logo-big" src="/site/assets/portal/runde_logo_transparent.png?v=20260204" alt="润德"></div>
+                  <div class="brand-pill xform xform-move" data-layer="brandPill"><span>RUNDE</span> ART SCHOOL</div>
+                  <div class="report-title xform xform-move" data-layer="brandTitle">润德艺考 · 喜报</div>
                 </div>
                 <div class="year-pill xform xform-move" data-layer="year"><div class="year-line" id="yearText">2026 OFFICIAL REPORT —</div></div>
               </div>
             </div>
 
-            <div class="layer-hero xform xform-move" data-layer="hero">
-                <div id="avatarWrap" class="avatar-ring" title="拖拽调整头像位置">
-                    <div class="avatar-inner">
-                        <img id="avatarImg" src="" alt="avatar">
-                    </div>
+            <div class="layer-hero">
+                <div class="xform xform-move" data-layer="avatar">
+                  <div id="avatarWrap" class="avatar-ring" title="拖拽调整头像位置">
+                      <div class="avatar-inner">
+                          <img id="avatarImg" src="" alt="avatar">
+                      </div>
+                  </div>
                 </div>
-                
-                <div class="student-name" id="nameText">—</div>
-                <div class="location-line" id="locationText">—</div>
-                <div id="metaText" class="category-tag">—</div>
+
+                <div class="student-name xform xform-move" data-layer="name" id="nameText">—</div>
+                <div class="location-line xform xform-move" data-layer="location" id="locationText">—</div>
+                <div id="metaText" class="category-tag xform xform-move" data-layer="meta">—</div>
             </div>
 
             <div class="float-badge xform" data-layer="badge" id="floatBadge">TOP 1%</div>
@@ -424,17 +437,21 @@
           <input type="hidden" name="posterPhotoY" id="posterPhotoY" value="{{ student.posterPhotoY or '0' }}" />
           <input type="hidden" name="posterLayers" id="posterLayers" value="{{ student.posterLayers or '' }}" />
 
-          <div style="margin-top:10px;padding:10px 12px;border:1px solid rgba(0,0,0,.06);border-radius:14px;background:rgba(0,0,0,0.02)">
-            <div class="small" style="font-weight:800;color:#333">图层模式（类似 PS）</div>
+          <div class="layer-panel">
+            <div class="small" style="font-weight:800;color:#333">图层（类似 PS）</div>
             <div class="small" style="margin-top:6px;color:#555;line-height:1.6">
-              直接拖动模块调整位置；按住 Shift 拖动可缩放；按住 Cmd/Ctrl + 滚轮缩放画布视图；按 L 开关图层模式。
-              <br/>提示：在头像上拖动默认是“挪头像”，按住 Alt 再拖可移动整个头像区。
+              直接拖动模块调整位置；按住 Shift 拖动可缩放；按住 Cmd/Ctrl + 滚轮缩放画布视图；按 L 开关图层。
+              <br/>多选：按住 Ctrl（或 Cmd）点击图层/画布；组合/拆分：选多个图层点“组合”。
+              <br/>提示：在头像上拖动默认是“挪头像”，按住 Alt 再拖可移动头像模块。
             </div>
             <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px">
               <label style="margin:0;display:flex;gap:8px;align-items:center"><input id="layerMode" type="checkbox" checked style="width:auto" />启用图层</label>
-              <button id="btnResetLayer" class="btn2" type="button">重置选中图层</button>
+              <button id="btnResetLayer" class="btn2" type="button">重置选中</button>
+              <button id="btnGroup" class="btn2" type="button">组合</button>
+              <button id="btnUngroup" class="btn2" type="button">拆分</button>
               <button id="btnResetZoom" class="btn2" type="button">重置缩放</button>
             </div>
+            <div id="layerList" class="layer-list" aria-label="图层列表"></div>
           </div>
 
           <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px">
@@ -490,21 +507,82 @@
       posterFrame?.style.setProperty('--view-scale', String(viewScale));
     }
 
+    const LAYER_LABELS = {
+      brandLogo: 'Logo',
+      brandPill: 'RUNDE ART SCHOOL',
+      brandTitle: '喜报标题',
+      year: '年份条',
+      avatar: '头像模块',
+      name: '姓名',
+      location: '地区/省份',
+      meta: '专业标签',
+      badge: '右侧徽章',
+      brand: '品牌（旧）',
+      hero: '头图（旧）',
+    };
+
+    function normalizeLayerData(raw){
+      const empty = {v:2, layers:{}, groups:{}, groupOrder:[]};
+      if(!raw || typeof raw !== 'object') return empty;
+      if(raw.v === 2 && raw.layers && typeof raw.layers === 'object'){
+        if(!raw.groups || typeof raw.groups !== 'object') raw.groups = {};
+        if(!Array.isArray(raw.groupOrder)) raw.groupOrder = Object.keys(raw.groups);
+        // migrate legacy containers -> split layers
+        const layers = raw.layers;
+        const brand = layers.brand;
+        if(brand){
+          if(!layers.brandLogo) layers.brandLogo = {...brand};
+          if(!layers.brandPill) layers.brandPill = {...brand};
+          if(!layers.brandTitle) layers.brandTitle = {...brand};
+        }
+        const hero = layers.hero;
+        if(hero){
+          if(!layers.avatar) layers.avatar = {...hero};
+          if(!layers.name) layers.name = {...hero};
+          if(!layers.location) layers.location = {...hero};
+          if(!layers.meta) layers.meta = {...hero};
+        }
+        return raw;
+      }
+      // legacy object: {id:{x,y,s}}
+      const layers = {};
+      for(const [k,v] of Object.entries(raw)){
+        if(!v || typeof v !== 'object') continue;
+        layers[k] = {x:Number(v.x||0), y:Number(v.y||0), s:Number(v.s||1)};
+      }
+      // migrate legacy containers -> split layers
+      const brand = layers.brand;
+      if(brand){
+        if(!layers.brandLogo) layers.brandLogo = {...brand};
+        if(!layers.brandPill) layers.brandPill = {...brand};
+        if(!layers.brandTitle) layers.brandTitle = {...brand};
+      }
+      const hero = layers.hero;
+      if(hero){
+        if(!layers.avatar) layers.avatar = {...hero};
+        if(!layers.name) layers.name = {...hero};
+        if(!layers.location) layers.location = {...hero};
+        if(!layers.meta) layers.meta = {...hero};
+      }
+      return {v:2, layers, groups:{}, groupOrder:[]};
+    }
+
     // Layer transforms persisted in student.posterLayers
-    let layerData = safeJsonParse(posterLayersInput?.value || s.posterLayers, {});
+    let layerData = normalizeLayerData(safeJsonParse(posterLayersInput?.value || s.posterLayers, {}));
     function layerGet(id){
-      const raw = (layerData && typeof layerData === 'object') ? (layerData[id] || {}) : {};
-      return {
-        x: Number(raw.x || 0),
-        y: Number(raw.y || 0),
-        s: Number(raw.s || 1),
-      };
+      const raw = (layerData && layerData.layers && typeof layerData.layers === 'object') ? (layerData.layers[id] || {}) : {};
+      return { x: Number(raw.x || 0), y: Number(raw.y || 0), s: Number(raw.s || 1) };
+    }
+    function persistLayerData(){
+      if(posterLayersInput) posterLayersInput.value = JSON.stringify(layerData);
     }
     function layerSet(id, next){
-      if(!layerData || typeof layerData !== 'object') layerData = {};
-      layerData[id] = {x: Math.round(next.x), y: Math.round(next.y), s: Number(next.s.toFixed(4))};
-      if(posterLayersInput) posterLayersInput.value = JSON.stringify(layerData);
+      if(!layerData || typeof layerData !== 'object') layerData = {v:2, layers:{}, groups:{}, groupOrder:[]};
+      if(!layerData.layers || typeof layerData.layers !== 'object') layerData.layers = {};
+      layerData.layers[id] = {x: Math.round(next.x), y: Math.round(next.y), s: Number(next.s.toFixed(4))};
+      persistLayerData();
       applyLayerVars();
+      renderLayerList();
     }
     function applyLayerVars(){
       const els = posterNode?.querySelectorAll('[data-layer]') || [];
@@ -519,26 +597,120 @@
     }
 
     // Selection + drag handlers
-    let selectedLayerId = '';
+    const layerListEl = $('layerList');
+    let selectedLayerIds = new Set();
+    let selectedGroupId = '';
     let draggingLayer = false;
     let dragStart = null;
 
-    function clearSelection(){
-      posterNode?.querySelectorAll('.layer-selected').forEach(el=>el.classList.remove('layer-selected'));
-      selectedLayerId = '';
+    function layerIdsInDom(){
+      const els = posterNode?.querySelectorAll('[data-layer]') || [];
+      const ids = [];
+      els.forEach((el)=>{
+        const id = el.getAttribute('data-layer');
+        if(id && !ids.includes(id)) ids.push(id);
+      });
+      return ids;
     }
 
-    function selectLayer(el){
-      clearSelection();
-      const id = el.getAttribute('data-layer') || '';
-      if(!id) return;
-      selectedLayerId = id;
-      el.classList.add('layer-selected');
+    function clearSelection(){
+      selectedLayerIds = new Set();
+      selectedGroupId = '';
+      posterNode?.querySelectorAll('.layer-selected').forEach(el=>el.classList.remove('layer-selected'));
+      renderLayerList();
+    }
+
+    function applySelectionStyles(){
+      posterNode?.querySelectorAll('.layer-selected').forEach(el=>el.classList.remove('layer-selected'));
+      const els = posterNode?.querySelectorAll('[data-layer]') || [];
+      els.forEach((el)=>{
+        const id = el.getAttribute('data-layer');
+        if(id && selectedLayerIds.has(id)) el.classList.add('layer-selected');
+      });
+    }
+
+    function setSelection(ids, opts={multi:false, toggle:false}){
+      const next = new Set(selectedLayerIds);
+      const list = Array.isArray(ids) ? ids : [ids];
+      if(!opts.multi && !opts.toggle) next.clear();
+      list.forEach((id)=>{
+        if(!id) return;
+        if(opts.toggle){
+          if(next.has(id)) next.delete(id); else next.add(id);
+        }else{
+          next.add(id);
+        }
+      });
+      selectedLayerIds = next;
+      selectedGroupId = '';
+      applySelectionStyles();
+      renderLayerList();
     }
 
     function isLayerMode(){
       return !!(layerModeEl && layerModeEl.checked);
     }
+
+    function renderLayerList(){
+      if(!layerListEl) return;
+      const groups = (layerData && layerData.groups && typeof layerData.groups === 'object') ? layerData.groups : {};
+      const groupOrder = (layerData && Array.isArray(layerData.groupOrder)) ? layerData.groupOrder : Object.keys(groups);
+      const ids = layerIdsInDom();
+
+      const rows = [];
+      groupOrder.forEach((gid)=>{
+        const g = groups[gid];
+        if(!g || !Array.isArray(g.members) || !g.members.length) return;
+        const gSelected = (selectedGroupId === gid);
+        rows.push({type:'group', id:gid, name:g.name || ('组 ' + gid), selected:gSelected});
+        g.members.forEach((mid)=>{
+          if(!ids.includes(mid)) return;
+          const st = layerGet(mid);
+          rows.push({type:'layer', id:mid, name:(LAYER_LABELS[mid] || mid), selected:selectedLayerIds.has(mid), sub:true, st});
+        });
+      });
+
+      ids.forEach((id)=>{
+        const inAnyGroup = Object.values(groups).some(g=>Array.isArray(g.members) && g.members.includes(id));
+        if(inAnyGroup) return;
+        const st = layerGet(id);
+        rows.push({type:'layer', id, name:(LAYER_LABELS[id] || id), selected:selectedLayerIds.has(id), st});
+      });
+
+      layerListEl.innerHTML = rows.map((r)=>{
+        if(r.type === 'group'){
+          return `<div class="layer-item group ${r.selected ? 'selected' : ''}" data-layer-type="group" data-layer-id="${r.id}">
+            <div class="nm">${r.name}</div>
+            <div class="xy">${(groups[r.id] && groups[r.id].members) ? groups[r.id].members.length : 0}项</div>
+          </div>`;
+        }
+        const st = r.st || {x:0,y:0,s:1};
+        return `<div class="layer-item ${r.sub ? 'sub' : ''} ${r.selected ? 'selected' : ''}" data-layer-type="layer" data-layer-id="${r.id}">
+          <div class="nm">${r.name}</div>
+          <div class="xy">x:${Math.round(st.x)} y:${Math.round(st.y)} s:${Number(st.s||1).toFixed(2)}</div>
+        </div>`;
+      }).join('');
+    }
+
+    layerListEl?.addEventListener('click', (e)=>{
+      const item = e.target && e.target.closest ? e.target.closest('.layer-item') : null;
+      if(!item) return;
+      const t = item.getAttribute('data-layer-type');
+      const id = item.getAttribute('data-layer-id');
+      const multi = !!(e.ctrlKey || e.metaKey);
+      if(t === 'group'){
+        const groups = (layerData && layerData.groups && typeof layerData.groups === 'object') ? layerData.groups : {};
+        const g = groups[id];
+        if(!g || !Array.isArray(g.members)) return;
+        selectedGroupId = id;
+        selectedLayerIds = new Set(g.members);
+        applySelectionStyles();
+        renderLayerList();
+        return;
+      }
+      if(!id) return;
+      setSelection(id, {multi, toggle: multi});
+    });
 
     function bindLayerHandlers(){
       const els = posterNode?.querySelectorAll('[data-layer]') || [];
@@ -551,16 +723,22 @@
           }
           const id = el.getAttribute('data-layer') || '';
           if(!id) return;
-          selectLayer(el);
+          const multi = !!(e.ctrlKey || e.metaKey);
+          // selection behavior: ctrl/cmd toggles; otherwise single
+          if(multi){
+            setSelection(id, {multi:true, toggle:true});
+            if(!selectedLayerIds.has(id)) return;
+          }else{
+            setSelection(id, {multi:false, toggle:false});
+          }
           draggingLayer = true;
-          const base = layerGet(id);
+          const baseById = {};
+          Array.from(selectedLayerIds).forEach((sid)=> baseById[sid] = layerGet(sid));
           dragStart = {
-            id,
+            ids: Array.from(selectedLayerIds),
             sx: e.clientX,
             sy: e.clientY,
-            bx: base.x,
-            by: base.y,
-            bs: base.s,
+            baseById,
             mode: e.shiftKey ? 'scale' : 'move',
           };
           try{ el.setPointerCapture(e.pointerId); }catch{}
@@ -573,10 +751,17 @@
           const dx = (e.clientX - dragStart.sx) / (viewScale || 1);
           const dy = (e.clientY - dragStart.sy) / (viewScale || 1);
           if(dragStart.mode === 'scale'){
-            const ns = Math.max(0.2, Math.min(4.0, dragStart.bs * (1 + (dx / 240))));
-            layerSet(dragStart.id, {x: dragStart.bx, y: dragStart.by, s: ns});
+            const factor = (1 + (dx / 240));
+            dragStart.ids.forEach((id)=>{
+              const b = dragStart.baseById[id] || {x:0,y:0,s:1};
+              const ns = Math.max(0.2, Math.min(4.0, (b.s || 1) * factor));
+              layerSet(id, {x: b.x, y: b.y, s: ns});
+            });
           }else{
-            layerSet(dragStart.id, {x: dragStart.bx + dx, y: dragStart.by + dy, s: dragStart.bs});
+            dragStart.ids.forEach((id)=>{
+              const b = dragStart.baseById[id] || {x:0,y:0,s:1};
+              layerSet(id, {x: b.x + dx, y: b.y + dy, s: b.s});
+            });
           }
           e.preventDefault();
         });
@@ -602,6 +787,13 @@
     layerModeEl?.addEventListener('change', updateLayerModeClass);
     updateLayerModeClass();
 
+    posterNode?.addEventListener('pointerdown', (e)=>{
+      if(!isLayerMode()) return;
+      if(e.ctrlKey || e.metaKey) return;
+      const inLayer = e.target && e.target.closest ? e.target.closest('[data-layer]') : null;
+      if(!inLayer) clearSelection();
+    });
+
     window.addEventListener('keydown', (e)=>{
       if(e.key === 'l' || e.key === 'L'){
         if(layerModeEl){
@@ -615,10 +807,35 @@
     });
 
     $('btnResetLayer')?.addEventListener('click', ()=>{
-      if(!selectedLayerId) return;
-      layerSet(selectedLayerId, {x:0,y:0,s:1});
+      if(!selectedLayerIds || !selectedLayerIds.size) return;
+      Array.from(selectedLayerIds).forEach((id)=> layerSet(id, {x:0,y:0,s:1}));
     });
     $('btnResetZoom')?.addEventListener('click', ()=> setViewScale(1));
+
+    $('btnGroup')?.addEventListener('click', ()=>{
+      const ids = Array.from(selectedLayerIds || []);
+      if(ids.length < 2) return;
+      if(!layerData.groups || typeof layerData.groups !== 'object') layerData.groups = {};
+      if(!Array.isArray(layerData.groupOrder)) layerData.groupOrder = [];
+      const n = layerData.groupOrder.length + 1;
+      const gid = 'g' + Date.now();
+      layerData.groups[gid] = {name: '组' + n, members: ids};
+      layerData.groupOrder.push(gid);
+      persistLayerData();
+      selectedGroupId = gid;
+      renderLayerList();
+    });
+
+    $('btnUngroup')?.addEventListener('click', ()=>{
+      if(!selectedGroupId) return;
+      if(layerData && layerData.groups && layerData.groups[selectedGroupId]){
+        delete layerData.groups[selectedGroupId];
+        if(Array.isArray(layerData.groupOrder)) layerData.groupOrder = layerData.groupOrder.filter(x=>x!==selectedGroupId);
+        persistLayerData();
+      }
+      selectedGroupId = '';
+      renderLayerList();
+    });
 
     const raf = ()=>new Promise(r=>requestAnimationFrame(()=>r()));
 
@@ -915,6 +1132,7 @@
 
     if (window.PointerEvent) {
       avatarWrap.addEventListener('pointerdown', (e)=>{
+        if(isLayerMode && isLayerMode() && e.altKey) return;
         startDrag(e.clientX, e.clientY);
         try { avatarWrap.setPointerCapture(e.pointerId); } catch {}
       });
@@ -1018,6 +1236,7 @@
     // init layer UI
     applyLayerVars();
     bindLayerHandlers();
+    renderLayerList();
   </script>
 </body>
 </html>
