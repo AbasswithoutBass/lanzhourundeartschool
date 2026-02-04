@@ -127,7 +127,7 @@
     .score-hero .unit {font-size:22px;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC",sans-serif;font-weight:900;color:rgba(255,255,255,0.86);-webkit-text-fill-color:rgba(255,255,255,0.86);margin-left:10px;letter-spacing:1.6px;}
 
     /* Glass Panels for Meta Data */
-    .glass-deck {position:absolute;left:24px;right:24px;top:72%;display:flex;gap:10px;z-index:10;}
+    .glass-deck {display:flex;gap:10px;}
     /* Removed backdrop-filter to keep preview & download consistent */
     .glass-card {flex:1;background:rgba(20, 10, 30, 0.7);border:1px solid rgba(255,255,255,0.3);border-radius:14px;padding:16px 16px;text-align:left;}
     .glass-card .lbl {font-size:12px;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;}
@@ -138,11 +138,12 @@
     .float-badge {position:absolute;right:30px;top:368px;background:#FF4500;color:#fff;font-weight:900;padding:6px 12px;border-radius:10px;font-size:12px;letter-spacing:1px;box-shadow:0 10px 20px rgba(255,69,0,0.35);transform:rotate(9deg);z-index:20;}
 
     /* Extra metrics to reduce empty space */
-    .mini-row{position:absolute;left:24px;right:24px;top:54%;display:flex;gap:10px;z-index:10;}
+    .layer-bottom{position:absolute;left:24px;right:24px;bottom:52px;z-index:10;display:flex;flex-direction:column;gap:12px;}
+    .mini-row{display:flex;gap:10px;}
     .mini-pill{flex:1;background:rgba(255,255,255,0.055);border:1px solid rgba(255,255,255,0.16);border-radius:16px;padding:12px 12px;}
     .mini-pill .k{font-size:11px;color:rgba(255,255,255,0.52);letter-spacing:2px;text-transform:uppercase;}
     .mini-pill .v{margin-top:6px;font-size:18px;font-weight:950;color:rgba(255,255,255,0.96);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0.2px;}
-    .tag-row{position:absolute;left:24px;right:24px;top:60%;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;z-index:10;padding:0 28px;}
+    .tag-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding:0 28px;max-height:84px;overflow:hidden;}
     .tag-chip{padding:7px 12px;border-radius:999px;font-size:12px;font-weight:900;letter-spacing:1.2px;color:rgba(255,255,255,0.88);background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.20);}
     .poster-footer{position:absolute;left:24px;right:24px;bottom:14px;display:flex;justify-content:space-between;gap:10px;z-index:10;color:rgba(255,255,255,0.55);font-size:11px;letter-spacing:1px;}
     .poster-footer .id{color:rgba(255,255,255,0.75);font-weight:700;}
@@ -246,34 +247,36 @@
                 </div>
             </div>
 
-            <div class="tag-row" id="tagRow"></div>
+            <div class="layer-bottom" id="bottomStack">
+              <div class="tag-row" id="tagRow"></div>
 
-            <div class="mini-row" id="miniRow">
-              <div class="mini-pill">
-                <div class="k" id="mini1Label">—</div>
-                <div class="v" id="mini1Value">—</div>
+              <div class="mini-row" id="miniRow">
+                <div class="mini-pill">
+                  <div class="k" id="mini1Label">—</div>
+                  <div class="v" id="mini1Value">—</div>
+                </div>
+                <div class="mini-pill">
+                  <div class="k" id="mini2Label">—</div>
+                  <div class="v" id="mini2Value">—</div>
+                </div>
+                <div class="mini-pill">
+                  <div class="k" id="mini3Label">—</div>
+                  <div class="v" id="mini3Value">—</div>
+                </div>
               </div>
-              <div class="mini-pill">
-                <div class="k" id="mini2Label">—</div>
-                <div class="v" id="mini2Value">—</div>
-              </div>
-              <div class="mini-pill">
-                <div class="k" id="mini3Label">—</div>
-                <div class="v" id="mini3Value">—</div>
-              </div>
-            </div>
 
-            <div class="glass-deck" id="rankDeck">
-              <div class="glass-card" id="scoreCard">
-                    <div class="lbl" id="scoreLabel">主项分数</div>
-                    <div class="val" id="scoreValue">—</div>
-                    <div class="sub">超过98%考生</div>
-                </div>
-              <div class="glass-card" id="rankCard">
-                    <div class="lbl" id="rankLabel">主项排名</div>
-                    <div class="val" id="rankValue">—</div>
-                    <div class="sub">全省前列</div>
-                </div>
+              <div class="glass-deck" id="rankDeck">
+                <div class="glass-card" id="scoreCard">
+                      <div class="lbl" id="scoreLabel">主项分数</div>
+                      <div class="val" id="scoreValue">—</div>
+                      <div class="sub">超过98%考生</div>
+                  </div>
+                <div class="glass-card" id="rankCard">
+                      <div class="lbl" id="rankLabel">主项排名</div>
+                      <div class="val" id="rankValue">—</div>
+                      <div class="sub">全省前列</div>
+                  </div>
+              </div>
             </div>
 
             <div class="poster-footer">
