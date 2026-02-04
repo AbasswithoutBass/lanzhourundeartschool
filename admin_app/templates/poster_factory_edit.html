@@ -81,6 +81,12 @@
     .top-left{display:flex;flex-direction:column;align-items:flex-start;gap:10px;min-width:0;}
     .brand-logo-big{width:200px;height:200px;object-fit:contain;opacity:0.96;margin-top:-22px;filter:drop-shadow(0 12px 20px rgba(0,0,0,0.40));}
     .year-pill{display:inline-flex;align-items:center;padding:8px 14px;margin-top:10px;background:rgba(var(--brand-purple-rgb),0.30);border:1px solid rgba(255,255,255,0.22);border-radius:999px;}
+    .xform{--tx:0px;--ty:0px;--ts:1;}
+    .xform-move{transform:translate(var(--tx),var(--ty)) scale(var(--ts));transform-origin:top left;}
+    .layer-selected{outline:2px solid rgba(255,255,255,0.82);outline-offset:5px;}
+    .export-mode .layer-selected{outline:none !important;}
+    .poster.layer-mode .xform{cursor:move;}
+    .poster:not(.layer-mode) .xform{cursor:default;}
     /* Removed backdrop-filter as requested, increased opacity for readability */
     .brand-pill {display:inline-flex;align-items:center;padding:8px 14px;margin-top:0;background:rgba(var(--brand-purple-rgb),0.30);border:1px solid rgba(255,255,255,0.22);border-radius:99px;font-size:12px;font-weight:800;letter-spacing:1px;margin-left:0;margin-right:0;color:rgba(255,255,255,0.92);white-space:nowrap;}
     .brand-logo{width:18px;height:18px;object-fit:contain;margin-right:10px;opacity:0.92;border-radius:6px;filter:drop-shadow(0 10px 18px rgba(0,0,0,0.35));}
@@ -180,7 +186,7 @@
     .glass-card .sub {font-size:12px;color:#FFD700;margin-top:4px;letter-spacing:1px;}
 
     /* Floating Badges */
-    .float-badge {position:absolute;right:30px;top:426px;background:#FF4500;color:#fff;font-weight:900;padding:6px 12px;border-radius:10px;font-size:12px;letter-spacing:1px;box-shadow:0 10px 20px rgba(255,69,0,0.35);transform:rotate(9deg);z-index:20;}
+    .float-badge {position:absolute;right:30px;top:426px;background:#FF4500;color:#fff;font-weight:900;padding:6px 12px;border-radius:10px;font-size:12px;letter-spacing:1px;box-shadow:0 10px 20px rgba(255,69,0,0.35);transform:translate(var(--tx),var(--ty)) rotate(9deg) scale(var(--ts));transform-origin:center;z-index:20;}
 
     /* Extra metrics to reduce empty space */
     .layer-bottom{position:absolute;left:24px;right:24px;bottom:52px;z-index:10;display:flex;flex-direction:column;gap:12px;}
@@ -196,6 +202,9 @@
     /* Top title typesetting */
     .year-line{font-size:11px;color:rgba(255,255,255,0.92);letter-spacing:2px;white-space:nowrap;text-align:right;font-weight:850;}
     .report-title{font-size:18px;font-weight:600;margin-top:4px;letter-spacing:5px;color:rgba(255,255,255,0.92);text-transform:uppercase;}
+
+    /* View zoom (editor only; does not affect export canvas) */
+    .poster-frame{--view-scale:1;transform:scale(var(--view-scale));transform-origin:top center;}
 
     /* Export mode: keep html2canvas output close to what user sees */
     .export-mode, .export-mode *{animation:none !important; transition:none !important;}
@@ -247,16 +256,16 @@
             
             <div class="layer-top">
               <div class="top-row">
-                <div class="top-left">
+                <div class="top-left xform xform-move" data-layer="brand">
                   <img class="brand-logo-big" src="/site/assets/portal/runde_logo_transparent.png?v=20260204" alt="润德">
                   <div class="brand-pill"><span>RUNDE</span> ART SCHOOL</div>
                   <div class="report-title">润德艺考 · 喜报</div>
                 </div>
-                <div class="year-pill"><div class="year-line" id="yearText">2026 OFFICIAL REPORT —</div></div>
+                <div class="year-pill xform xform-move" data-layer="year"><div class="year-line" id="yearText">2026 OFFICIAL REPORT —</div></div>
               </div>
             </div>
 
-            <div class="layer-hero">
+            <div class="layer-hero xform xform-move" data-layer="hero">
                 <div id="avatarWrap" class="avatar-ring" title="拖拽调整头像位置">
                     <div class="avatar-inner">
                         <img id="avatarImg" src="" alt="avatar">
@@ -268,7 +277,7 @@
                 <div id="metaText" class="category-tag">—</div>
             </div>
 
-            <div class="float-badge" id="floatBadge">TOP 1%</div>
+            <div class="float-badge xform" data-layer="badge" id="floatBadge">TOP 1%</div>
 
             <div class="big-stat-box">
                 <div class="marketing-text" id="campaignText">制霸高分 · 强势上岸</div>
@@ -413,6 +422,20 @@
           <input type="hidden" name="posterPhotoScale" id="posterPhotoScale" value="{{ student.posterPhotoScale or '1' }}" />
           <input type="hidden" name="posterPhotoX" id="posterPhotoX" value="{{ student.posterPhotoX or '0' }}" />
           <input type="hidden" name="posterPhotoY" id="posterPhotoY" value="{{ student.posterPhotoY or '0' }}" />
+          <input type="hidden" name="posterLayers" id="posterLayers" value="{{ student.posterLayers or '' }}" />
+
+          <div style="margin-top:10px;padding:10px 12px;border:1px solid rgba(0,0,0,.06);border-radius:14px;background:rgba(0,0,0,0.02)">
+            <div class="small" style="font-weight:800;color:#333">图层模式（类似 PS）</div>
+            <div class="small" style="margin-top:6px;color:#555;line-height:1.6">
+              直接拖动模块调整位置；按住 Shift 拖动可缩放；按住 Cmd/Ctrl + 滚轮缩放画布视图；按 L 开关图层模式。
+              <br/>提示：在头像上拖动默认是“挪头像”，按住 Alt 再拖可移动整个头像区。
+            </div>
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px">
+              <label style="margin:0;display:flex;gap:8px;align-items:center"><input id="layerMode" type="checkbox" checked style="width:auto" />启用图层</label>
+              <button id="btnResetLayer" class="btn2" type="button">重置选中图层</button>
+              <button id="btnResetZoom" class="btn2" type="button">重置缩放</button>
+            </div>
+          </div>
 
           <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px">
             <button class="btn" type="submit">保存</button>
@@ -445,6 +468,157 @@
   <script>
     const s = JSON.parse(document.getElementById('posterItem').textContent || '{}');
     const $ = (id)=>document.getElementById(id);
+
+    function safeJsonParse(v, fallback){
+      try{
+        if(v == null) return fallback;
+        if(typeof v === 'object') return v;
+        const s = String(v).trim();
+        if(!s) return fallback;
+        return JSON.parse(s);
+      }catch{ return fallback; }
+    }
+
+    const posterNode = $('poster');
+    const posterFrame = document.querySelector('.poster-frame');
+    const layerModeEl = $('layerMode');
+    const posterLayersInput = $('posterLayers');
+
+    let viewScale = 1;
+    function setViewScale(v){
+      viewScale = Math.max(0.5, Math.min(2.6, v));
+      posterFrame?.style.setProperty('--view-scale', String(viewScale));
+    }
+
+    // Layer transforms persisted in student.posterLayers
+    let layerData = safeJsonParse(posterLayersInput?.value || s.posterLayers, {});
+    function layerGet(id){
+      const raw = (layerData && typeof layerData === 'object') ? (layerData[id] || {}) : {};
+      return {
+        x: Number(raw.x || 0),
+        y: Number(raw.y || 0),
+        s: Number(raw.s || 1),
+      };
+    }
+    function layerSet(id, next){
+      if(!layerData || typeof layerData !== 'object') layerData = {};
+      layerData[id] = {x: Math.round(next.x), y: Math.round(next.y), s: Number(next.s.toFixed(4))};
+      if(posterLayersInput) posterLayersInput.value = JSON.stringify(layerData);
+      applyLayerVars();
+    }
+    function applyLayerVars(){
+      const els = posterNode?.querySelectorAll('[data-layer]') || [];
+      els.forEach((el)=>{
+        const id = el.getAttribute('data-layer');
+        if(!id) return;
+        const st = layerGet(id);
+        el.style.setProperty('--tx', st.x + 'px');
+        el.style.setProperty('--ty', st.y + 'px');
+        el.style.setProperty('--ts', String(st.s || 1));
+      });
+    }
+
+    // Selection + drag handlers
+    let selectedLayerId = '';
+    let draggingLayer = false;
+    let dragStart = null;
+
+    function clearSelection(){
+      posterNode?.querySelectorAll('.layer-selected').forEach(el=>el.classList.remove('layer-selected'));
+      selectedLayerId = '';
+    }
+
+    function selectLayer(el){
+      clearSelection();
+      const id = el.getAttribute('data-layer') || '';
+      if(!id) return;
+      selectedLayerId = id;
+      el.classList.add('layer-selected');
+    }
+
+    function isLayerMode(){
+      return !!(layerModeEl && layerModeEl.checked);
+    }
+
+    function bindLayerHandlers(){
+      const els = posterNode?.querySelectorAll('[data-layer]') || [];
+      els.forEach((el)=>{
+        el.addEventListener('pointerdown', (e)=>{
+          if(!isLayerMode()) return;
+          // allow avatar drag by default unless Alt is held
+          if((e.target && e.target.closest && e.target.closest('.avatar-ring')) && !e.altKey){
+            return;
+          }
+          const id = el.getAttribute('data-layer') || '';
+          if(!id) return;
+          selectLayer(el);
+          draggingLayer = true;
+          const base = layerGet(id);
+          dragStart = {
+            id,
+            sx: e.clientX,
+            sy: e.clientY,
+            bx: base.x,
+            by: base.y,
+            bs: base.s,
+            mode: e.shiftKey ? 'scale' : 'move',
+          };
+          try{ el.setPointerCapture(e.pointerId); }catch{}
+          e.preventDefault();
+        });
+
+        el.addEventListener('pointermove', (e)=>{
+          if(!draggingLayer || !dragStart) return;
+          if(!isLayerMode()) return;
+          const dx = (e.clientX - dragStart.sx) / (viewScale || 1);
+          const dy = (e.clientY - dragStart.sy) / (viewScale || 1);
+          if(dragStart.mode === 'scale'){
+            const ns = Math.max(0.2, Math.min(4.0, dragStart.bs * (1 + (dx / 240))));
+            layerSet(dragStart.id, {x: dragStart.bx, y: dragStart.by, s: ns});
+          }else{
+            layerSet(dragStart.id, {x: dragStart.bx + dx, y: dragStart.by + dy, s: dragStart.bs});
+          }
+          e.preventDefault();
+        });
+
+        el.addEventListener('pointerup', ()=>{ draggingLayer = false; dragStart = null; });
+        el.addEventListener('pointercancel', ()=>{ draggingLayer = false; dragStart = null; });
+      });
+    }
+
+    // Zoom view with Cmd/Ctrl + wheel
+    posterFrame?.addEventListener('wheel', (e)=>{
+      if(!(e.ctrlKey || e.metaKey)) return;
+      e.preventDefault();
+      const delta = e.deltaY;
+      const step = 0.08;
+      setViewScale(viewScale + (delta > 0 ? -step : step));
+    }, {passive:false});
+
+    // Layer mode toggle + shortcuts
+    function updateLayerModeClass(){
+      posterNode?.classList.toggle('layer-mode', isLayerMode());
+    }
+    layerModeEl?.addEventListener('change', updateLayerModeClass);
+    updateLayerModeClass();
+
+    window.addEventListener('keydown', (e)=>{
+      if(e.key === 'l' || e.key === 'L'){
+        if(layerModeEl){
+          layerModeEl.checked = !layerModeEl.checked;
+          updateLayerModeClass();
+        }
+      }
+      if(e.key === 'Escape'){
+        clearSelection();
+      }
+    });
+
+    $('btnResetLayer')?.addEventListener('click', ()=>{
+      if(!selectedLayerId) return;
+      layerSet(selectedLayerId, {x:0,y:0,s:1});
+    });
+    $('btnResetZoom')?.addEventListener('click', ()=> setViewScale(1));
 
     const raf = ()=>new Promise(r=>requestAnimationFrame(()=>r()));
 
@@ -498,6 +672,8 @@
       
       // Update Transform directly
       updateAvatarTransform();
+
+      applyLayerVars();
 
       const posterType = type || $('posterType').value || 'main';
       const showRank = $('showRank').checked;
@@ -838,6 +1014,10 @@
     // Ensure checkbox is consistent with persisted value
     if($('posterShowRank').value === '0') $('showRank').checked = false;
     render();
+
+    // init layer UI
+    applyLayerVars();
+    bindLayerHandlers();
   </script>
 </body>
 </html>

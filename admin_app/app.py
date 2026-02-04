@@ -2769,6 +2769,7 @@ def create_app():
             'posterPhotoScale': '1',
             'posterPhotoX': '0',
             'posterPhotoY': '0',
+            'posterLayers': '',
             'ocrImage': '',
             'ocrRawText': '',
             'createdAt': now,
@@ -2912,6 +2913,7 @@ def create_app():
         item['posterPhotoScale'] = _s('posterPhotoScale') or str(item.get('posterPhotoScale') or '1')
         item['posterPhotoX'] = _s('posterPhotoX') or str(item.get('posterPhotoX') or '0')
         item['posterPhotoY'] = _s('posterPhotoY') or str(item.get('posterPhotoY') or '0')
+        item['posterLayers'] = _s('posterLayers') or str(item.get('posterLayers') or '')
         psr = _s('posterShowRank')
         if psr in {'0', '1'}:
             item['posterShowRank'] = psr
