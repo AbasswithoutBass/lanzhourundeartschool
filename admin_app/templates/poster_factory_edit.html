@@ -21,7 +21,7 @@
     .poster{width:100%;aspect-ratio:9/16;background:#1a0b2e;position:relative;overflow:hidden;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","PingFang SC",sans-serif}
     
     /* Backgrounds */
-    .poster-bg-grad {position:absolute;inset:0;background:radial-gradient(circle at 100% 0%, #6f42c1 0%, #1a0b2e 55%, #000 100%); z-index:0;}
+    .poster-bg-grad {position:absolute;inset:0;background:radial-gradient(circle at 100% 0%, rgb(var(--brand-purple-rgb)) 0%, #1a0b2e 58%, #000 110%); z-index:0;}
     /* Stable CSS pattern noise (no SVG) */
     .poster-noise {position:absolute;inset:0;opacity:0.12;background:repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 10px);pointer-events:none;z-index:0;}
     /* Particles + haze + vignette + light leaks (no backdrop-filter; export-friendly) */
@@ -64,7 +64,7 @@
     /* Decorations */
     .deco-line {position:absolute;left:24px;top:24px;bottom:24px;width:1px;background:rgba(255,255,255,0.15);z-index:1;}
     .deco-cross {position:absolute;right:40px;top:40px;font-size:24px;font-weight:100;color:rgba(255,255,255,0.3);z-index:1;}
-    :root{--stat-circle-y:60%;--stat-circle-size:440px;}
+    :root{--brand-purple-rgb:102,40,116;--stat-circle-y:60%;--stat-circle-size:440px;}
     .deco-circle-line {position:absolute;top:var(--stat-circle-y);left:50%;transform:translate(-50%,-50%);width:var(--stat-circle-size);height:var(--stat-circle-size);border:1px dashed rgba(255,255,255,0.10);border-radius:50%;pointer-events:none;z-index:0;}
 
     /* Apple-like typographic watermark to anchor the middle area */
@@ -77,12 +77,12 @@
 
     /* Content Layers */
     .layer-top {position:absolute;top:40px;left:40px;right:40px;z-index:10;}
-    .top-row{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:12px;}
-    .top-left{display:flex;align-items:center;gap:12px;min-width:0;}
-    .brand-logo-big{width:68px;height:68px;object-fit:contain;opacity:0.96;filter:drop-shadow(0 12px 20px rgba(0,0,0,0.40));}
-    .year-pill{display:inline-flex;align-items:center;padding:6px 14px;background:rgba(111,66,193,0.22);border:1px solid rgba(111,66,193,0.55);border-radius:999px;}
+    .top-row{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:12px;}
+    .top-left{display:flex;align-items:flex-start;gap:12px;min-width:0;}
+    .brand-logo-big{width:200px;height:200px;object-fit:contain;opacity:0.96;filter:drop-shadow(0 12px 20px rgba(0,0,0,0.40));}
+    .year-pill{display:inline-flex;align-items:center;padding:8px 14px;margin-top:18px;background:rgba(var(--brand-purple-rgb),0.30);border:1px solid rgba(255,255,255,0.22);border-radius:999px;}
     /* Removed backdrop-filter as requested, increased opacity for readability */
-    .brand-pill {display:inline-flex;align-items:center;padding:6px 14px;background:rgba(111,66,193,0.22);border:1px solid rgba(111,66,193,0.55);border-radius:99px;font-size:12px;font-weight:800;letter-spacing:1px;margin:0;color:rgba(255,255,255,0.92);white-space:nowrap;}
+    .brand-pill {display:inline-flex;align-items:center;padding:8px 14px;margin-top:18px;background:rgba(var(--brand-purple-rgb),0.30);border:1px solid rgba(255,255,255,0.22);border-radius:99px;font-size:12px;font-weight:800;letter-spacing:1px;margin-left:0;margin-right:0;color:rgba(255,255,255,0.92);white-space:nowrap;}
     .brand-logo{width:18px;height:18px;object-fit:contain;margin-right:10px;opacity:0.92;border-radius:6px;filter:drop-shadow(0 10px 18px rgba(0,0,0,0.35));}
     .brand-pill span {color:#FFD700;margin-right:6px;}
 
@@ -194,7 +194,7 @@
     .poster-footer .id{color:rgba(255,255,255,0.75);font-weight:700;}
 
     /* Top title typesetting */
-    .year-line{font-size:11px;color:rgba(255,255,255,0.92);letter-spacing:2px;white-space:nowrap;text-align:right;font-weight:800;}
+    .year-line{font-size:11px;color:rgba(255,255,255,0.92);letter-spacing:2px;white-space:nowrap;text-align:right;font-weight:850;}
     .report-title{font-size:18px;font-weight:600;margin-top:4px;letter-spacing:5px;color:rgba(255,255,255,0.92);text-transform:uppercase;}
 
     /* Export mode: keep html2canvas output close to what user sees */
