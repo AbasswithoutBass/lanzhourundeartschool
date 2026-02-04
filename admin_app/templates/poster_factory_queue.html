@@ -139,6 +139,16 @@
     .year-line{font-size:11px;color:rgba(255,255,255,0.62);letter-spacing:2px;}
     .report-title{font-size:18px;font-weight:600;margin-top:4px;letter-spacing:5px;color:rgba(255,255,255,0.92);text-transform:uppercase;}
 
+    /* Export mode: keep html2canvas output close to what user sees */
+    .export-mode, .export-mode *{animation:none !important; transition:none !important;}
+    /* html2canvas has weak support for conic-gradient / filters; provide stable fallback during export */
+    .export-mode .avatar-ring{background:radial-gradient(circle at 35% 30%, rgba(255,255,255,0.55) 0%, rgba(255,215,0,1) 22%, rgba(184,134,11,1) 62%, rgba(255,215,0,1) 100%) !important;}
+    .export-mode .avatar-ring::before{background:radial-gradient(circle at 50% 50%, rgba(140,90,255,0.35) 0%, rgba(255,215,0,0.28) 42%, transparent 66%) !important; box-shadow:0 0 22px rgba(140,90,255,0.30), 0 0 26px rgba(255,215,0,0.18) !important;}
+    .export-mode .avatar-ring::after{background:radial-gradient(circle at 50% 50%, rgba(255,215,0,0.12) 0%, rgba(140,90,255,0.08) 38%, transparent 70%) !important;}
+    .export-mode .poster-blob, .export-mode .poster-blob2{display:none !important;}
+    .export-mode .score-hero{filter:none !important; background-position:0% 30% !important;}
+    .export-mode #heroScore, .export-mode #heroUnit{text-shadow:0 14px 28px rgba(0,0,0,0.55), 0 0 18px rgba(255,215,0,0.16) !important;}
+
     .side{display:flex;flex-direction:column;gap:10px}
     .btn{display:inline-block;padding:10px 12px;border-radius:12px;background:#6f42c1;color:#fff;font-weight:700;border:none;cursor:pointer}
     .btn2{display:inline-block;padding:10px 12px;border-radius:12px;background:#fff;color:#6f42c1;font-weight:700;border:1px solid rgba(111,66,193,0.25);cursor:pointer}
@@ -306,6 +316,28 @@
 
     const $ = (id)=>document.getElementById(id);
     const posterFrame = document.querySelector('.poster-frame');
+
+    const raf = ()=>new Promise(r=>requestAnimationFrame(()=>r()));
+
+    async function prepareExport(node){
+      node.classList.add('export-mode');
+      try{
+        if(document.fonts && document.fonts.ready) await document.fonts.ready;
+      }catch{}
+      const imgs = Array.from(node.querySelectorAll('img'));
+      await Promise.all(imgs.map(async (img)=>{
+        try{
+          if(!img || !img.src) return;
+          if(img.decode) await img.decode();
+        }catch{}
+      }));
+      await raf();
+      await raf();
+    }
+
+    function cleanupExport(node){
+      node.classList.remove('export-mode');
+    }
 
     function pickPhoto(s){
       const p = s.photo || '';
@@ -613,7 +645,20 @@
     async function download(){
       const scale = parseFloat($('quality').value || '1');
       const node = $('poster');
-      const canvas = await html2canvas(node, {scale});
+      await prepareExport(node);
+      const canvas = await html2canvas(node, {
+        scale,
+        backgroundColor: null,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        scrollX: 0,
+        scrollY: 0,
+        onclone: (doc)=>{
+          try{ doc.getElementById('poster')?.classList.add('export-mode'); }catch{}
+        }
+      });
+      cleanupExport(node);
       const link = document.createElement('a');
       const s = data[idx];
       const type = $('posterType').value;
