@@ -18,25 +18,28 @@
     .btn2{display:inline-block;margin-top:14px;padding:10px 14px;border-radius:12px;background:#fff;color:#6f42c1;font-weight:700;border:1px solid rgba(111,66,193,0.25);cursor:pointer}
     .poster-frame{background:#fff;border-radius:18px;overflow:hidden;border:1px solid rgba(0,0,0,.06);box-shadow:0 20px 48px rgba(0,0,0,0.12)}
     .poster{width:100%;aspect-ratio:9/16;background:#fff;position:relative;overflow:hidden}
-    .poster-bg{position:absolute;inset:0;background:linear-gradient(160deg, rgba(138,66,193,0.08), rgba(138,66,193,0.02))}
-    .poster-header{position:absolute;left:24px;right:24px;top:20px;display:flex;align-items:center;justify-content:space-between}
-    .brand{font-weight:800;color:#6f42c1;font-size:16px}
-    .year{color:#999;font-size:13px}
-    .avatar-wrap{position:absolute;left:24px;top:70px;width:128px;height:128px;border-radius:999px;background:conic-gradient(from 0deg,#d7b56d,#f0d28c,#d7b56d);padding:4px;cursor:grab}
-    .avatar{width:100%;height:100%;border-radius:999px;background:#fff;overflow:hidden;position:relative}
+    .poster-bg{position:absolute;inset:0;background:radial-gradient(circle at 50% 25%, #6a0b7d 0%, #2a0333 100%)}
+    .poster::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 10px);pointer-events:none}
+    .poster-header{position:absolute;left:0;right:0;top:30px;text-align:center;z-index:2}
+    .brand{font-weight:900;color:#d4af37;font-size:16px;letter-spacing:6px;margin-bottom:4px;text-transform:uppercase;text-shadow:0 2px 4px rgba(0,0,0,0.3)}
+    .year{color:rgba(255,255,255,0.8);font-size:13px;letter-spacing:2px}
+    .avatar-wrap{position:absolute;left:50%;top:95px;transform:translateX(-50%);width:130px;height:130px;border-radius:50%;padding:4px;background:linear-gradient(180deg,#d4af37,#fbf5d5,#d4af37);box-shadow:0 12px 30px rgba(0,0,0,0.4);cursor:grab;z-index:3}
+    .avatar{width:100%;height:100%;border-radius:50%;background:#eee;overflow:hidden;position:relative;border:4px solid #fff}
     .avatar img{width:100%;height:100%;object-fit:cover;display:block;transform:translate(var(--px,0),var(--py,0)) scale(var(--ps,1))}
-    .poster-main{position:absolute;left:24px;right:24px;top:220px}
-    .name{font-size:28px;font-weight:800;color:#111}
-    .meta{margin-top:8px;color:#666;font-size:14px}
-    .promo{margin-top:8px;font-size:12px;color:#6f42c1;font-weight:700;letter-spacing:.3px}
-    .campaign{margin-top:6px;font-size:14px;color:#111;font-weight:800}
-    .hero-score{margin-top:10px;font-size:40px;font-weight:900;color:#6f42c1;line-height:1}
-    .hero-score .unit{font-size:14px;color:#6f42c1;font-weight:700;margin-left:6px}
-    .score-box{position:absolute;left:24px;right:24px;bottom:22px;background:#fff;border:1px solid rgba(0,0,0,.06);border-radius:16px;padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .score-box .label{font-size:12px;color:#999}
-    .score-box .value{font-size:20px;font-weight:800;color:#111}
-    .badge{display:inline-block;font-size:12px;padding:3px 8px;border-radius:999px;background:rgba(138,66,193,0.1);color:#6f42c1;font-weight:700}
-    .small{font-size:12px;color:#666;line-height:1.6}
+    .poster-main{position:absolute;left:20px;right:20px;top:245px;text-align:center;z-index:2}
+    .name{font-size:36px;font-weight:900;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,0.4);letter-spacing:2px}
+    .meta{margin-top:8px;color:rgba(255,255,255,0.9);font-size:14px;font-weight:500;display:inline-block;padding:4px 14px;border-radius:20px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2)}
+    .small{display:none} /* Hide small text in new layout */
+    .promo{margin-top:16px;font-size:14px;color:#d4af37;font-weight:700;letter-spacing:1px;opacity:0.9}
+    .campaign{margin-top:2px;font-size:24px;color:#fff;font-weight:900;font-style:italic;background:linear-gradient(180deg,#fff 20%,#e0e0e0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 4px 10px rgba(0,0,0,0.3)}
+    .hero-score{margin-top:12px;font-size:76px;font-weight:900;color:#d4af37;line-height:1;text-shadow:0 4px 0 rgba(0,0,0,0.3);font-family:Impact,sans-serif;background:linear-gradient(180deg,#fbf5d5 0%, #d4af37 60%, #a17f1a 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .hero-score .unit{font-size:18px;color:#ffeeb0;font-weight:500;margin-left:4px;font-style:normal;font-family:sans-serif;text-shadow:none;-webkit-text-fill-color:#ffeeb0}
+    .score-box{position:absolute;left:24px;right:24px;bottom:34px;background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.2);border-radius:18px;padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:0;color:#fff;text-align:center;box-shadow:0 8px 20px rgba(0,0,0,0.2)}
+    .score-box > div:first-child{border-right:1px solid rgba(255,255,255,0.15)}
+    .score-box .label{font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:4px}
+    .score-box .value{font-size:24px;font-weight:700;color:#fff}
+    .badge{display:none} /* Replaced by meta line */
+    .type-label{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:#d4af37;color:#2a0333;font-size:12px;font-weight:800;padding:3px 10px;border-radius:4px;box-shadow:0 4px 8px rgba(0,0,0,0.2)}
   </style>
 </head>
 <body>
@@ -67,13 +70,13 @@
             <div class="poster-main">
               <div class="name" id="nameText">—</div>
               <div class="meta" id="metaText">—</div>
-              <div class="small" id="locationText">—</div>
+              <div id="locationText" style="margin-top:6px;color:rgba(255,255,255,0.7);font-size:13px;font-weight:500">—</div>
               <div class="promo" id="promoText">—</div>
-              <div class="campaign" id="campaignText">—</div>
+              <div class="campaign" id="campaignText">制霸高分 · 强势上岸</div>
               <div class="hero-score"><span id="heroScore">—</span><span class="unit">分</span></div>
-              <div style="margin-top:8px"><span class="badge" id="typeBadge">主项海报</span></div>
             </div>
             <div class="score-box">
+              <div class="type-label" id="typeBadge">主项海报</div>
               <div>
                 <div class="label" id="scoreLabel">主项分数</div>
                 <div class="value" id="scoreValue">—</div>
