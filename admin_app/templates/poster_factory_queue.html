@@ -146,7 +146,10 @@
     .export-mode .avatar-ring::before{background:radial-gradient(circle at 50% 50%, rgba(140,90,255,0.35) 0%, rgba(255,215,0,0.28) 42%, transparent 66%) !important; box-shadow:0 0 22px rgba(140,90,255,0.30), 0 0 26px rgba(255,215,0,0.18) !important;}
     .export-mode .avatar-ring::after{background:radial-gradient(circle at 50% 50%, rgba(255,215,0,0.12) 0%, rgba(140,90,255,0.08) 38%, transparent 70%) !important;}
     .export-mode .poster-blob, .export-mode .poster-blob2{display:none !important;}
-    .export-mode .score-hero{filter:none !important; background-position:0% 30% !important;}
+    /* Avoid background-clip:text rendering differences */
+    .export-mode .marketing-text{background:none !important;-webkit-background-clip:initial !important;-webkit-text-fill-color:rgba(255,255,255,0.92) !important;color:rgba(255,255,255,0.92) !important;text-shadow:0 12px 26px rgba(0,0,0,0.55) !important;}
+    .export-mode .score-hero{background:none !important;-webkit-background-clip:initial !important;-webkit-text-fill-color:#FFD700 !important;color:#FFD700 !important;filter:none !important;}
+    .export-mode .score-hero .unit{-webkit-text-fill-color:rgba(255,255,255,0.85) !important;color:rgba(255,255,255,0.85) !important;}
     .export-mode #heroScore, .export-mode #heroUnit{text-shadow:0 14px 28px rgba(0,0,0,0.55), 0 0 18px rgba(255,215,0,0.16) !important;}
 
     .side{display:flex;flex-direction:column;gap:10px}
