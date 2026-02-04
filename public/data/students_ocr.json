@@ -27,13 +27,13 @@
     "qualified": true,
     "joinHall": false,
     "posterMode": "0",
-    "posterStatus": "pending",
+    "posterStatus": "rejected",
     "posterPhotoScale": "1",
     "posterPhotoX": "0",
     "posterPhotoY": "0",
     "ocrImage": "",
     "createdAt": "2026-02-03T07:51:22",
-    "updatedAt": "2026-02-03T08:22:14",
+    "updatedAt": "2026-02-04T05:30:15",
     "posterTypes": [
       "total"
     ],
