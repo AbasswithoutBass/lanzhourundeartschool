@@ -33,13 +33,14 @@
     "posterPhotoY": "-2",
     "ocrImage": "",
     "createdAt": "2026-02-03T07:51:22",
-    "updatedAt": "2026-02-04T12:53:24",
+    "updatedAt": "2026-02-04T13:59:54",
     "posterTypes": [
       "total"
     ],
     "ocrRawText": "",
     "examProvince": "宁夏",
     "examCity": "",
-    "posterShowRank": "1"
+    "posterShowRank": "1",
+    "posterLayers": "{\"brand\":{\"x\":-9,\"y\":-37,\"s\":0.8883},\"year\":{\"x\":55,\"y\":121,\"s\":0.8961}}"
   }
 ]
