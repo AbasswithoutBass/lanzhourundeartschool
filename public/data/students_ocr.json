@@ -33,7 +33,7 @@
     "posterPhotoY": "-2",
     "ocrImage": "",
     "createdAt": "2026-02-03T07:51:22",
-    "updatedAt": "2026-02-04T13:59:54",
+    "updatedAt": "2026-02-04T14:00:54",
     "posterTypes": [
       "total"
     ],
@@ -41,6 +41,6 @@
     "examProvince": "宁夏",
     "examCity": "",
     "posterShowRank": "1",
-    "posterLayers": "{\"brand\":{\"x\":-9,\"y\":-37,\"s\":0.8883},\"year\":{\"x\":55,\"y\":121,\"s\":0.8961}}"
+    "posterLayers": "{\"brand\":{\"x\":-9,\"y\":-37,\"s\":0.8883},\"year\":{\"x\":55,\"y\":121,\"s\":0.8961},\"hero\":{\"x\":-3,\"y\":-72,\"s\":1}}"
   }
 ]
