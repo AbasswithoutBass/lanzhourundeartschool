@@ -60,8 +60,8 @@
     /* Decorations */
     .deco-line {position:absolute;left:24px;top:24px;bottom:24px;width:1px;background:rgba(255,255,255,0.15);z-index:1;}
     .deco-cross {position:absolute;right:24px;top:24px;font-size:24px;font-weight:100;color:rgba(255,255,255,0.3);z-index:1;}
-    :root{--stat-circle-y:58%;}
-    .deco-circle-line {position:absolute;top:var(--stat-circle-y);left:50%;transform:translate(-50%,-50%);width:440px;height:440px;border:1px dashed rgba(255,255,255,0.09);border-radius:50%;pointer-events:none;z-index:0;}
+    :root{--stat-circle-y:62%;--stat-circle-size:440px;}
+    .deco-circle-line {position:absolute;top:var(--stat-circle-y);left:50%;transform:translate(-50%,-50%);width:var(--stat-circle-size);height:var(--stat-circle-size);border:1px dashed rgba(255,255,255,0.10);border-radius:50%;pointer-events:none;z-index:0;}
 
     /* Apple-like typographic watermark to anchor the middle area */
     .mid-watermark{position:absolute;left:0;right:0;top:58%;text-align:center;pointer-events:none;z-index:1;
@@ -78,7 +78,7 @@
     .brand-logo{width:18px;height:18px;object-fit:contain;margin-right:10px;opacity:0.92;border-radius:6px;filter:drop-shadow(0 10px 18px rgba(0,0,0,0.35));}
     .brand-pill span {color:#FFD700;margin-right:6px;}
 
-    .layer-hero {position:absolute;top:120px;left:0;right:0;text-align:center;z-index:5;}
+    .layer-hero {position:absolute;top:142px;left:0;right:0;text-align:center;z-index:5;}
     /* Avatar with Golden Ring */
     .avatar-ring {
       width:140px;height:140px;margin:0 auto;
@@ -105,18 +105,28 @@
     .category-tag {display:inline-block;margin-top:10px;padding:6px 12px;background:rgba(255,215,0,0.95);color:#1a0b2e;font-weight:900;font-size:12px;border-radius:999px;letter-spacing:1px;}
     .location-line {margin-top:8px;font-size:12px;color:rgba(255,255,255,0.62);font-weight:500;letter-spacing:1.4px;}
 
-    /* The BIG Score Section (overlay so we can anchor to the background circle) */
+    /* The BIG Score Section: concentric circles + centered score */
     .big-stat-box {position:absolute;inset:0;text-align:center;z-index:9;pointer-events:none;padding:0 28px;}
-    .marketing-text {position:absolute;left:50%;top:352px;transform:translateX(-50%);
+    .marketing-text {position:absolute;left:50%;top:calc(var(--stat-circle-y) - 270px);transform:translateX(-50%);
       font-size:32px;font-weight:950;font-style:normal;line-height:1.18;letter-spacing:1.2px;
       background:linear-gradient(180deg, rgba(255,255,255,0.98) 40%, rgba(210,210,210,0.92) 100%);
       -webkit-background-clip:text;-webkit-text-fill-color:transparent;
       text-shadow:0 16px 30px rgba(0,0,0,0.58);max-width:92%;margin:0 auto;white-space:nowrap;
     }
-    .score-orbit{position:absolute;left:50%;top:var(--stat-circle-y);transform:translate(-50%,-50%);
-      width:440px;height:440px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
+    .stat-center{position:absolute;left:50%;top:var(--stat-circle-y);transform:translate(-50%,-50%);
+      width:var(--stat-circle-size);height:var(--stat-circle-size);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
     }
-    .score-orbit .score-caption{margin:0;font-size:11px;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.52);}
+    .stat-center::before{content:"";position:absolute;inset:64px;border-radius:50%;
+      border:2px solid rgba(90,220,255,0.55);
+      box-shadow:0 0 0 1px rgba(255,255,255,0.06) inset, 0 0 26px rgba(90,220,255,0.18), 0 0 40px rgba(140,90,255,0.14);
+      opacity:0.95;
+    }
+    .stat-center::after{content:"";position:absolute;inset:78px;border-radius:50%;
+      border:1px dashed rgba(255,255,255,0.14);
+      opacity:0.65;
+    }
+    .stat-center .score-caption{margin:0;font-size:11px;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.52);}
     .score-hero {
       font-family:"DIN Condensed","Avenir Next Condensed",Impact,-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","PingFang SC",sans-serif;
       font-size:142px;
@@ -145,7 +155,7 @@
     .glass-card .sub {font-size:12px;color:#FFD700;margin-top:4px;letter-spacing:1px;}
 
     /* Floating Badges */
-    .float-badge {position:absolute;right:30px;top:368px;background:#FF4500;color:#fff;font-weight:900;padding:6px 12px;border-radius:10px;font-size:12px;letter-spacing:1px;box-shadow:0 10px 20px rgba(255,69,0,0.35);transform:rotate(9deg);z-index:20;}
+    .float-badge {position:absolute;right:30px;top:392px;background:#FF4500;color:#fff;font-weight:900;padding:6px 12px;border-radius:10px;font-size:12px;letter-spacing:1px;box-shadow:0 10px 20px rgba(255,69,0,0.35);transform:rotate(9deg);z-index:20;}
 
     /* Extra metrics to reduce empty space */
     .layer-bottom{position:absolute;left:24px;right:24px;bottom:52px;z-index:10;display:flex;flex-direction:column;gap:12px;}
@@ -250,7 +260,7 @@
 
             <div class="big-stat-box">
                 <div class="marketing-text" id="campaignText">制霸高分 · 强势上岸</div>
-              <div class="score-orbit" aria-hidden="true">
+              <div class="stat-center" aria-hidden="true">
                 <div class="score-caption" id="scoreCaption">ACADEMIC PERFORMANCE</div>
                 <div class="score-hero">
                     <span id="heroScore">—</span>
